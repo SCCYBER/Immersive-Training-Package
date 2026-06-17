@@ -21,41 +21,75 @@
       <p>Interactive cyber awareness games designed for workshops, schools and business training.</p>
     </header>
 
+    <section class="login-panel" id="loginPanel">
+      <div class="section-title">LEARNER LOGIN</div>
+      <p>Create a local learner profile to track your training scores on this device.</p>
+      <div class="login-row">
+        <input id="learnerName" type="text" placeholder="Enter learner name">
+        <button id="loginBtn" class="launch-btn">Start Portal</button>
+      </div>
+    </section>
+
+    <section class="learner-panel hidden" id="learnerPanel">
+      <div>
+        <div class="section-title">SIGNED IN AS</div>
+        <strong id="learnerDisplay">Learner</strong>
+      </div>
+      <button id="resetBtn" class="small-btn">Reset Scores</button>
+    </section>
+
     <section class="dashboard-preview">
-      <div class="dash-card"><span>OVERALL SCORE</span><strong>--</strong></div>
-      <div class="dash-card"><span>GAMES COMPLETED</span><strong>0 / 3</strong></div>
-      <div class="dash-card"><span>CURRENT RANK</span><strong>START TRAINING</strong></div>
+      <div class="dash-card"><span>AVERAGE SCORE</span><strong id="overallScore">--</strong></div>
+      <div class="dash-card"><span>GAMES COMPLETED</span><strong id="gamesCompleted">0 / 3</strong></div>
+      <div class="dash-card"><span>CURRENT RANK</span><strong id="currentRank">START TRAINING</strong></div>
     </section>
 
     <section class="game-library">
       <div class="section-title">TRAINING GAMES</div>
       <div class="games-grid">
-        <article class="game-card live">
+        <article class="game-card live" data-game="breach-lockdown">
           <div class="game-icon">🛡</div>
           <div class="game-type">QUIZ CHALLENGE</div>
           <h2>Breach Lockdown</h2>
           <p>Answer cybersecurity questions and stop the breach before ransomware takes over.</p>
+          <div class="game-score" id="score-breach-lockdown">No score yet</div>
           <div class="game-meta"><span>Awareness</span><span>Quiz</span><span>Beginner</span></div>
-          <a class="launch-btn" href="https://sccyber.github.io/breach-lockdown/" target="_blank" rel="noopener">Launch Game</a>
+          <a class="launch-btn" href="https://sccyber.github.io/breach-lockdown/?portal=1" target="_blank" rel="noopener">Launch Game</a>
         </article>
 
-        <article class="game-card live">
+        <article class="game-card live" data-game="brute-force-lockdown">
           <div class="game-icon">🔐</div>
           <div class="game-type">DEFENCE SIMULATION</div>
           <h2>Brute Force Lockdown</h2>
           <p>Defend the network using lockout, MFA and isolation before attackers spread across the estate.</p>
+          <div class="game-score" id="score-brute-force-lockdown">No score yet</div>
           <div class="game-meta"><span>Defence</span><span>Simulation</span><span>Intermediate</span></div>
-          <a class="launch-btn" href="https://sccyber.github.io/brute-force-breach/" target="_blank" rel="noopener">Launch Game</a>
+          <a class="launch-btn" href="https://sccyber.github.io/brute-force-breach/?portal=1" target="_blank" rel="noopener">Launch Game</a>
         </article>
 
-        <article class="game-card live">
+        <article class="game-card live" data-game="phishing-frenzy">
           <div class="game-icon">🎣</div>
           <div class="game-type">EMAIL INVESTIGATION</div>
           <h2>Phishing Frenzy</h2>
           <p>Investigate emails, spot phishing indicators and climb the cyber career ladder.</p>
+          <div class="game-score" id="score-phishing-frenzy">No score yet</div>
           <div class="game-meta"><span>Phishing</span><span>Investigation</span><span>Timed</span></div>
-          <a class="launch-btn" href="https://sccyber.github.io/phishing-frenzy/" target="_blank" rel="noopener">Launch Game</a>
+          <a class="launch-btn" href="https://sccyber.github.io/phishing-frenzy/?portal=1" target="_blank" rel="noopener">Launch Game</a>
         </article>
+      </div>
+    </section>
+
+    <section class="score-entry">
+      <div class="section-title">MANUAL SCORE ENTRY V1</div>
+      <p>Until the games are patched to send scores automatically, add scores here after each game.</p>
+      <div class="score-form">
+        <select id="manualGame">
+          <option value="breach-lockdown">Breach Lockdown</option>
+          <option value="brute-force-lockdown">Brute Force Lockdown</option>
+          <option value="phishing-frenzy">Phishing Frenzy</option>
+        </select>
+        <input id="manualScore" type="number" placeholder="Score">
+        <button id="saveScoreBtn" class="small-btn">Save Score</button>
       </div>
     </section>
 
@@ -67,11 +101,6 @@
         <div class="coming-card">Deepfake Detective</div>
         <div class="coming-card">Ransomware Rescue</div>
       </div>
-    </section>
-
-    <section class="future-panel">
-      <h2>Future Portal Features</h2>
-      <p>Unique learner login, saved scores, average performance, certificates, leaderboards and manager reporting.</p>
     </section>
   </main>
 
