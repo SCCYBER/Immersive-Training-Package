@@ -25,15 +25,18 @@ const activeGameTitle = document.getElementById("activeGameTitle");
 const backBtn = document.getElementById("backBtn");
 
 function loadProfile(){
-  return JSON.parse(localStorage.getItem(storageKey) || "null");
+  const profile = JSON.parse(localStorage.getItem(storageKey) || "null");
+  if(profile && !profile.attempts) profile.attempts = [];
+  return profile;
 }
 
 function saveProfile(profile){
+  if(!profile.attempts) profile.attempts = [];
   localStorage.setItem(storageKey, JSON.stringify(profile));
 }
 
 function createProfile(name){
-  return { name, scores: {}, createdAt: new Date().toISOString() };
+  return { name, scores: {}, attempts: [], createdAt: new Date().toISOString() };
 }
 
 function getRank(avg){
@@ -44,6 +47,41 @@ function getRank(avg){
   if(avg >= 900) return "ANALYST";
   if(avg >= 400) return "TRAINEE";
   return "INTERN";
+}
+
+function attemptsFor(profile, gameKey){
+  return (profile.attempts || []).filter(a => a.game === gameKey);
+}
+
+function bestScore(attempts){
+  return attempts.length ? Math.max(...attempts.map(a => Number(a.score || 0))) : 0;
+}
+
+function latestScore(attempts){
+  return attempts.length ? Number(attempts[attempts.length - 1].score || 0) : 0;
+}
+
+function averageScore(attempts){
+  return attempts.length ? Math.round(attempts.reduce((sum, a) => sum + Number(a.score || 0), 0) / attempts.length) : 0;
+}
+
+function addAttempt(game, score, source = "manual"){
+  let profile = loadProfile();
+  if(!profile) profile = createProfile("Guest Learner");
+
+  const attempt = {
+    game,
+    score: Number(score),
+    source,
+    completed: true,
+    createdAt: new Date().toISOString()
+  };
+
+  profile.attempts.push(attempt);
+  const gameAttempts = attemptsFor(profile, game);
+  profile.scores[game] = bestScore(gameAttempts);
+  saveProfile(profile);
+  updateDashboard();
 }
 
 function updateDashboard(){
@@ -57,7 +95,7 @@ function updateDashboard(){
     currentRank.textContent = "START TRAINING";
     games.forEach(game => {
       const el = document.getElementById(`score-${game.key}`);
-      if(el) el.textContent = "No score yet";
+      if(el) el.textContent = "No attempts yet";
     });
     return;
   }
@@ -66,9 +104,10 @@ function updateDashboard(){
   learnerPanel.classList.remove("hidden");
   learnerDisplay.textContent = profile.name;
 
-  const scoreValues = games.map(game => Number(profile.scores[game.key] || 0)).filter(score => score > 0);
-  const completed = scoreValues.length;
-  const average = completed ? Math.round(scoreValues.reduce((a,b) => a + b, 0) / completed) : 0;
+  const completedGames = games.filter(game => attemptsFor(profile, game.key).length > 0);
+  const bestScores = completedGames.map(game => bestScore(attemptsFor(profile, game.key)));
+  const completed = completedGames.length;
+  const average = completed ? Math.round(bestScores.reduce((a,b) => a + b, 0) / completed) : 0;
 
   overallScore.textContent = completed ? average : "--";
   gamesCompleted.textContent = `${completed} / ${games.length}`;
@@ -76,8 +115,13 @@ function updateDashboard(){
 
   games.forEach(game => {
     const el = document.getElementById(`score-${game.key}`);
-    const score = profile.scores[game.key];
-    if(el) el.textContent = score ? `Best score: ${score}` : "No score yet";
+    const gameAttempts = attemptsFor(profile, game.key);
+    if(!el) return;
+    if(!gameAttempts.length){
+      el.textContent = "No attempts yet";
+      return;
+    }
+    el.innerHTML = `Best: ${bestScore(gameAttempts)}<br>Latest: ${latestScore(gameAttempts)}<br>Attempts: ${gameAttempts.length}<br>Average: ${averageScore(gameAttempts)}`;
   });
 }
 
@@ -87,11 +131,8 @@ function saveManualScore(){
   const game = manualGame.value;
   const score = Number(manualScore.value);
   if(!score || score < 0){ alert("Enter a valid score."); return; }
-  const existing = Number(profile.scores[game] || 0);
-  profile.scores[game] = Math.max(existing, score);
-  saveProfile(profile);
+  addAttempt(game, score, "manual");
   manualScore.value = "";
-  updateDashboard();
 }
 
 function openGame(title, url){
@@ -115,13 +156,19 @@ function receiveScoreFromUrl(){
   const game = params.get("game");
   const score = Number(params.get("score"));
   if(!game || !score) return;
-  let profile = loadProfile();
-  if(!profile) profile = createProfile("Guest Learner");
-  const existing = Number(profile.scores[game] || 0);
-  profile.scores[game] = Math.max(existing, score);
-  saveProfile(profile);
+  addAttempt(game, score, "url");
   window.history.replaceState({}, document.title, window.location.pathname);
 }
+
+window.addEventListener("message", (event) => {
+  const data = event.data || {};
+  if(data.type === "SCCYBER_GAME_ATTEMPT" && data.game && data.score){
+    addAttempt(data.game, Number(data.score), "game");
+  }
+  if(data.type === "SCCYBER_RETURN_TO_DASHBOARD"){
+    closeGame();
+  }
+});
 
 loginBtn.addEventListener("click", () => {
   const name = learnerName.value.trim();
