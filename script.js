@@ -5,8 +5,7 @@ const games = [
 ];
 
 const storageKey = "sccyberPortalProfile";
-let attemptReceived = false;
-let closingGame = false;
+let currentGameKey = null;
 
 const loginPanel = document.getElementById("loginPanel");
 const learnerPanel = document.getElementById("learnerPanel");
@@ -34,8 +33,20 @@ function saveProfile(profile){
   localStorage.setItem(storageKey, JSON.stringify(profile));
 }
 
+function isFullName(name){
+  return name.trim().split(/\s+/).length >= 2;
+}
+
 function createProfile(name){
-  return { name, scores: {}, attempts: [], createdAt: new Date().toISOString() };
+  const parts = name.trim().split(/\s+/);
+  return {
+    name: name.trim(),
+    firstName: parts[0],
+    surname: parts.slice(1).join(" "),
+    scores: {},
+    attempts: [],
+    createdAt: new Date().toISOString()
+  };
 }
 
 function getRank(avg){
@@ -66,13 +77,14 @@ function averageScore(attempts){
 
 function addAttemptPayload(data){
   let profile = loadProfile();
-  if(!profile) profile = createProfile("Guest Learner");
+  if(!profile || !isFullName(profile.name || "")) return;
 
-  const game = data.game;
+  const game = data.game || currentGameKey;
   const score = Number(data.score || 0);
   if(!game) return;
 
   const attempt = {
+    learnerName: profile.name,
     game,
     score,
     source: data.source || "game",
@@ -87,6 +99,15 @@ function addAttemptPayload(data){
     createdAt: data.createdAt || new Date().toISOString()
   };
 
+  const duplicate = profile.attempts.some(a =>
+    a.game === attempt.game &&
+    a.score === attempt.score &&
+    a.answered === attempt.answered &&
+    Math.abs(new Date(a.createdAt).getTime() - new Date(attempt.createdAt).getTime()) < 1500
+  );
+
+  if(duplicate) return;
+
   profile.attempts.push(attempt);
   const gameAttempts = attemptsFor(profile, game);
   profile.scores[game] = bestScore(gameAttempts);
@@ -97,15 +118,15 @@ function addAttemptPayload(data){
 function updateDashboard(){
   const profile = loadProfile();
 
-  if(!profile){
+  if(!profile || !isFullName(profile.name || "")){
     loginPanel.classList.remove("hidden");
     learnerPanel.classList.add("hidden");
     overallScore.textContent = "--";
     gamesCompleted.textContent = "0 / 3";
-    currentRank.textContent = "START TRAINING";
+    currentRank.textContent = "ENTER FULL NAME";
     games.forEach(game => {
       const el = document.getElementById(`score-${game.key}`);
-      if(el) el.textContent = "No attempts yet";
+      if(el) el.textContent = "Login required";
     });
     return;
   }
@@ -135,9 +156,15 @@ function updateDashboard(){
   });
 }
 
-function openGame(title, url){
-  attemptReceived = false;
-  closingGame = false;
+function openGame(title, url, gameKey){
+  const profile = loadProfile();
+  if(!profile || !isFullName(profile.name || "")){
+    alert("Enter your first name and surname before starting a game.");
+    learnerName.focus();
+    return;
+  }
+
+  currentGameKey = gameKey;
   activeGameTitle.textContent = title;
   gameFrame.src = url;
   dashboardView.classList.add("hidden");
@@ -147,6 +174,7 @@ function openGame(title, url){
 
 function closeGame(){
   gameFrame.src = "";
+  currentGameKey = null;
   gameView.classList.add("hidden");
   dashboardView.classList.remove("hidden");
   updateDashboard();
@@ -154,27 +182,15 @@ function closeGame(){
 }
 
 function requestAttemptAndClose(){
-  closingGame = true;
-  attemptReceived = false;
   try {
     gameFrame.contentWindow.postMessage({ type: "SCCYBER_REQUEST_ATTEMPT" }, "*");
   } catch(e) {}
-  setTimeout(closeGame, 350);
-}
-
-function receiveScoreFromUrl(){
-  const params = new URLSearchParams(window.location.search);
-  const game = params.get("game");
-  const score = Number(params.get("score"));
-  if(!game || !score) return;
-  addAttemptPayload({ game, score, source: "url" });
-  window.history.replaceState({}, document.title, window.location.pathname);
+  setTimeout(closeGame, 650);
 }
 
 window.addEventListener("message", (event) => {
   const data = event.data || {};
-  if(data.type === "SCCYBER_GAME_ATTEMPT" && data.game){
-    attemptReceived = true;
+  if(data.type === "SCCYBER_GAME_ATTEMPT"){
     addAttemptPayload(data);
   }
   if(data.type === "SCCYBER_RETURN_TO_DASHBOARD"){
@@ -184,7 +200,10 @@ window.addEventListener("message", (event) => {
 
 loginBtn.addEventListener("click", () => {
   const name = learnerName.value.trim();
-  if(!name){ alert("Enter a learner name."); return; }
+  if(!isFullName(name)){
+    alert("Please enter your first name and surname.");
+    return;
+  }
   saveProfile(createProfile(name));
   updateDashboard();
 });
@@ -198,8 +217,7 @@ resetBtn.addEventListener("click", () => {
 
 backBtn.addEventListener("click", requestAttemptAndClose);
 document.querySelectorAll(".play-btn").forEach(btn => {
-  btn.addEventListener("click", () => openGame(btn.dataset.title, btn.dataset.url));
+  btn.addEventListener("click", () => openGame(btn.dataset.title, btn.dataset.url, btn.closest(".game-card").dataset.game));
 });
 
-receiveScoreFromUrl();
 updateDashboard();
