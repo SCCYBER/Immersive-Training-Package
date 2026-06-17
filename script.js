@@ -18,6 +18,11 @@ const currentRank = document.getElementById("currentRank");
 const manualGame = document.getElementById("manualGame");
 const manualScore = document.getElementById("manualScore");
 const saveScoreBtn = document.getElementById("saveScoreBtn");
+const dashboardView = document.getElementById("dashboardView");
+const gameView = document.getElementById("gameView");
+const gameFrame = document.getElementById("gameFrame");
+const activeGameTitle = document.getElementById("activeGameTitle");
+const backBtn = document.getElementById("backBtn");
 
 function loadProfile(){
   return JSON.parse(localStorage.getItem(storageKey) || "null");
@@ -28,11 +33,7 @@ function saveProfile(profile){
 }
 
 function createProfile(name){
-  return {
-    name,
-    scores: {},
-    createdAt: new Date().toISOString()
-  };
+  return { name, scores: {}, createdAt: new Date().toISOString() };
 }
 
 function getRank(avg){
@@ -65,10 +66,7 @@ function updateDashboard(){
   learnerPanel.classList.remove("hidden");
   learnerDisplay.textContent = profile.name;
 
-  const scoreValues = games
-    .map(game => Number(profile.scores[game.key] || 0))
-    .filter(score => score > 0);
-
+  const scoreValues = games.map(game => Number(profile.scores[game.key] || 0)).filter(score => score > 0);
   const completed = scoreValues.length;
   const average = completed ? Math.round(scoreValues.reduce((a,b) => a + b, 0) / completed) : 0;
 
@@ -85,19 +83,10 @@ function updateDashboard(){
 
 function saveManualScore(){
   const profile = loadProfile();
-  if(!profile){
-    alert("Create a learner profile first.");
-    return;
-  }
-
+  if(!profile){ alert("Create a learner profile first."); return; }
   const game = manualGame.value;
   const score = Number(manualScore.value);
-
-  if(!score || score < 0){
-    alert("Enter a valid score.");
-    return;
-  }
-
+  if(!score || score < 0){ alert("Enter a valid score."); return; }
   const existing = Number(profile.scores[game] || 0);
   profile.scores[game] = Math.max(existing, score);
   saveProfile(profile);
@@ -105,17 +94,29 @@ function saveManualScore(){
   updateDashboard();
 }
 
+function openGame(title, url){
+  activeGameTitle.textContent = title;
+  gameFrame.src = url;
+  dashboardView.classList.add("hidden");
+  gameView.classList.remove("hidden");
+  window.scrollTo(0,0);
+}
+
+function closeGame(){
+  gameFrame.src = "";
+  gameView.classList.add("hidden");
+  dashboardView.classList.remove("hidden");
+  updateDashboard();
+  window.scrollTo(0,0);
+}
+
 function receiveScoreFromUrl(){
   const params = new URLSearchParams(window.location.search);
   const game = params.get("game");
   const score = Number(params.get("score"));
   if(!game || !score) return;
-
   let profile = loadProfile();
-  if(!profile){
-    profile = createProfile("Guest Learner");
-  }
-
+  if(!profile) profile = createProfile("Guest Learner");
   const existing = Number(profile.scores[game] || 0);
   profile.scores[game] = Math.max(existing, score);
   saveProfile(profile);
@@ -124,10 +125,7 @@ function receiveScoreFromUrl(){
 
 loginBtn.addEventListener("click", () => {
   const name = learnerName.value.trim();
-  if(!name){
-    alert("Enter a learner name.");
-    return;
-  }
+  if(!name){ alert("Enter a learner name."); return; }
   saveProfile(createProfile(name));
   updateDashboard();
 });
@@ -140,6 +138,10 @@ resetBtn.addEventListener("click", () => {
 });
 
 saveScoreBtn.addEventListener("click", saveManualScore);
+backBtn.addEventListener("click", closeGame);
+document.querySelectorAll(".play-btn").forEach(btn => {
+  btn.addEventListener("click", () => openGame(btn.dataset.title, btn.dataset.url));
+});
 
 receiveScoreFromUrl();
 updateDashboard();
