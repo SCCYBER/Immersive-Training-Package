@@ -21,7 +21,6 @@
         <h1>Login</h1>
         <p>Enter your assigned learner credentials to access your training dashboard.</p>
       </header>
-
       <section class="login-panel auth-panel">
         <div class="section-title">LEARNER LOGIN</div>
         <p>Use the username and password provided by your trainer or organisation.</p>
@@ -60,7 +59,10 @@
           <strong id="learnerDisplay">Learner</strong>
           <div id="departmentDisplay" style="color:#b9a8d5;margin-top:6px;">Department / Role</div>
         </div>
-        <button id="adminBtn" class="small-btn hidden" type="button">Admin Dashboard</button>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button id="adminBtn" class="small-btn hidden" type="button">Admin Dashboard</button>
+          <button id="logoutBtn" class="small-btn" type="button">Log Out</button>
+        </div>
       </section>
 
       <section class="dashboard-preview">
@@ -86,28 +88,28 @@
             <h2>Breach Lockdown</h2>
             <p>Answer cybersecurity questions and stop the breach before ransomware takes over.</p>
             <div class="game-score" id="score-breach-lockdown">No score yet</div>
-            <div class="game-meta"><span>Easy</span><span>Awareness</span><span>Quiz</span></div>
+            <div class="game-meta"><span>Free</span><span>Easy</span><span>Awareness</span></div>
             <button class="launch-btn play-btn" data-title="Breach Lockdown" data-url="https://sccyber.github.io/breach-lockdown/?portal=1">Play</button>
           </article>
 
-          <article class="game-card live" data-game="brute-force-lockdown">
+          <article class="game-card live" data-game="brute-force-lockdown" data-premium="true">
             <div class="game-icon">🔐</div>
-            <div class="game-type">DEFENCE SIMULATION</div>
+            <div class="game-type">PREMIUM MODULE</div>
             <h2>Brute Force Lockdown</h2>
             <p>Defend the network using lockout, MFA and isolation before attackers spread across the estate.</p>
-            <div class="game-score" id="score-brute-force-lockdown">No score yet</div>
-            <div class="game-meta"><span>Advanced</span><span>Defence</span><span>Simulation</span></div>
-            <button class="launch-btn play-btn" data-title="Brute Force Lockdown" data-url="https://sccyber.github.io/brute-force-breach/?portal=1">Play</button>
+            <div class="game-score" id="score-brute-force-lockdown">Premium access required</div>
+            <div class="game-meta"><span>Premium</span><span>Advanced</span><span>Defence</span></div>
+            <button class="launch-btn play-btn premium-btn" data-title="Brute Force Lockdown" data-url="https://sccyber.github.io/brute-force-breach/?portal=1">Upgrade to Play</button>
           </article>
 
-          <article class="game-card live" data-game="phishing-frenzy">
+          <article class="game-card live" data-game="phishing-frenzy" data-premium="true">
             <div class="game-icon">🎣</div>
-            <div class="game-type">EMAIL INVESTIGATION</div>
+            <div class="game-type">PREMIUM MODULE</div>
             <h2>Phishing Frenzy</h2>
             <p>Investigate emails, spot phishing indicators and climb the cyber career ladder.</p>
-            <div class="game-score" id="score-phishing-frenzy">No score yet</div>
-            <div class="game-meta"><span>Intermediate</span><span>Phishing</span><span>Timed</span></div>
-            <button class="launch-btn play-btn" data-title="Phishing Frenzy" data-url="https://sccyber.github.io/phishing-frenzy/?portal=1">Play</button>
+            <div class="game-score" id="score-phishing-frenzy">Premium access required</div>
+            <div class="game-meta"><span>Premium</span><span>Intermediate</span><span>Phishing</span></div>
+            <button class="launch-btn play-btn premium-btn" data-title="Phishing Frenzy" data-url="https://sccyber.github.io/phishing-frenzy/?portal=1">Upgrade to Play</button>
           </article>
         </div>
       </section>
@@ -116,56 +118,24 @@
     <section class="admin-view hidden" id="adminView">
       <div class="game-topbar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(8,2,20,.95);border:1px solid rgba(89,255,157,.18);border-radius:14px;padding:12px;margin-bottom:10px;">
         <button id="adminBackBtn" class="small-btn">Back to Dashboard</button>
-        <div>
-          <div class="section-title">ADMIN DASHBOARD</div>
-          <strong style="display:block;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:12px;line-height:1.6;margin-top:4px;">SCCYBER Control Panel</strong>
-        </div>
+        <div><div class="section-title">ADMIN DASHBOARD</div><strong style="display:block;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:12px;line-height:1.6;margin-top:4px;">SCCYBER Control Panel</strong></div>
       </div>
-
       <section class="report-terminal">
-        <div class="report-header">
-          <div>
-            <div class="section-title">COMPANIES</div>
-            <p>Manage organisations, licences, learners, premium access and billing status.</p>
-          </div>
-          <button id="refreshAdminBtn" class="launch-btn">Refresh</button>
-        </div>
-        <div class="report-grid">
-          <div class="report-card"><span>Companies</span><strong id="adminCompanyCount">0</strong></div>
-          <div class="report-card"><span>Total Licences</span><strong id="adminLicenceCount">0</strong></div>
-          <div class="report-card"><span>Learners</span><strong id="adminLearnerCount">0</strong></div>
-        </div>
+        <div class="report-header"><div><div class="section-title">COMPANIES</div><p>Manage organisations, licences, learners, premium access and billing status.</p></div><button id="refreshAdminBtn" class="launch-btn">Refresh</button></div>
+        <div class="report-grid"><div class="report-card"><span>Companies</span><strong id="adminCompanyCount">0</strong></div><div class="report-card"><span>Total Licences</span><strong id="adminLicenceCount">0</strong></div><div class="report-card"><span>Learners</span><strong id="adminLearnerCount">0</strong></div></div>
         <div class="report-output" id="adminOutput">Admin data will appear here once Supabase policies are enabled.</div>
       </section>
-
-      <section class="report-terminal">
-        <div class="section-title">BILLING & PREMIUM</div>
-        <div class="report-output" id="billingOutput">Billing status and PayPal payment records will appear here.</div>
-      </section>
+      <section class="report-terminal"><div class="section-title">BILLING & PREMIUM</div><div class="report-output" id="billingOutput">Billing status and PayPal payment records will appear here.</div></section>
     </section>
 
     <section class="report-view hidden" id="reportView">
       <div class="game-topbar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(8,2,20,.95);border:1px solid rgba(89,255,157,.18);border-radius:14px;padding:12px;margin-bottom:10px;">
         <button id="reportBackBtn" class="small-btn">Back to Dashboard</button>
-        <div>
-          <div class="section-title">REPORT TERMINAL</div>
-          <strong style="display:block;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:12px;line-height:1.6;margin-top:4px;">Learner Report</strong>
-        </div>
+        <div><div class="section-title">REPORT TERMINAL</div><strong style="display:block;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:12px;line-height:1.6;margin-top:4px;">Learner Report</strong></div>
       </div>
-
       <section class="report-terminal" id="reportTerminal">
-        <div class="report-header">
-          <div>
-            <div class="section-title">PERFORMANCE REPORT</div>
-            <p>Live learner performance report generated from completed attempts.</p>
-          </div>
-          <div class="report-badge" id="reportBadge">AWAITING DATA</div>
-        </div>
-        <div class="report-grid">
-          <div class="report-card"><span>Progress</span><strong id="reportProgress">0 / 3</strong></div>
-          <div class="report-card"><span>Total Attempts</span><strong id="reportAttempts">0</strong></div>
-          <div class="report-card"><span>Pass Mark</span><strong>80%</strong></div>
-        </div>
+        <div class="report-header"><div><div class="section-title">PERFORMANCE REPORT</div><p>Live learner performance report generated from completed attempts.</p></div><div class="report-badge" id="reportBadge">AWAITING DATA</div></div>
+        <div class="report-grid"><div class="report-card"><span>Progress</span><strong id="reportProgress">0 / 3</strong></div><div class="report-card"><span>Total Attempts</span><strong id="reportAttempts">0</strong></div><div class="report-card"><span>Pass Mark</span><strong>80%</strong></div></div>
         <div class="report-output" id="reportOutput">Complete at least one module to generate report data.</div>
       </section>
     </section>
@@ -173,10 +143,7 @@
     <section class="game-view hidden" id="gameView" style="min-height:700px;">
       <div class="game-topbar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(8,2,20,.95);border:1px solid rgba(89,255,157,.18);border-radius:14px;padding:12px;margin-bottom:10px;">
         <button id="backBtn" class="small-btn">Back to Dashboard</button>
-        <div>
-          <div class="section-title">NOW PLAYING</div>
-          <strong id="activeGameTitle" style="display:block;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:12px;line-height:1.6;margin-top:4px;">Game</strong>
-        </div>
+        <div><div class="section-title">NOW PLAYING</div><strong id="activeGameTitle" style="display:block;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:12px;line-height:1.6;margin-top:4px;">Game</strong></div>
       </div>
       <iframe id="gameFrame" title="SCCYBER Training Game" style="width:100%;height:760px;border:1px solid rgba(169,76,255,.35);border-radius:16px;background:#090216;"></iframe>
     </section>
