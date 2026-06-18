@@ -1,4 +1,4 @@
-const games=[{key:"breach-lockdown",name:"Breach Lockdown",tier:"Easy",focus:"Cyber awareness and core security decisions"},{key:"brute-force-lockdown",name:"Brute Force Lockdown",tier:"Advanced",focus:"Incident response and containment"},{key:"phishing-frenzy",name:"Phishing Frenzy",tier:"Intermediate",focus:"Email investigation and phishing detection"}];
+const games=[{key:"breach-lockdown",name:"Breach Lockdown",tier:"Easy",focus:"Cyber awareness"},{key:"brute-force-lockdown",name:"Brute Force Lockdown",tier:"Advanced",focus:"Incident response"},{key:"phishing-frenzy",name:"Phishing Frenzy",tier:"Intermediate",focus:"Phishing detection"}];
 const storageKey="sccyberPortalProfile";
 const PASS_MARK=80;
 let currentGameKey=null;
@@ -19,6 +19,9 @@ const reportProgress=document.getElementById("reportProgress");
 const reportAttempts=document.getElementById("reportAttempts");
 const reportOutput=document.getElementById("reportOutput");
 const dashboardView=document.getElementById("dashboardView");
+const reportView=document.getElementById("reportView");
+const viewReportBtn=document.getElementById("viewReportBtn");
+const reportBackBtn=document.getElementById("reportBackBtn");
 const gameView=document.getElementById("gameView");
 const gameFrame=document.getElementById("gameFrame");
 const activeGameTitle=document.getElementById("activeGameTitle");
@@ -72,38 +75,24 @@ function updateReport(profile,summary){
   reportAttempts.textContent=summary.totalAttempts;
   reportBadge.textContent=summary.status;
 
-  if(summary.totalAttempts===0){
-    reportOutput.innerHTML="Complete at least one module to generate report data.";
-    return;
-  }
+  if(summary.totalAttempts===0){reportOutput.innerHTML="Complete at least one module to generate report data.";return;}
 
-  const strengths=[];
-  const improvements=[];
-
-  const gameRows=games.map(g=>{
+  const lines=games.map(g=>{
     const attempts=attemptsFor(profile,g.key);
-    if(!attempts.length){
-      improvements.push(`${g.name} has not been completed yet.`);
-      return `<div class="report-line"><strong>${g.name}</strong><span>${g.tier}</span><span>Not started</span><span>Attempts: 0</span></div>`;
-    }
-    const best=bestAccuracy(attempts);
-    const latest=latestAccuracy(attempts);
-    const avg=averageAccuracy(attempts);
-    if(best>=80) strengths.push(`${g.name}: strong performance at ${best}%.`);
-    if(best<80) improvements.push(`${g.name}: needs another attempt to reach the 80% pass mark.`);
-    return `<div class="report-line"><strong>${g.name}</strong><span>${g.tier}</span><span>Best: ${best}% · Latest: ${latest}% · Average: ${avg}%</span><span>Attempts: ${attempts.length}</span></div>`;
+    if(!attempts.length)return `<div class="report-line"><strong>${g.name}</strong><span>${g.tier}</span><span>Not started</span><span>Attempts: 0</span></div>`;
+    return `<div class="report-line"><strong>${g.name}</strong><span>${g.tier}</span><span>Best ${bestAccuracy(attempts)}% | Latest ${latestAccuracy(attempts)}% | Avg ${averageAccuracy(attempts)}%</span><span>Attempts: ${attempts.length}</span></div>`;
   }).join("");
 
-  let recommendation="Continue completing the remaining modules before final grading.";
-  if(summary.completed===games.length&&summary.avg>=PASS_MARK) recommendation="Training standard met. Learner has passed the current module set.";
-  if(summary.completed===games.length&&summary.avg<PASS_MARK) recommendation="Retake the lowest scoring modules until the overall average reaches 80% or higher.";
+  const weakGames=games.filter(g=>attemptsFor(profile,g.key).length&&bestAccuracy(attemptsFor(profile,g.key))<PASS_MARK).map(g=>g.name);
+  const missingGames=games.filter(g=>!attemptsFor(profile,g.key).length).map(g=>g.name);
+  let recommendation="Keep completing modules. Final PASS / FAIL appears when all modules are complete.";
+  if(missingGames.length)recommendation=`Next: complete ${missingGames[0]}.`;
+  if(summary.completed===games.length&&summary.avg>=PASS_MARK)recommendation="Passed. Training standard met.";
+  if(summary.completed===games.length&&summary.avg<PASS_MARK)recommendation=`Retake: ${weakGames[0]||"lowest scoring module"}. Overall average must reach 80%.`;
 
   reportOutput.innerHTML=`
     <div class="report-section"><div class="report-section-title">Learner</div><p>${profile.name} · ${profile.departmentRole}</p></div>
-    <div class="report-section"><div class="report-section-title">Overall</div><p>Average: ${summary.completed?summary.avg+"%":"Not available yet"}<br>Status: ${summary.status}<br>Total attempts: ${summary.totalAttempts}</p></div>
-    <div class="report-section"><div class="report-section-title">Module Breakdown</div>${gameRows}</div>
-    <div class="report-section"><div class="report-section-title">Strengths</div><p>${strengths.length?strengths.join("<br>"):"No clear strengths yet. Complete more modules to build a stronger picture."}</p></div>
-    <div class="report-section"><div class="report-section-title">Areas To Improve</div><p>${improvements.length?improvements.join("<br>"):"No urgent improvement areas identified from current results."}</p></div>
+    <div class="report-section"><div class="report-section-title">Module Breakdown</div>${lines}</div>
     <div class="report-section"><div class="report-section-title">Recommendation</div><p>${recommendation}</p></div>
   `;
 }
@@ -125,12 +114,16 @@ function updateDashboard(){
   updateReport(profile,summary);
 }
 
-function openGame(title,url,gameKey){const profile=loadProfile();if(!validProfile(profile)){alert("Enter your first name, surname and department/role before starting a game.");firstNameInput.focus();return;}currentGameKey=gameKey;activeGameTitle.textContent=title;gameFrame.src=url;dashboardView.classList.add("hidden");gameView.classList.remove("hidden");window.scrollTo(0,0);}
+function openReport(){const profile=loadProfile();if(!validProfile(profile)){alert("Enter your learner profile before viewing the report.");firstNameInput.focus();return;}updateDashboard();dashboardView.classList.add("hidden");gameView.classList.add("hidden");reportView.classList.remove("hidden");window.scrollTo(0,0);}
+function closeReport(){reportView.classList.add("hidden");dashboardView.classList.remove("hidden");updateDashboard();window.scrollTo(0,0);}
+function openGame(title,url,gameKey){const profile=loadProfile();if(!validProfile(profile)){alert("Enter your first name, surname and department/role before starting a game.");firstNameInput.focus();return;}currentGameKey=gameKey;activeGameTitle.textContent=title;gameFrame.src=url;dashboardView.classList.add("hidden");reportView.classList.add("hidden");gameView.classList.remove("hidden");window.scrollTo(0,0);}
 function closeGame(){gameFrame.src="";currentGameKey=null;gameView.classList.add("hidden");dashboardView.classList.remove("hidden");updateDashboard();window.scrollTo(0,0);}
 function requestAttemptAndClose(){try{gameFrame.contentWindow.postMessage({type:"SCCYBER_REQUEST_ATTEMPT"},"*");}catch(e){}setTimeout(closeGame,650);}
 
 window.addEventListener("message",event=>{const data=event.data||{};if(data.type==="SCCYBER_GAME_ATTEMPT")addAttemptPayload(data);if(data.type==="SCCYBER_RETURN_TO_DASHBOARD")requestAttemptAndClose();});
 loginBtn.addEventListener("click",()=>{const firstName=firstNameInput.value.trim();const surname=surnameInput.value.trim();const departmentRole=departmentRoleInput.value.trim();if(!firstName||!surname||!departmentRole){alert("Please enter first name, surname and department/role.");return;}saveProfile(createProfile(firstName,surname,departmentRole));updateDashboard();});
 backBtn.addEventListener("click",requestAttemptAndClose);
+viewReportBtn.addEventListener("click",openReport);
+reportBackBtn.addEventListener("click",closeReport);
 document.querySelectorAll(".play-btn").forEach(btn=>btn.addEventListener("click",()=>openGame(btn.dataset.title,btn.dataset.url,btn.closest(".game-card").dataset.game)));
 updateDashboard();
