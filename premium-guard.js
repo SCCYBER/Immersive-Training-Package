@@ -23,9 +23,16 @@ async function syncPremiumAccessFromDatabase() {
   } catch (e) {}
 }
 
-function clearLogoutMessage() {
+function cleanLoginMessages() {
   const authMessage = document.getElementById("authMessage");
   if (!authMessage) return;
+
+  const text = authMessage.textContent.trim().toLowerCase();
+
+  if (text.includes("supabase")) {
+    authMessage.textContent = "Secure login ready.";
+  }
+
   if (authMessage.textContent.trim() === "Logged out. Enter learner credentials.") {
     authMessage.textContent = "";
   }
@@ -34,8 +41,8 @@ function clearLogoutMessage() {
 window.addEventListener("load", () => {
   setTimeout(syncPremiumAccessFromDatabase, 800);
   setInterval(syncPremiumAccessFromDatabase, 30000);
-  setInterval(clearLogoutMessage, 300);
-  clearLogoutMessage();
+  setInterval(cleanLoginMessages, 300);
+  cleanLoginMessages();
 });
 
 document.addEventListener("click", event => {
