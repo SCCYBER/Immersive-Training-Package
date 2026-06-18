@@ -7,13 +7,7 @@ function addCloseButtonToSelectedReport() {
   const output = document.getElementById("adminSelectedReport");
   if (!output) return;
   if (!output.innerHTML || output.textContent.includes("Select a learner")) return;
-
-  const existingClose = output.querySelector(".close-selected-learner-report, .close-admin-report");
-  if (existingClose) {
-    existingClose.textContent = "Close Report";
-    existingClose.classList.add("close-selected-learner-report");
-    return;
-  }
+  if (output.querySelector(".close-selected-learner-report, .close-admin-report")) return;
 
   const wrapper = document.createElement("div");
   wrapper.style.display = "flex";
@@ -29,14 +23,14 @@ function addCloseButtonToSelectedReport() {
   output.prepend(wrapper);
 }
 
-const selectedReportObserver = new MutationObserver(addCloseButtonToSelectedReport);
 window.addEventListener("load", () => {
-  const target = document.getElementById("adminSelectedReport");
-  if (target) selectedReportObserver.observe(target, { childList: true, subtree: true });
-  addCloseButtonToSelectedReport();
+  setTimeout(addCloseButtonToSelectedReport, 500);
 });
 
 document.addEventListener("click", event => {
-  const btn = event.target.closest(".close-selected-learner-report, .close-admin-report");
-  if (btn) closeSelectedLearnerReport();
+  const viewBtn = event.target.closest(".admin-view-report");
+  if (viewBtn) setTimeout(addCloseButtonToSelectedReport, 100);
+
+  const closeBtn = event.target.closest(".close-selected-learner-report, .close-admin-report");
+  if (closeBtn) closeSelectedLearnerReport();
 });
