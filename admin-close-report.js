@@ -7,7 +7,13 @@ function addCloseButtonToSelectedReport() {
   const output = document.getElementById("adminSelectedReport");
   if (!output) return;
   if (!output.innerHTML || output.textContent.includes("Select a learner")) return;
-  if (output.querySelector(".close-selected-learner-report")) return;
+
+  const existingClose = output.querySelector(".close-selected-learner-report, .close-admin-report");
+  if (existingClose) {
+    existingClose.textContent = "Close Report";
+    existingClose.classList.add("close-selected-learner-report");
+    return;
+  }
 
   const wrapper = document.createElement("div");
   wrapper.style.display = "flex";
@@ -31,6 +37,6 @@ window.addEventListener("load", () => {
 });
 
 document.addEventListener("click", event => {
-  const btn = event.target.closest(".close-selected-learner-report");
+  const btn = event.target.closest(".close-selected-learner-report, .close-admin-report");
   if (btn) closeSelectedLearnerReport();
 });
