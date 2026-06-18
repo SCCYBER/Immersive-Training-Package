@@ -1,4 +1,4 @@
-const games=[{key:"breach-lockdown",name:"Breach Lockdown",tier:"Easy"},{key:"brute-force-lockdown",name:"Brute Force Lockdown",tier:"Advanced"},{key:"phishing-frenzy",name:"Phishing Frenzy",tier:"Intermediate"}];
+const games=[{key:"breach-lockdown",name:"Breach Lockdown",tier:"Easy",focus:"Cyber awareness and core security decisions"},{key:"brute-force-lockdown",name:"Brute Force Lockdown",tier:"Advanced",focus:"Incident response and containment"},{key:"phishing-frenzy",name:"Phishing Frenzy",tier:"Intermediate",focus:"Email investigation and phishing detection"}];
 const storageKey="sccyberPortalProfile";
 const PASS_MARK=80;
 let currentGameKey=null;
@@ -14,6 +14,10 @@ const departmentDisplay=document.getElementById("departmentDisplay");
 const overallScore=document.getElementById("overallScore");
 const gamesCompleted=document.getElementById("gamesCompleted");
 const trainingStatus=document.getElementById("trainingStatus");
+const reportBadge=document.getElementById("reportBadge");
+const reportProgress=document.getElementById("reportProgress");
+const reportAttempts=document.getElementById("reportAttempts");
+const reportOutput=document.getElementById("reportOutput");
 const dashboardView=document.getElementById("dashboardView");
 const gameView=document.getElementById("gameView");
 const gameFrame=document.getElementById("gameFrame");
@@ -47,22 +51,78 @@ function addAttemptPayload(data){
   updateDashboard();
 }
 
+function calculateSummary(profile){
+  const completedGames=games.filter(g=>attemptsFor(profile,g.key).length>0);
+  const completed=completedGames.length;
+  const bestAccuracies=completedGames.map(g=>bestAccuracy(attemptsFor(profile,g.key)));
+  const avg=completed?Math.round(bestAccuracies.reduce((a,b)=>a+b,0)/completed):0;
+  return{completed,avg,totalAttempts:(profile.attempts||[]).length,status:completed?trainingGrade(avg,completed):"START TRAINING"};
+}
+
+function updateReport(profile,summary){
+  if(!validProfile(profile)){
+    reportBadge.textContent="AWAITING PROFILE";
+    reportProgress.textContent=`0 / ${games.length}`;
+    reportAttempts.textContent="0";
+    reportOutput.textContent="Enter learner details to start generating report data.";
+    return;
+  }
+
+  reportProgress.textContent=`${summary.completed} / ${games.length}`;
+  reportAttempts.textContent=summary.totalAttempts;
+  reportBadge.textContent=summary.status;
+
+  if(summary.totalAttempts===0){
+    reportOutput.innerHTML="Complete at least one module to generate report data.";
+    return;
+  }
+
+  const strengths=[];
+  const improvements=[];
+
+  const gameRows=games.map(g=>{
+    const attempts=attemptsFor(profile,g.key);
+    if(!attempts.length){
+      improvements.push(`${g.name} has not been completed yet.`);
+      return `<div class="report-line"><strong>${g.name}</strong><span>${g.tier}</span><span>Not started</span><span>Attempts: 0</span></div>`;
+    }
+    const best=bestAccuracy(attempts);
+    const latest=latestAccuracy(attempts);
+    const avg=averageAccuracy(attempts);
+    if(best>=80) strengths.push(`${g.name}: strong performance at ${best}%.`);
+    if(best<80) improvements.push(`${g.name}: needs another attempt to reach the 80% pass mark.`);
+    return `<div class="report-line"><strong>${g.name}</strong><span>${g.tier}</span><span>Best: ${best}% · Latest: ${latest}% · Average: ${avg}%</span><span>Attempts: ${attempts.length}</span></div>`;
+  }).join("");
+
+  let recommendation="Continue completing the remaining modules before final grading.";
+  if(summary.completed===games.length&&summary.avg>=PASS_MARK) recommendation="Training standard met. Learner has passed the current module set.";
+  if(summary.completed===games.length&&summary.avg<PASS_MARK) recommendation="Retake the lowest scoring modules until the overall average reaches 80% or higher.";
+
+  reportOutput.innerHTML=`
+    <div class="report-section"><div class="report-section-title">Learner</div><p>${profile.name} · ${profile.departmentRole}</p></div>
+    <div class="report-section"><div class="report-section-title">Overall</div><p>Average: ${summary.completed?summary.avg+"%":"Not available yet"}<br>Status: ${summary.status}<br>Total attempts: ${summary.totalAttempts}</p></div>
+    <div class="report-section"><div class="report-section-title">Module Breakdown</div>${gameRows}</div>
+    <div class="report-section"><div class="report-section-title">Strengths</div><p>${strengths.length?strengths.join("<br>"):"No clear strengths yet. Complete more modules to build a stronger picture."}</p></div>
+    <div class="report-section"><div class="report-section-title">Areas To Improve</div><p>${improvements.length?improvements.join("<br>"):"No urgent improvement areas identified from current results."}</p></div>
+    <div class="report-section"><div class="report-section-title">Recommendation</div><p>${recommendation}</p></div>
+  `;
+}
+
 function updateDashboard(){
   const profile=loadProfile();
   if(!validProfile(profile)){
     loginPanel.classList.remove("hidden");learnerPanel.classList.add("hidden");overallScore.textContent="--";gamesCompleted.textContent=`0 / ${games.length}`;trainingStatus.textContent="ENTER PROFILE";
     games.forEach(g=>{const el=document.getElementById(`score-${g.key}`);if(el)el.textContent="Profile required";});
+    updateReport(profile,{completed:0,avg:0,totalAttempts:0,status:"ENTER PROFILE"});
     return;
   }
   loginPanel.classList.add("hidden");learnerPanel.classList.remove("hidden");learnerDisplay.textContent=profile.name;departmentDisplay.textContent=profile.departmentRole;
-  const completedGames=games.filter(g=>attemptsFor(profile,g.key).length>0);
-  const completed=completedGames.length;
-  const bestAccuracies=completedGames.map(g=>bestAccuracy(attemptsFor(profile,g.key)));
-  const avg=completed?Math.round(bestAccuracies.reduce((a,b)=>a+b,0)/completed):0;
-  overallScore.textContent=completed?`${avg}%`:"--";
-  gamesCompleted.textContent=`${completed} / ${games.length}`;
-  trainingStatus.textContent=completed?trainingGrade(avg,completed):"START TRAINING";
+  const summary=calculateSummary(profile);
+  overallScore.textContent=summary.completed?`${summary.avg}%`:"--";
+  gamesCompleted.textContent=`${summary.completed} / ${games.length}`;
+  trainingStatus.textContent=summary.completed?summary.status:"START TRAINING";
   games.forEach(g=>{const el=document.getElementById(`score-${g.key}`);const attempts=attemptsFor(profile,g.key);if(!el)return;if(!attempts.length){el.textContent="No attempts yet";return;}el.innerHTML=`Best: ${bestAccuracy(attempts)}%<br>Latest: ${latestAccuracy(attempts)}%<br>Attempts: ${attempts.length}<br>Average: ${averageAccuracy(attempts)}%`;});
+  updateReport(profile,summary);
 }
 
 function openGame(title,url,gameKey){const profile=loadProfile();if(!validProfile(profile)){alert("Enter your first name, surname and department/role before starting a game.");firstNameInput.focus();return;}currentGameKey=gameKey;activeGameTitle.textContent=title;gameFrame.src=url;dashboardView.classList.add("hidden");gameView.classList.remove("hidden");window.scrollTo(0,0);}
