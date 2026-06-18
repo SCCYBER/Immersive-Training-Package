@@ -23,9 +23,19 @@ async function syncPremiumAccessFromDatabase() {
   } catch (e) {}
 }
 
+function clearLogoutMessage() {
+  const authMessage = document.getElementById("authMessage");
+  if (!authMessage) return;
+  if (authMessage.textContent.trim() === "Logged out. Enter learner credentials.") {
+    authMessage.textContent = "";
+  }
+}
+
 window.addEventListener("load", () => {
   setTimeout(syncPremiumAccessFromDatabase, 800);
   setInterval(syncPremiumAccessFromDatabase, 30000);
+  setInterval(clearLogoutMessage, 300);
+  clearLogoutMessage();
 });
 
 document.addEventListener("click", event => {
