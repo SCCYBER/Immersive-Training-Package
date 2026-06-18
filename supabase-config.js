@@ -1,2 +1,2 @@
-window.SCCYBER_SUPABASE_URL = "PASTE_SUPABASE_PROJECT_URL_HERE";
-window.SCCYBER_SUPABASE_ANON_KEY = "PASTE_SUPABASE_ANON_PUBLIC_KEY_HERE";
+window.SCCYBER_SUPABASE_URL = "https://sjypdnwdoqogjwcwtpof.supabase.co";
+window.SCCYBER_SUPABASE_ANON_KEY = "sb_publishable_vjQhz9eikWmpAXALGqz4QA_B_4fxc4Q";
