@@ -23,10 +23,12 @@
       </header>
 
       <section class="login-panel" id="loginPanel">
-        <div class="section-title">LEARNER LOGIN</div>
-        <p>Create a local learner profile to track your training scores on this device.</p>
-        <div class="login-row">
-          <input id="learnerName" type="text" placeholder="Enter first name and surname">
+        <div class="section-title">LEARNER PROFILE</div>
+        <p>Enter your details before starting the training games.</p>
+        <div class="login-row profile-grid">
+          <input id="firstName" type="text" placeholder="First name">
+          <input id="surname" type="text" placeholder="Surname">
+          <input id="departmentRole" type="text" placeholder="Department / Role">
           <button id="loginBtn" class="launch-btn">Start Portal</button>
         </div>
       </section>
@@ -35,8 +37,8 @@
         <div>
           <div class="section-title">SIGNED IN AS</div>
           <strong id="learnerDisplay">Learner</strong>
+          <div id="departmentDisplay" style="color:#b9a8d5;margin-top:6px;">Department / Role</div>
         </div>
-        <button id="resetBtn" class="small-btn">Reset Scores</button>
       </section>
 
       <section class="dashboard-preview">
