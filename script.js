@@ -9,10 +9,12 @@ let currentGameKey = null;
 
 const loginPanel = document.getElementById("loginPanel");
 const learnerPanel = document.getElementById("learnerPanel");
-const learnerName = document.getElementById("learnerName");
+const firstNameInput = document.getElementById("firstName");
+const surnameInput = document.getElementById("surname");
+const departmentRoleInput = document.getElementById("departmentRole");
 const loginBtn = document.getElementById("loginBtn");
-const resetBtn = document.getElementById("resetBtn");
 const learnerDisplay = document.getElementById("learnerDisplay");
+const departmentDisplay = document.getElementById("departmentDisplay");
 const overallScore = document.getElementById("overallScore");
 const gamesCompleted = document.getElementById("gamesCompleted");
 const currentRank = document.getElementById("currentRank");
@@ -33,16 +35,24 @@ function saveProfile(profile){
   localStorage.setItem(storageKey, JSON.stringify(profile));
 }
 
-function isFullName(name){
-  return name.trim().split(/\s+/).length >= 2;
+function validProfile(profile){
+  return !!(
+    profile &&
+    profile.firstName &&
+    profile.firstName.trim() &&
+    profile.surname &&
+    profile.surname.trim() &&
+    profile.departmentRole &&
+    profile.departmentRole.trim()
+  );
 }
 
-function createProfile(name){
-  const parts = name.trim().split(/\s+/);
+function createProfile(firstName, surname, departmentRole){
   return {
-    name: name.trim(),
-    firstName: parts[0],
-    surname: parts.slice(1).join(" "),
+    firstName: firstName.trim(),
+    surname: surname.trim(),
+    departmentRole: departmentRole.trim(),
+    name: `${firstName.trim()} ${surname.trim()}`,
     scores: {},
     attempts: [],
     createdAt: new Date().toISOString()
@@ -77,14 +87,17 @@ function averageScore(attempts){
 
 function addAttemptPayload(data){
   let profile = loadProfile();
-  if(!profile || !isFullName(profile.name || "")) return;
+  if(!validProfile(profile)) return;
 
   const game = data.game || currentGameKey;
   const score = Number(data.score || 0);
   if(!game) return;
 
   const attempt = {
+    firstName: profile.firstName,
+    surname: profile.surname,
     learnerName: profile.name,
+    departmentRole: profile.departmentRole,
     game,
     score,
     source: data.source || "game",
@@ -96,6 +109,9 @@ function addAttemptPayload(data){
     durationSeconds: data.durationSeconds || null,
     completed: data.completed === false ? false : true,
     passed: data.passed || false,
+    role: data.role || null,
+    threatsStopped: data.threatsStopped || null,
+    biggestWeakness: data.biggestWeakness || null,
     createdAt: data.createdAt || new Date().toISOString()
   };
 
@@ -118,15 +134,15 @@ function addAttemptPayload(data){
 function updateDashboard(){
   const profile = loadProfile();
 
-  if(!profile || !isFullName(profile.name || "")){
+  if(!validProfile(profile)){
     loginPanel.classList.remove("hidden");
     learnerPanel.classList.add("hidden");
     overallScore.textContent = "--";
     gamesCompleted.textContent = "0 / 3";
-    currentRank.textContent = "ENTER FULL NAME";
+    currentRank.textContent = "ENTER PROFILE";
     games.forEach(game => {
       const el = document.getElementById(`score-${game.key}`);
-      if(el) el.textContent = "Login required";
+      if(el) el.textContent = "Profile required";
     });
     return;
   }
@@ -134,6 +150,7 @@ function updateDashboard(){
   loginPanel.classList.add("hidden");
   learnerPanel.classList.remove("hidden");
   learnerDisplay.textContent = profile.name;
+  departmentDisplay.textContent = profile.departmentRole;
 
   const completedGames = games.filter(game => attemptsFor(profile, game.key).length > 0);
   const bestScores = completedGames.map(game => bestScore(attemptsFor(profile, game.key)));
@@ -158,9 +175,9 @@ function updateDashboard(){
 
 function openGame(title, url, gameKey){
   const profile = loadProfile();
-  if(!profile || !isFullName(profile.name || "")){
-    alert("Enter your first name and surname before starting a game.");
-    learnerName.focus();
+  if(!validProfile(profile)){
+    alert("Enter your first name, surname and department/role before starting a game.");
+    firstNameInput.focus();
     return;
   }
 
@@ -199,20 +216,17 @@ window.addEventListener("message", (event) => {
 });
 
 loginBtn.addEventListener("click", () => {
-  const name = learnerName.value.trim();
-  if(!isFullName(name)){
-    alert("Please enter your first name and surname.");
+  const firstName = firstNameInput.value.trim();
+  const surname = surnameInput.value.trim();
+  const departmentRole = departmentRoleInput.value.trim();
+
+  if(!firstName || !surname || !departmentRole){
+    alert("Please enter first name, surname and department/role.");
     return;
   }
-  saveProfile(createProfile(name));
-  updateDashboard();
-});
 
-resetBtn.addEventListener("click", () => {
-  if(confirm("Reset this learner profile and all local scores?")){
-    localStorage.removeItem(storageKey);
-    updateDashboard();
-  }
+  saveProfile(createProfile(firstName, surname, departmentRole));
+  updateDashboard();
 });
 
 backBtn.addEventListener("click", requestAttemptAndClose);
