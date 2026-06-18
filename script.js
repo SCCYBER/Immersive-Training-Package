@@ -5,6 +5,7 @@ const games = [
 ];
 
 const storageKey = "sccyberPortalProfile";
+const PASS_MARK = 80;
 let currentGameKey = null;
 
 const loginPanel = document.getElementById("loginPanel");
@@ -17,7 +18,7 @@ const learnerDisplay = document.getElementById("learnerDisplay");
 const departmentDisplay = document.getElementById("departmentDisplay");
 const overallScore = document.getElementById("overallScore");
 const gamesCompleted = document.getElementById("gamesCompleted");
-const currentRank = document.getElementById("currentRank");
+const trainingStatus = document.getElementById("trainingStatus");
 const dashboardView = document.getElementById("dashboardView");
 const gameView = document.getElementById("gameView");
 const gameFrame = document.getElementById("gameFrame");
@@ -36,15 +37,7 @@ function saveProfile(profile){
 }
 
 function validProfile(profile){
-  return !!(
-    profile &&
-    profile.firstName &&
-    profile.firstName.trim() &&
-    profile.surname &&
-    profile.surname.trim() &&
-    profile.departmentRole &&
-    profile.departmentRole.trim()
-  );
+  return !!(profile && profile.firstName && profile.firstName.trim() && profile.surname && profile.surname.trim() && profile.departmentRole && profile.departmentRole.trim());
 }
 
 function createProfile(firstName, surname, departmentRole){
@@ -57,16 +50,6 @@ function createProfile(firstName, surname, departmentRole){
     attempts: [],
     createdAt: new Date().toISOString()
   };
-}
-
-function getRank(avg){
-  if(avg >= 4000) return "CISO";
-  if(avg >= 3000) return "SOC LEAD";
-  if(avg >= 2200) return "SENIOR ENGINEER";
-  if(avg >= 1500) return "ENGINEER";
-  if(avg >= 900) return "ANALYST";
-  if(avg >= 400) return "TRAINEE";
-  return "INTERN";
 }
 
 function attemptsFor(profile, gameKey){
@@ -83,6 +66,32 @@ function latestScore(attempts){
 
 function averageScore(attempts){
   return attempts.length ? Math.round(attempts.reduce((sum, a) => sum + Number(a.score || 0), 0) / attempts.length) : 0;
+}
+
+function attemptAccuracy(attempt){
+  if(attempt.accuracy !== null && attempt.accuracy !== undefined && !Number.isNaN(Number(attempt.accuracy))){
+    return Number(attempt.accuracy);
+  }
+  if(attempt.answered && attempt.correct !== null && attempt.correct !== undefined){
+    return Math.round((Number(attempt.correct) / Number(attempt.answered)) * 100);
+  }
+  return 0;
+}
+
+function bestAccuracy(attempts){
+  return attempts.length ? Math.max(...attempts.map(attemptAccuracy)) : 0;
+}
+
+function latestAccuracy(attempts){
+  return attempts.length ? attemptAccuracy(attempts[attempts.length - 1]) : 0;
+}
+
+function averageAccuracy(attempts){
+  return attempts.length ? Math.round(attempts.reduce((sum, a) => sum + attemptAccuracy(a), 0) / attempts.length) : 0;
+}
+
+function trainingGrade(averagePercent){
+  return averagePercent >= PASS_MARK ? "PASS" : "FAIL";
 }
 
 function addAttemptPayload(data){
@@ -139,7 +148,7 @@ function updateDashboard(){
     learnerPanel.classList.add("hidden");
     overallScore.textContent = "--";
     gamesCompleted.textContent = "0 / 3";
-    currentRank.textContent = "ENTER PROFILE";
+    trainingStatus.textContent = "ENTER PROFILE";
     games.forEach(game => {
       const el = document.getElementById(`score-${game.key}`);
       if(el) el.textContent = "Profile required";
@@ -153,13 +162,13 @@ function updateDashboard(){
   departmentDisplay.textContent = profile.departmentRole;
 
   const completedGames = games.filter(game => attemptsFor(profile, game.key).length > 0);
-  const bestScores = completedGames.map(game => bestScore(attemptsFor(profile, game.key)));
+  const bestAccuracies = completedGames.map(game => bestAccuracy(attemptsFor(profile, game.key)));
   const completed = completedGames.length;
-  const average = completed ? Math.round(bestScores.reduce((a,b) => a + b, 0) / completed) : 0;
+  const averagePercent = completed ? Math.round(bestAccuracies.reduce((a,b) => a + b, 0) / completed) : 0;
 
-  overallScore.textContent = completed ? average : "--";
+  overallScore.textContent = completed ? `${averagePercent}%` : "--";
   gamesCompleted.textContent = `${completed} / ${games.length}`;
-  currentRank.textContent = completed ? getRank(average) : "START TRAINING";
+  trainingStatus.textContent = completed ? trainingGrade(averagePercent) : "START TRAINING";
 
   games.forEach(game => {
     const el = document.getElementById(`score-${game.key}`);
@@ -169,7 +178,10 @@ function updateDashboard(){
       el.textContent = "No attempts yet";
       return;
     }
-    el.innerHTML = `Best: ${bestScore(gameAttempts)}<br>Latest: ${latestScore(gameAttempts)}<br>Attempts: ${gameAttempts.length}<br>Average: ${averageScore(gameAttempts)}`;
+    const latestPercent = latestAccuracy(gameAttempts);
+    const bestPercent = bestAccuracy(gameAttempts);
+    const gameAverage = averageAccuracy(gameAttempts);
+    el.innerHTML = `Best: ${bestPercent}%<br>Latest: ${latestPercent}%<br>Attempts: ${gameAttempts.length}<br>Average: ${gameAverage}%`;
   });
 }
 
