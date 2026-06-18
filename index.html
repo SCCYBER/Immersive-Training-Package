@@ -109,11 +109,40 @@
         <button id="adminBackBtn" class="small-btn">Back to Dashboard</button>
         <div><div class="section-title">ADMIN DASHBOARD</div><strong style="display:block;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:12px;line-height:1.6;margin-top:4px;">SCCYBER Control Panel</strong></div>
       </div>
+
       <section class="report-terminal">
         <div class="report-header"><div><div class="section-title">CONTROL CENTRE</div><p>Manage companies, licences, learners, billing and reports.</p></div><button id="refreshAdminBtn" class="launch-btn">Refresh</button></div>
         <div class="report-grid"><div class="report-card"><span>Companies</span><strong id="adminCompanyCount">0</strong></div><div class="report-card"><span>Total Licences</span><strong id="adminLicenceCount">0</strong></div><div class="report-card"><span>Learners</span><strong id="adminLearnerCount">0</strong></div></div>
       </section>
+
+      <section class="report-terminal">
+        <div class="section-title">ADD COMPANY</div>
+        <div class="login-row profile-grid" style="margin-top:12px;">
+          <input id="newCompanyName" type="text" maxlength="80" placeholder="Company / School name">
+          <input id="newCompanyLicences" type="number" min="0" placeholder="Licences">
+          <select id="newCompanyPremium"><option value="false">Premium off</option><option value="true">Premium on</option></select>
+          <select id="newCompanyBilling"><option value="trial">Trial</option><option value="pending">Pending</option><option value="paid">Paid</option><option value="overdue">Overdue</option></select>
+          <button id="addCompanyBtn" class="launch-btn">Add Company</button>
+        </div>
+        <div id="companyMessage" class="auth-message"></div>
+      </section>
+
       <section class="report-terminal"><div class="section-title">COMPANIES</div><div class="report-output" id="adminOutput">Company data will appear here.</div></section>
+
+      <section class="report-terminal">
+        <div class="section-title">ADD LEARNER RECORD</div>
+        <p style="color:#b9a8d5;">This creates the learner record. Secure login creation will be handled by the Supabase Edge Function later.</p>
+        <div class="login-row profile-grid" style="margin-top:12px;">
+          <input id="newLearnerUsername" type="text" maxlength="40" placeholder="Username">
+          <input id="newLearnerFirstName" type="text" maxlength="40" placeholder="First name">
+          <input id="newLearnerSurname" type="text" maxlength="40" placeholder="Surname">
+          <input id="newLearnerRole" type="text" maxlength="80" placeholder="Department / Role">
+          <select id="newLearnerCompany"><option value="">Select company</option></select>
+          <button id="addLearnerBtn" class="launch-btn">Add Learner</button>
+        </div>
+        <div id="learnerMessage" class="auth-message"></div>
+      </section>
+
       <section class="report-terminal"><div class="section-title">LEARNERS & REPORTS</div><div class="report-output" id="adminLearnerOutput">Learner reports will appear here.</div></section>
       <section class="report-terminal"><div class="section-title">SELECTED LEARNER REPORT</div><div class="report-output" id="adminSelectedReport">Select a learner to view their report.</div></section>
       <section class="report-terminal"><div class="section-title">BILLING & PREMIUM</div><div class="report-output" id="billingOutput">Billing status and PayPal payment records will appear here.</div></section>
