@@ -60,6 +60,7 @@
           <strong id="learnerDisplay">Learner</strong>
           <div id="departmentDisplay" style="color:#b9a8d5;margin-top:6px;">Department / Role</div>
         </div>
+        <button id="adminBtn" class="small-btn hidden" type="button">Admin Dashboard</button>
       </section>
 
       <section class="dashboard-preview">
@@ -110,17 +111,38 @@
           </article>
         </div>
       </section>
-
-      <section class="coming-soon">
-        <div class="section-title">COMING SOON</div>
-        <div class="coming-grid">
-          <div class="coming-card">Incident Commander</div>
-          <div class="coming-card">SOC Defender</div>
-          <div class="coming-card">Deepfake Detective</div>
-          <div class="coming-card">Ransomware Rescue</div>
-        </div>
-      </section>
     </div>
+
+    <section class="admin-view hidden" id="adminView">
+      <div class="game-topbar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(8,2,20,.95);border:1px solid rgba(89,255,157,.18);border-radius:14px;padding:12px;margin-bottom:10px;">
+        <button id="adminBackBtn" class="small-btn">Back to Dashboard</button>
+        <div>
+          <div class="section-title">ADMIN DASHBOARD</div>
+          <strong style="display:block;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:12px;line-height:1.6;margin-top:4px;">SCCYBER Control Panel</strong>
+        </div>
+      </div>
+
+      <section class="report-terminal">
+        <div class="report-header">
+          <div>
+            <div class="section-title">COMPANIES</div>
+            <p>Manage organisations, licences, learners, premium access and billing status.</p>
+          </div>
+          <button id="refreshAdminBtn" class="launch-btn">Refresh</button>
+        </div>
+        <div class="report-grid">
+          <div class="report-card"><span>Companies</span><strong id="adminCompanyCount">0</strong></div>
+          <div class="report-card"><span>Total Licences</span><strong id="adminLicenceCount">0</strong></div>
+          <div class="report-card"><span>Learners</span><strong id="adminLearnerCount">0</strong></div>
+        </div>
+        <div class="report-output" id="adminOutput">Admin data will appear here once Supabase policies are enabled.</div>
+      </section>
+
+      <section class="report-terminal">
+        <div class="section-title">BILLING & PREMIUM</div>
+        <div class="report-output" id="billingOutput">Billing status and PayPal payment records will appear here.</div>
+      </section>
+    </section>
 
     <section class="report-view hidden" id="reportView">
       <div class="game-topbar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(8,2,20,.95);border:1px solid rgba(89,255,157,.18);border-radius:14px;padding:12px;margin-bottom:10px;">
