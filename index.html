@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SCCYBER Immersive Training Package</title>
+  <title>SCCYBER Training Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -14,7 +14,28 @@
   <div class="bg-scanlines"></div>
 
   <main class="portal-shell">
-    <div id="dashboardView">
+    <section id="authView" class="auth-view">
+      <header class="hero">
+        <img src="https://sccyber.github.io/breach-lockdown/logo.png" alt="SCCYBER logo" class="logo">
+        <div class="eyebrow">SCCYBER TRAINING PORTAL</div>
+        <h1>Login</h1>
+        <p>Enter your assigned learner credentials to access your training dashboard.</p>
+      </header>
+
+      <section class="login-panel auth-panel">
+        <div class="section-title">LEARNER LOGIN</div>
+        <p>Use the username and password provided by your trainer or organisation.</p>
+        <div class="login-row profile-grid">
+          <input id="usernameInput" type="text" maxlength="40" placeholder="Username">
+          <input id="passwordInput" type="password" maxlength="80" placeholder="Password">
+          <button id="credentialLoginBtn" class="launch-btn">Login</button>
+          <button id="demoModeBtn" class="small-btn" type="button">Demo Mode</button>
+        </div>
+        <div id="authMessage" class="auth-message">Supabase credentials required for live login.</div>
+      </section>
+    </section>
+
+    <div id="dashboardView" class="hidden">
       <header class="hero">
         <img src="https://sccyber.github.io/breach-lockdown/logo.png" alt="SCCYBER logo" class="logo">
         <div class="eyebrow">SCCYBER TRAINING PORTAL</div>
@@ -101,10 +122,46 @@
       </section>
     </div>
 
-    <section class="report-view hidden" id="reportView"></section>
-    <section class="game-view hidden" id="gameView"></section>
+    <section class="report-view hidden" id="reportView">
+      <div class="game-topbar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(8,2,20,.95);border:1px solid rgba(89,255,157,.18);border-radius:14px;padding:12px;margin-bottom:10px;">
+        <button id="reportBackBtn" class="small-btn">Back to Dashboard</button>
+        <div>
+          <div class="section-title">REPORT TERMINAL</div>
+          <strong style="display:block;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:12px;line-height:1.6;margin-top:4px;">Learner Report</strong>
+        </div>
+      </div>
+
+      <section class="report-terminal" id="reportTerminal">
+        <div class="report-header">
+          <div>
+            <div class="section-title">PERFORMANCE REPORT</div>
+            <p>Live learner performance report generated from completed attempts.</p>
+          </div>
+          <div class="report-badge" id="reportBadge">AWAITING DATA</div>
+        </div>
+        <div class="report-grid">
+          <div class="report-card"><span>Progress</span><strong id="reportProgress">0 / 3</strong></div>
+          <div class="report-card"><span>Total Attempts</span><strong id="reportAttempts">0</strong></div>
+          <div class="report-card"><span>Pass Mark</span><strong>80%</strong></div>
+        </div>
+        <div class="report-output" id="reportOutput">Complete at least one module to generate report data.</div>
+      </section>
+    </section>
+
+    <section class="game-view hidden" id="gameView" style="min-height:700px;">
+      <div class="game-topbar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(8,2,20,.95);border:1px solid rgba(89,255,157,.18);border-radius:14px;padding:12px;margin-bottom:10px;">
+        <button id="backBtn" class="small-btn">Back to Dashboard</button>
+        <div>
+          <div class="section-title">NOW PLAYING</div>
+          <strong id="activeGameTitle" style="display:block;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:12px;line-height:1.6;margin-top:4px;">Game</strong>
+        </div>
+      </div>
+      <iframe id="gameFrame" title="SCCYBER Training Game" style="width:100%;height:760px;border:1px solid rgba(169,76,255,.35);border-radius:16px;background:#090216;"></iframe>
+    </section>
   </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
