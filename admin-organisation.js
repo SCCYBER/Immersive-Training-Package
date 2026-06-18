@@ -107,10 +107,11 @@ async function renderEnhancedCompanies() {
     <div class="report-section" style="margin-bottom:12px;">
       <div class="report-section-title">Search Companies</div>
       <input id="companySearchInput" type="text" placeholder="Search by company, contact, email or phone" style="width:100%;margin-top:10px;">
+      <p id="companySearchPrompt" style="color:#b9a8d5;margin-top:10px;">Start typing to find a company.</p>
     </div>
     <div id="enhancedCompanyList">
       ${(orgs || []).map(org => `
-        <details class="report-section enhanced-company-card" data-search="${safeValue([org.name, org.main_contact_name, org.main_contact_email, org.contact_number, org.address].join(' ').toLowerCase())}">
+        <details class="report-section enhanced-company-card" style="display:none;" data-search="${safeValue([org.name, org.main_contact_name, org.main_contact_email, org.contact_number, org.address].join(' ').toLowerCase())}">
           <summary style="cursor:pointer;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:11px;line-height:1.8;">
             ${org.name} · ${org.licence_count || 0} licences · ${org.billing_status || "pending"} · ${org.premium_enabled ? "premium on" : "premium off"}
           </summary>
@@ -174,11 +175,20 @@ async function saveEnhancedCompany(button) {
 
 function filterCompanies() {
   const input = document.getElementById("companySearchInput");
+  const prompt = document.getElementById("companySearchPrompt");
   if (!input) return;
   const term = input.value.trim().toLowerCase();
+  let matches = 0;
+
   document.querySelectorAll(".enhanced-company-card").forEach(card => {
-    card.style.display = card.dataset.search.includes(term) ? "block" : "none";
+    const show = term.length > 0 && card.dataset.search.includes(term);
+    card.style.display = show ? "block" : "none";
+    if (show) matches++;
   });
+
+  if (prompt) {
+    prompt.textContent = term.length === 0 ? "Start typing to find a company." : matches ? `${matches} company result(s) found.` : "No companies found.";
+  }
 }
 
 function ensureLearnerSearch() {
@@ -192,23 +202,44 @@ function ensureLearnerSearch() {
   wrapper.innerHTML = `
     <div class="report-section-title">Search Learners</div>
     <input id="learnerSearchInput" type="text" placeholder="Search by username, company or status" style="width:100%;margin-top:10px;">
+    <p id="learnerSearchPrompt" style="color:#b9a8d5;margin-top:10px;">Start typing to find a learner.</p>
   `;
   output.prepend(wrapper);
+  hideLearnersUntilSearch();
+}
+
+function hideLearnersUntilSearch() {
+  const input = document.getElementById("learnerSearchInput");
+  const output = document.getElementById("adminLearnerOutput");
+  if (!input || !output || input.value.trim()) return;
+  output.querySelectorAll(":scope > .report-line").forEach(row => {
+    row.style.display = "none";
+  });
 }
 
 function filterLearners() {
   const input = document.getElementById("learnerSearchInput");
   const output = document.getElementById("adminLearnerOutput");
+  const prompt = document.getElementById("learnerSearchPrompt");
   if (!input || !output) return;
   const term = input.value.trim().toLowerCase();
+  let matches = 0;
+
   output.querySelectorAll(":scope > .report-line").forEach(row => {
-    row.style.display = row.textContent.toLowerCase().includes(term) ? "grid" : "none";
+    const show = term.length > 0 && row.textContent.toLowerCase().includes(term);
+    row.style.display = show ? "grid" : "none";
+    if (show) matches++;
   });
+
+  if (prompt) {
+    prompt.textContent = term.length === 0 ? "Start typing to find a learner." : matches ? `${matches} learner result(s) found.` : "No learners found.";
+  }
 }
 
 const adminOrganisationObserver = new MutationObserver(() => {
   ensureCompanyDetailFields();
   ensureLearnerSearch();
+  hideLearnersUntilSearch();
 });
 
 window.addEventListener("load", () => {
@@ -233,5 +264,8 @@ document.addEventListener("input", event => {
 
 document.addEventListener("click", event => {
   const adminButton = event.target.closest("#adminBtn, #refreshAdminBtn");
-  if (adminButton) setTimeout(renderEnhancedCompanies, 700);
+  if (adminButton) {
+    setTimeout(renderEnhancedCompanies, 700);
+    setTimeout(hideLearnersUntilSearch, 900);
+  }
 });
