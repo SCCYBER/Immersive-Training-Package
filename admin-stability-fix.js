@@ -24,6 +24,7 @@ function saveLoginSecret(username, secret) {
   all[String(username).toLowerCase()] = {
     username: String(username).toLowerCase(),
     secret: secret,
+    password: secret,
     createdAt: new Date().toISOString()
   };
   localStorage.setItem(savedLoginKey, JSON.stringify(all));
@@ -31,6 +32,10 @@ function saveLoginSecret(username, secret) {
 
 function getLoginSecret(username) {
   return readSavedLogins()[String(username).toLowerCase()] || null;
+}
+
+function savedSecretValue(saved) {
+  return saved?.secret || saved?.password || "";
 }
 
 function showPanel(html) {
@@ -42,9 +47,30 @@ function closeAdminPanel() {
   showPanel("Select a learner to view their report.");
 }
 
+function addCloseToCurrentPanel() {
+  const output = document.getElementById("adminSelectedReport");
+  if (!output || output.querySelector(".fixed-close-admin-panel")) return;
+  if (!output.innerHTML || output.textContent.includes("Select a learner")) return;
+
+  const wrap = document.createElement("div");
+  wrap.style.display = "flex";
+  wrap.style.justifyContent = "flex-end";
+  wrap.style.marginBottom = "10px";
+
+  const btn = document.createElement("button");
+  btn.className = "small-btn fixed-close-admin-panel";
+  btn.type = "button";
+  btn.textContent = "Close";
+
+  wrap.appendChild(btn);
+  output.prepend(wrap);
+}
+
 function showSavedLogin(username) {
   const saved = getLoginSecret(username);
-  if (!saved) {
+  const secret = savedSecretValue(saved);
+
+  if (!saved || !secret) {
     showPanel(`
       <div class="report-section">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
@@ -64,15 +90,14 @@ function showSavedLogin(username) {
         <button class="small-btn fixed-close-admin-panel" type="button">Close</button>
       </div>
       <p>Give these details to the learner and store them securely.</p>
-      <div class="report-line"><strong>Username</strong><span>${saved.username}</span><span>Login Secret</span><span>${saved.secret}</span></div>
+      <div class="report-line"><strong>Username</strong><span>${saved.username || username}</span><span>Password</span><span>${secret}</span></div>
     </div>
   `);
 }
 
 async function callLoginService(action, username, secret) {
   const client = safeAdminClient();
-  const body = { action: action, username: username };
-  body["pass" + "word"] = secret;
+  const body = { action: action, username: username, password: secret };
   const { data, error } = await client.functions.invoke("create-learner-login", { body });
   if (error || data?.error) throw new Error(data?.error || error?.message || "Action failed.");
   return data;
@@ -185,7 +210,10 @@ document.addEventListener("click", event => {
   if (view) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    if (typeof showAdminLearnerReport === "function") showAdminLearnerReport(view.dataset.id);
+    if (typeof showAdminLearnerReport === "function") {
+      showAdminLearnerReport(view.dataset.id);
+      setTimeout(addCloseToCurrentPanel, 50);
+    }
     return;
   }
 
