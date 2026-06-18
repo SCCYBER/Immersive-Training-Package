@@ -83,7 +83,7 @@ async function addEnhancedCompany(event) {
       if (el) el.value = "";
     });
     if (typeof loadAdminData === "function") await loadAdminData();
-    setTimeout(renderEnhancedCompanies, 300);
+    setTimeout(renderEnhancedCompanies, 250);
   }
 }
 
@@ -96,6 +96,8 @@ async function renderEnhancedCompanies() {
   const client = getAdminClient();
   if (!output || !client || !isPortalAdmin()) return;
 
+  const existingSearch = document.getElementById("companySearchInput")?.value || "";
+
   const { data: orgs, error } = await client
     .from("organisations")
     .select("id,name,licence_count,active,premium_enabled,billing_status,address,contact_number,main_contact_name,main_contact_email,notes,created_at")
@@ -106,7 +108,7 @@ async function renderEnhancedCompanies() {
   output.innerHTML = `
     <div class="report-section" style="margin-bottom:12px;">
       <div class="report-section-title">Search Companies</div>
-      <input id="companySearchInput" type="text" placeholder="Search by company, contact, email or phone" style="width:100%;margin-top:10px;">
+      <input id="companySearchInput" type="text" placeholder="Search by company, contact, email or phone" style="width:100%;margin-top:10px;" value="${safeValue(existingSearch)}">
       <p id="companySearchPrompt" style="color:#b9a8d5;margin-top:10px;">Start typing to find a company.</p>
     </div>
     <div id="enhancedCompanyList">
@@ -139,6 +141,8 @@ async function renderEnhancedCompanies() {
       `).join("") || "No companies created yet."}
     </div>
   `;
+
+  filterCompanies();
 }
 
 async function saveEnhancedCompany(button) {
@@ -167,10 +171,7 @@ async function saveEnhancedCompany(button) {
   button.textContent = error ? "Save Failed" : "Saved";
   setTimeout(() => { button.textContent = "Save Company"; }, 1200);
 
-  if (!error && typeof loadAdminData === "function") {
-    await loadAdminData();
-    setTimeout(renderEnhancedCompanies, 300);
-  }
+  if (!error) setTimeout(renderEnhancedCompanies, 250);
 }
 
 function filterCompanies() {
@@ -186,9 +187,7 @@ function filterCompanies() {
     if (show) matches++;
   });
 
-  if (prompt) {
-    prompt.textContent = term.length === 0 ? "Start typing to find a company." : matches ? `${matches} company result(s) found.` : "No companies found.";
-  }
+  if (prompt) prompt.textContent = term.length === 0 ? "Start typing to find a company." : matches ? `${matches} company result(s) found.` : "No companies found.";
 }
 
 function ensureLearnerSearch() {
@@ -205,16 +204,7 @@ function ensureLearnerSearch() {
     <p id="learnerSearchPrompt" style="color:#b9a8d5;margin-top:10px;">Start typing to find a learner.</p>
   `;
   output.prepend(wrapper);
-  hideLearnersUntilSearch();
-}
-
-function hideLearnersUntilSearch() {
-  const input = document.getElementById("learnerSearchInput");
-  const output = document.getElementById("adminLearnerOutput");
-  if (!input || !output || input.value.trim()) return;
-  output.querySelectorAll(":scope > .report-line").forEach(row => {
-    row.style.display = "none";
-  });
+  filterLearners();
 }
 
 function filterLearners() {
@@ -222,6 +212,7 @@ function filterLearners() {
   const output = document.getElementById("adminLearnerOutput");
   const prompt = document.getElementById("learnerSearchPrompt");
   if (!input || !output) return;
+
   const term = input.value.trim().toLowerCase();
   let matches = 0;
 
@@ -231,22 +222,12 @@ function filterLearners() {
     if (show) matches++;
   });
 
-  if (prompt) {
-    prompt.textContent = term.length === 0 ? "Start typing to find a learner." : matches ? `${matches} learner result(s) found.` : "No learners found.";
-  }
+  if (prompt) prompt.textContent = term.length === 0 ? "Start typing to find a learner." : matches ? `${matches} learner result(s) found.` : "No learners found.";
 }
-
-const adminOrganisationObserver = new MutationObserver(() => {
-  ensureCompanyDetailFields();
-  ensureLearnerSearch();
-  hideLearnersUntilSearch();
-});
 
 window.addEventListener("load", () => {
   ensureCompanyDetailFields();
   ensureLearnerSearch();
-  const adminView = document.getElementById("adminView");
-  if (adminView) adminOrganisationObserver.observe(adminView, { childList: true, subtree: true });
   setTimeout(renderEnhancedCompanies, 800);
 });
 
@@ -266,6 +247,9 @@ document.addEventListener("click", event => {
   const adminButton = event.target.closest("#adminBtn, #refreshAdminBtn");
   if (adminButton) {
     setTimeout(renderEnhancedCompanies, 700);
-    setTimeout(hideLearnersUntilSearch, 900);
+    setTimeout(() => {
+      ensureLearnerSearch();
+      filterLearners();
+    }, 900);
   }
 });
