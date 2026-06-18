@@ -131,7 +131,7 @@
 
       <section class="report-terminal">
         <div class="section-title">ADD LEARNER RECORD</div>
-        <p style="color:#b9a8d5;">This creates the learner record. Secure login creation will be handled by the Supabase Edge Function later.</p>
+        <p style="color:#b9a8d5;">This creates the learner record. Secure login creation will be handled by the protected login service.</p>
         <div class="login-row profile-grid" style="margin-top:12px;">
           <input id="newLearnerUsername" type="text" maxlength="40" placeholder="Username">
           <input id="newLearnerFirstName" type="text" maxlength="40" placeholder="First name">
@@ -173,5 +173,6 @@
   <script src="supabase-config.js"></script>
   <script src="script.js"></script>
   <script src="premium-guard.js"></script>
+  <script src="admin-learner-actions.js"></script>
 </body>
 </html>
