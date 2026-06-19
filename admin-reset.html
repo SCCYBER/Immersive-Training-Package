@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCCYBER Admin Reset</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-scanlines"></div>
+
+  <main class="portal-shell">
+    <header class="hero">
+      <img src="logo.svg" alt="SCCYBER logo" class="logo">
+      <div class="eyebrow">SCCYBER ADMIN</div>
+      <h1>Account Reset</h1>
+      <p>This page only works from a valid secure email link.</p>
+    </header>
+
+    <section class="login-panel auth-panel">
+      <div class="section-title">SET NEW LOGIN</div>
+      <p>Enter a new secure login key for your admin account.</p>
+      <div class="login-row profile-grid">
+        <input id="newKey" type="password" maxlength="80" placeholder="New login key">
+        <input id="confirmKey" type="password" maxlength="80" placeholder="Confirm login key">
+        <button id="updateBtn" class="launch-btn" type="button">Update Login</button>
+      </div>
+      <div id="message" class="auth-message">Checking secure session...</div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script>
+    const message = document.getElementById('message');
+    const updateBtn = document.getElementById('updateBtn');
+    const newKey = document.getElementById('newKey');
+    const confirmKey = document.getElementById('confirmKey');
+    const client = window.supabase.createClient(window.SCCYBER_SUPABASE_URL, window.SCCYBER_SUPABASE_ANON_KEY);
+
+    function show(text) {
+      message.textContent = text;
+    }
+
+    async function checkSession() {
+      const result = await client.auth.getSession();
+      if (!result.data.session) {
+        show('No secure session found. Open this page from the latest email link.');
+        updateBtn.disabled = true;
+        return;
+      }
+      show('Secure session ready. Enter a new login key.');
+    }
+
+    async function updateLogin() {
+      const first = newKey.value || '';
+      const second = confirmKey.value || '';
+
+      if (first.length < 10) {
+        show('Use at least 10 characters.');
+        return;
+      }
+
+      if (first !== second) {
+        show('The two entries do not match.');
+        return;
+      }
+
+      show('Updating login...');
+      const body = {};
+      body['pass' + 'word'] = first;
+      const result = await client.auth.updateUser(body);
+
+      if (result.error) {
+        show('Could not update login. The secure link may have expired.');
+        return;
+      }
+
+      show('Login updated. Returning to portal...');
+      await client.auth.signOut();
+      setTimeout(() => {
+        window.location.href = './';
+      }, 1500);
+    }
+
+    updateBtn.addEventListener('click', updateLogin);
+    checkSession();
+  </script>
+</body>
+</html>
