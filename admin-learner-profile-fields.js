@@ -1,4 +1,10 @@
-async function addLearnerRecordWithAssignedFields() {
+async function addLearnerRecordWithAssignedFields(event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+  }
+
   const username = document.getElementById("newLearnerUsername")?.value.trim().toLowerCase();
   const firstName = document.getElementById("newLearnerFirstName")?.value.trim();
   const surname = document.getElementById("newLearnerSurname")?.value.trim();
@@ -16,7 +22,19 @@ async function addLearnerRecordWithAssignedFields() {
     return;
   }
 
+  if (!organisationId) {
+    if (learnerMessage) learnerMessage.textContent = "Select a company before adding the learner.";
+    return;
+  }
+
   const client = window.supabaseClient || supabaseClient;
+  if (!client) {
+    if (learnerMessage) learnerMessage.textContent = "Secure database connection not ready. Refresh and try again.";
+    return;
+  }
+
+  if (learnerMessage) learnerMessage.textContent = "Adding learner...";
+
   const payload = {
     username,
     organisation_id: organisationId,
@@ -30,7 +48,7 @@ async function addLearnerRecordWithAssignedFields() {
 
   if (learnerMessage) {
     learnerMessage.textContent = error
-      ? error.message || "Could not add learner record."
+      ? `Could not add learner: ${error.message || "Unknown database error."}`
       : `Learner added. Username: ${username}`;
   }
 
@@ -46,5 +64,11 @@ async function addLearnerRecordWithAssignedFields() {
 window.addEventListener("load", () => {
   if (typeof addLearnerRecord === "function") {
     addLearnerRecord = addLearnerRecordWithAssignedFields;
+  }
+
+  const btn = document.getElementById("addLearnerBtn");
+  if (btn && !btn.dataset.sccyberAssignedFieldsBound) {
+    btn.dataset.sccyberAssignedFieldsBound = "true";
+    btn.addEventListener("click", addLearnerRecordWithAssignedFields, true);
   }
 });
