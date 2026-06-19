@@ -34,5 +34,13 @@ window.addEventListener("load", () => {
   const script = document.createElement("script");
   script.src = "admin-recovery.js";
   script.dataset.recoveryHelper = "true";
+  script.onload = () => {
+    if (typeof installAdminRecovery === "function") installAdminRecovery();
+    if (typeof showAdminRecoveryUpdate === "function") showAdminRecoveryUpdate();
+    const sendBtn = document.getElementById("adminRecoverySendBtn");
+    const updateBtn = document.getElementById("adminRecoveryUpdateBtn");
+    if (sendBtn && typeof sendAdminRecovery === "function") sendBtn.addEventListener("click", sendAdminRecovery);
+    if (updateBtn && typeof updateAdminRecoverySecret === "function") updateBtn.addEventListener("click", updateAdminRecoverySecret);
+  };
   document.body.appendChild(script);
 });
