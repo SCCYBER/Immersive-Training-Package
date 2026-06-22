@@ -1,22 +1,3 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" role="img" aria-label="SCCYBER logo">
-  <defs>
-    <radialGradient id="bg" cx="50%" cy="45%" r="65%">
-      <stop offset="0%" stop-color="#30105f"/>
-      <stop offset="60%" stop-color="#14042d"/>
-      <stop offset="100%" stop-color="#070111"/>
-    </radialGradient>
-    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
-      <feGaussianBlur stdDeviation="5" result="blur"/>
-      <feMerge>
-        <feMergeNode in="blur"/>
-        <feMergeNode in="SourceGraphic"/>
-      </feMerge>
-    </filter>
-  </defs>
-  <circle cx="250" cy="250" r="220" fill="url(#bg)" stroke="#a94cff" stroke-width="14"/>
-  <circle cx="250" cy="250" r="190" fill="none" stroke="#59ff9d" stroke-width="4" opacity="0.55"/>
-  <g filter="url(#glow)">
-    <text x="250" y="263" text-anchor="middle" font-family="monospace" font-size="68" font-weight="800" fill="#ffffff" stroke="#a94cff" stroke-width="2">SCCYBER</text>
-    <text x="250" y="314" text-anchor="middle" font-family="monospace" font-size="24" font-weight="700" fill="#59ff9d">TRAINING PORTAL</text>
-  </g>
+  <image href="https://sccyber.github.io/breach-lockdown/logo.png" x="0" y="0" width="500" height="500" preserveAspectRatio="xMidYMid meet"/>
 </svg>
