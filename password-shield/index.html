@@ -226,7 +226,10 @@
       const item = questions[index];
       const isCorrect = answerIndex === item.c;
       if (isCorrect) { correct += 1; streak += 1; bestStreak = Math.max(bestStreak, streak); } else { wrong += 1; streak = 0; }
-      Array.from(answers.children).forEach((btn, i) => btn.classList.add(i === item.c ? "correct" : i === answerIndex ? "wrong" : ""));
+      Array.from(answers.children).forEach((btn, i) => {
+        if (i === item.c) btn.classList.add("correct");
+        else if (i === answerIndex) btn.classList.add("wrong");
+      });
       const learning = `${isCorrect ? "Correct." : "Not quite."} ${item.why} ${STAGES[stageIndex()].lesson}`;
       feedback.innerHTML = `${isCorrect ? "Correct." : "Not quite."}<span class="why">Why this matters: ${item.why}</span>`;
       whyText.textContent = learning;
