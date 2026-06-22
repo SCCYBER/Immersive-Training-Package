@@ -1,4 +1,12 @@
 (function () {
+  const SCCYBER_REAL_LOGO = "https://sccyber.github.io/breach-lockdown/logo.png";
+
+  function fixPortalLogo() {
+    document.querySelectorAll('img[alt="SCCYBER logo"]').forEach(function (img) {
+      img.src = SCCYBER_REAL_LOGO;
+    });
+  }
+
   function installAdminReportStatusStyles() {
     if (document.getElementById("sccyberAdminReportStatusStyles")) return;
 
@@ -144,6 +152,7 @@
   }
 
   function install() {
+    fixPortalLogo();
     installAdminReportStatusStyles();
     patchRemoteAdminReport();
     patchLearnerReport();
@@ -153,5 +162,6 @@
     install();
     setTimeout(install, 250);
     setTimeout(install, 750);
+    setTimeout(install, 1500);
   });
 })();
