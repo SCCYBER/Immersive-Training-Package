@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workplace Defender</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <script src="ui-fix.js"></script>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-scanlines"></div>
+
+  <main class="game-shell" id="gameShell">
+    <section class="start-panel" id="startScreen">
+      <img src="https://sccyber.github.io/breach-lockdown/logo.png" alt="SCCYBER logo" class="logo">
+      <div class="eyebrow">INTERMEDIATE MODULE</div>
+      <h1 class="start-title-main">WORKPLACE DEFENDER</h1>
+      <p>Make the right cyber decisions across office work, remote work, company devices, software and infrastructure.</p>
+      <button id="playNowBtn" class="arcade-green-btn">START MODULE</button>
+    </section>
+
+    <section class="lock-panel" id="lockPanel" style="display:none;">
+      <img src="https://sccyber.github.io/breach-lockdown/logo.png" alt="SCCYBER logo" class="logo">
+      <div class="eyebrow">ACCESS BLOCKED</div>
+      <h1 class="start-title-main">DIRECT ACCESS BLOCKED</h1>
+      <p>This module must be launched from inside the SCCYBER training portal.</p>
+    </section>
+
+    <section class="game-panel">
+      <div class="stage-panel">
+        <div>
+          <div class="eyebrow">CURRENT ENVIRONMENT</div>
+          <h2 id="stageTitle">STAGE 1</h2>
+          <p id="stageLesson">Assess the situation and choose the safest action.</p>
+        </div>
+        <div class="stage-track" id="stageTrack"></div>
+      </div>
+
+      <div class="hud-grid">
+        <div class="hud-box"><span>POINTS</span><strong id="pointsBox">0</strong></div>
+        <div class="hud-box"><span>ACCURACY</span><strong id="accuracyBox">0%</strong></div>
+        <div class="hud-box"><span>STREAK</span><strong id="streakBox">0</strong></div>
+        <div class="hud-box"><span>RANK</span><strong id="rankBox">TRAINEE</strong></div>
+      </div>
+
+      <article class="question-card">
+        <div class="question-tag" id="tag">OFFICE</div>
+        <h2 id="question">Question loading...</h2>
+        <div class="answers" id="answers"></div>
+        <div class="feedback" id="feedback"></div>
+        <button class="next-btn" id="nextBtn">NEXT QUESTION</button>
+      </article>
+
+      <article class="result-card" id="resultCard" style="display:none;">
+        <h2 id="resultTitle">RESULT</h2>
+        <p id="resultScore"></p>
+        <p id="resultCopy"></p>
+      </article>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
