@@ -64,6 +64,16 @@
       .stage-track{
         gap:6px !important;
       }
+
+      .leaderboard-panel,
+      #playAgainBtn,
+      #dashboardBtn{
+        display:none !important;
+      }
+
+      #resultCard{
+        padding-bottom:22px !important;
+      }
     `;
     document.head.appendChild(style);
   });
