@@ -1,4 +1,4 @@
-const launchedFromPortal = window.top !== window.self || new URLSearchParams(location.search).get("portal") === "1";
+const launchedFromPortal = window.top !== window.self;
 
 const stages = [
   { name: "CREATE", lesson: "Use long, unique and hard to guess passwords." },
@@ -94,6 +94,7 @@ function updateStats() {
 }
 
 function startGame() {
+  if (!launchedFromPortal) return;
   index = 0;
   correct = 0;
   wrong = 0;
