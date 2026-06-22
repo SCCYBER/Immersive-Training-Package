@@ -12,15 +12,21 @@
     *{box-sizing:border-box}
     body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#260b4f 0,#090216 55%,#04010a 100%);color:var(--text);font-family:'Share Tech Mono',monospace;overflow-x:hidden;}
     .bg-grid{position:fixed;inset:0;background-image:linear-gradient(rgba(89,255,157,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(89,255,157,.05) 1px,transparent 1px);background-size:36px 36px;pointer-events:none;}
+    .bg-scanlines{position:fixed;inset:0;background:linear-gradient(rgba(255,255,255,.03) 50%,rgba(0,0,0,.03) 50%);background-size:100% 4px;mix-blend-mode:overlay;pointer-events:none;}
     .shell{width:min(1080px,94vw);margin:0 auto;padding:28px 0 36px;position:relative;z-index:1;}
     .hero,.panel{background:rgba(8,2,20,.94);border:1px solid rgba(89,255,157,.18);border-radius:18px;padding:22px;box-shadow:0 0 35px rgba(169,76,255,.12);}
     .hero{text-align:center;margin-bottom:18px;}
     .logo{width:86px;max-width:28vw;margin-bottom:12px;}
-    .eyebrow,.label{font-family:'Press Start 2P',cursive;color:var(--green);font-size:10px;line-height:1.8;}
+    .eyebrow,.label,.panel-title{font-family:'Press Start 2P',cursive;color:var(--green);font-size:10px;line-height:1.8;}
     h1{font-family:'Press Start 2P',cursive;font-size:clamp(20px,4vw,36px);line-height:1.45;margin:8px 0;color:#fff;text-shadow:0 0 18px rgba(89,255,157,.25);}
     p{color:var(--muted);font-size:18px;line-height:1.5;margin:8px 0;}
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0;}
-    .stat{background:#1b0640;border:1px solid rgba(89,255,157,.18);border-radius:12px;padding:12px;text-align:center;color:var(--green);font-family:'Press Start 2P',cursive;font-size:8px;line-height:1.7;}
+    .stage-panel,.stats-panel,.lesson-panel,.leaderboard-panel{background:rgba(8,2,20,.95);border:1px solid rgba(89,255,157,.18);border-radius:14px;padding:12px;margin:10px 0;color:var(--muted);font-size:13px;line-height:1.55;text-align:center;}
+    .stage-title,.panel-title{color:var(--amber);font-size:10px;margin-bottom:8px;}
+    .stage-track{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;}
+    .stage-pill{background:#1b0640;border:1px solid rgba(169,76,255,.22);border-radius:10px;padding:8px 5px;font-family:'Press Start 2P',cursive;font-size:6.5px;line-height:1.5;color:var(--muted);}
+    .stage-pill.active{color:var(--green);border-color:var(--green);box-shadow:0 0 14px rgba(89,255,157,.25);}
+    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+    .stat-pill{background:#1b0640;border:1px solid rgba(89,255,157,.16);border-radius:10px;padding:9px 6px;color:var(--green);font-family:'Press Start 2P',cursive;font-size:7px;line-height:1.7;}
     .question{font-size:24px;color:#fff;margin:14px 0 18px;line-height:1.35;}
     .answers{display:grid;gap:10px;}
     button{cursor:pointer;border:0;border-radius:12px;padding:14px 16px;font-family:'Press Start 2P',cursive;font-size:10px;line-height:1.6;color:#06120b;background:linear-gradient(135deg,var(--green),#8dffc0);box-shadow:0 0 18px rgba(89,255,157,.2);}
@@ -28,16 +34,19 @@
     .answer:hover{border-color:var(--green);}
     .answer.correct{border-color:var(--green);background:rgba(89,255,157,.12);}
     .answer.wrong{border-color:var(--bad);background:rgba(255,92,122,.12);}
-    .feedback{min-height:80px;margin-top:14px;color:var(--amber);font-size:18px;line-height:1.45;}
+    .feedback{min-height:70px;margin-top:14px;color:var(--amber);font-size:18px;line-height:1.45;}
+    .why{display:block;margin-top:8px;color:var(--amber);font-size:13px;line-height:1.5;}
     .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
     .secondary{background:transparent;color:var(--green);border:1px solid rgba(89,255,157,.4);box-shadow:none;}
     .hidden{display:none!important;}
     .result-title{font-family:'Press Start 2P',cursive;color:var(--green);font-size:18px;line-height:1.6;margin-bottom:10px;}
-    @media(max-width:760px){.stats{grid-template-columns:repeat(2,1fr)}.question{font-size:20px}button{font-size:8px}.hero,.panel{padding:16px}}
+    .leaderboard-list{text-align:left;max-width:540px;margin:0 auto;}
+    @media(max-width:760px){.stats-grid,.stage-track{grid-template-columns:repeat(2,1fr)}.question{font-size:20px}button{font-size:8px}.hero,.panel{padding:16px}.stage-pill{font-size:6px}}
   </style>
 </head>
 <body>
   <div class="bg-grid"></div>
+  <div class="bg-scanlines"></div>
   <main class="shell">
     <section class="hero">
       <img src="../logo.svg" alt="SCCYBER logo" class="logo">
@@ -54,33 +63,52 @@
 
     <section id="startPanel" class="panel">
       <div class="label">MISSION BRIEF</div>
-      <p>You will face 8 quick password decisions. Score 80% or higher to pass.</p>
+      <p>You will face 8 quick password decisions across four stages. Score 80% or higher to pass.</p>
       <div class="actions"><button id="startBtn">Start Game</button></div>
     </section>
 
     <section id="gamePanel" class="panel hidden">
-      <div class="stats">
-        <div class="stat">QUESTION<br><span id="qCount">1/8</span></div>
-        <div class="stat">SCORE<br><span id="scoreBox">0</span></div>
-        <div class="stat">ACCURACY<br><span id="accuracyBox">0%</span></div>
-        <div class="stat">STATUS<br><span id="statusBox">PLAY</span></div>
-      </div>
+      <section class="stage-panel">
+        <div class="stage-title" id="stageTitle">STAGE 1: CREATE</div>
+        <div id="stageLesson">Strong passwords start with length, uniqueness and unpredictability.</div>
+        <div class="stage-track" id="stageTrack"></div>
+      </section>
+
+      <section class="stats-panel">
+        <div class="panel-title">PERFORMANCE</div>
+        <div class="stats-grid">
+          <div class="stat-pill">POINTS<br><span id="pointsBox">0</span></div>
+          <div class="stat-pill">ACCURACY<br><span id="accuracyBox">0%</span></div>
+          <div class="stat-pill">STREAK<br><span id="streakBox">0</span></div>
+          <div class="stat-pill">RANK<br><span id="rankBox">TRAINEE</span></div>
+        </div>
+      </section>
+
       <div class="label" id="topicLabel">PASSWORD HABITS</div>
       <div class="question" id="questionText"></div>
       <div class="answers" id="answers"></div>
       <div class="feedback" id="feedback"></div>
       <div class="actions"><button id="nextBtn" class="hidden">Next</button></div>
+
+      <section class="lesson-panel">
+        <div class="panel-title">WHY THIS MATTERS</div>
+        <div id="whyText">Choose carefully. The learning point will appear after your answer.</div>
+      </section>
     </section>
 
     <section id="resultPanel" class="panel hidden">
       <div class="result-title" id="resultTitle">Result</div>
       <p id="resultText"></p>
-      <div class="stats">
-        <div class="stat">FINAL<br><span id="finalScore">0%</span></div>
-        <div class="stat">CORRECT<br><span id="finalCorrect">0/8</span></div>
-        <div class="stat">POINTS<br><span id="finalPoints">0</span></div>
-        <div class="stat">STATUS<br><span id="finalStatus">TRY AGAIN</span></div>
+      <div class="stats-grid">
+        <div class="stat-pill">FINAL<br><span id="finalScore">0%</span></div>
+        <div class="stat-pill">CORRECT<br><span id="finalCorrect">0/8</span></div>
+        <div class="stat-pill">POINTS<br><span id="finalPoints">0</span></div>
+        <div class="stat-pill">RANK<br><span id="finalRank">TRAINEE</span></div>
       </div>
+      <section class="leaderboard-panel">
+        <div class="panel-title">LOCAL LEADERBOARD</div>
+        <div class="leaderboard-list" id="leaderboardList">No scores yet.</div>
+      </section>
       <div class="actions">
         <button id="playAgainBtn">Play Again</button>
         <button id="dashboardBtn" class="secondary">Back to Dashboard</button>
@@ -90,40 +118,30 @@
 
   <script>
     const launchedFromPortal = window.top !== window.self || new URLSearchParams(location.search).get("portal") === "1";
-    const lockPanel = document.getElementById("lockPanel");
-    const startPanel = document.getElementById("startPanel");
-    const gamePanel = document.getElementById("gamePanel");
-    const resultPanel = document.getElementById("resultPanel");
-    const startBtn = document.getElementById("startBtn");
-    const nextBtn = document.getElementById("nextBtn");
-    const playAgainBtn = document.getElementById("playAgainBtn");
-    const dashboardBtn = document.getElementById("dashboardBtn");
-    const qCount = document.getElementById("qCount");
-    const scoreBox = document.getElementById("scoreBox");
-    const accuracyBox = document.getElementById("accuracyBox");
-    const statusBox = document.getElementById("statusBox");
-    const topicLabel = document.getElementById("topicLabel");
-    const questionText = document.getElementById("questionText");
-    const answers = document.getElementById("answers");
-    const feedback = document.getElementById("feedback");
-
-    const questions = [
-      {topic:"PASSWORD HABITS", q:"You need a new password for work. Which one is safest?", a:["Summer2026","Sccyber123","Blue!Train7Coffee!Moon","Password1"], c:2, why:"Long, unique passwords are harder to guess and crack."},
-      {topic:"PASSWORD REUSE", q:"You used the same password on Netflix and work email. What should you do?", a:["Keep it if it is strong","Change only Netflix","Change the work password and stop reusing passwords","Write it on paper"], c:2, why:"If one service is breached, reused passwords put other accounts at risk."},
-      {topic:"MFA", q:"A site offers multi factor authentication. What is the best move?", a:["Turn it on","Ignore it","Only use it for banking","Share the code with IT by email"], c:0, why:"MFA adds another layer if a password is stolen."},
-      {topic:"PASSWORD MANAGERS", q:"You have too many passwords to remember. What should you use?", a:["A browser note","One password everywhere","A trusted password manager","A shared spreadsheet"], c:2, why:"Password managers help create and store unique passwords safely."},
-      {topic:"SHARING", q:"A colleague asks for your login to quickly access a system. What should you do?", a:["Share it once","Send it by Teams","Say no and ask them to use their own access","Change it after sharing"], c:2, why:"Shared accounts remove accountability and increase risk."},
-      {topic:"PHISHING", q:"You get a login page from a link in an unexpected email. What is safest?", a:["Login quickly","Open the site manually from a trusted address","Forward your password","Try another browser"], c:1, why:"Going directly to the trusted site reduces phishing risk."},
-      {topic:"RESET", q:"You think your password has been exposed. What should you do first?", a:["Wait and see","Change it immediately and check MFA","Tell friends","Delete the app only"], c:1, why:"Fast action limits damage when credentials may be exposed."},
-      {topic:"DEVICES", q:"You are on a shared computer. What should you avoid?", a:["Logging out","Saving your password in the browser","Using MFA","Checking the URL"], c:1, why:"Shared devices should not store your passwords."}
+    const STAGES = [
+      { name: "CREATE", lesson: "Strong passwords start with length, uniqueness and unpredictability." },
+      { name: "PROTECT", lesson: "MFA and password managers reduce the damage from stolen credentials." },
+      { name: "VERIFY", lesson: "Unexpected links and login pages should be checked before entering credentials." },
+      { name: "RECOVER", lesson: "Fast password changes and clean account recovery limit the impact of exposure." }
     ];
 
-    let index = 0;
-    let correct = 0;
-    let answered = false;
-    let completed = false;
-    let startedAt = null;
-    let finalPayload = null;
+    const questions = [
+      {topic:"PASSWORD CREATION", q:"You need a new password for work. Which one is safest?", a:["Summer2026","Sccyber123","Blue!Train7Coffee!Moon","Password1"], c:2, why:"Long, unique passwords are harder to guess and crack."},
+      {topic:"PASSWORD REUSE", q:"You used the same password on streaming and work email. What should you do?", a:["Keep it if it is strong","Change only the streaming password","Change the work password and stop reusing passwords","Write it on paper"], c:2, why:"If one service is breached, reused passwords put other accounts at risk."},
+      {topic:"MFA", q:"A site offers multi factor authentication. What is the best move?", a:["Turn it on","Ignore it","Only use it for banking","Share the code with someone by email"], c:0, why:"MFA adds another layer if a password is stolen."},
+      {topic:"PASSWORD MANAGERS", q:"You have too many passwords to remember. What should you use?", a:["A browser note","One password everywhere","A trusted password manager","A shared spreadsheet"], c:2, why:"Password managers help create and store unique passwords safely."},
+      {topic:"SHARING", q:"A colleague asks for your login to quickly access a system. What should you do?", a:["Share it once","Send it by chat","Say no and ask them to use their own access","Change it after sharing"], c:2, why:"Shared accounts remove accountability and increase risk."},
+      {topic:"PHISHING", q:"You get a login page from a link in an unexpected email. What is safest?", a:["Login quickly","Open the site manually from a trusted address","Forward your password","Try another browser"], c:1, why:"Going directly to the trusted site reduces phishing risk."},
+      {topic:"RESET", q:"You think your password has been exposed. What should you do first?", a:["Wait and see","Change it immediately and check MFA","Tell friends","Delete the app only"], c:1, why:"Fast action limits damage when credentials may be exposed."},
+      {topic:"SHARED DEVICES", q:"You are on a shared computer. What should you avoid?", a:["Logging out","Saving your password in the browser","Using MFA","Checking the URL"], c:1, why:"Shared devices should not store your passwords."}
+    ];
+
+    const lockPanel = document.getElementById("lockPanel"), startPanel = document.getElementById("startPanel"), gamePanel = document.getElementById("gamePanel"), resultPanel = document.getElementById("resultPanel");
+    const startBtn = document.getElementById("startBtn"), nextBtn = document.getElementById("nextBtn"), playAgainBtn = document.getElementById("playAgainBtn"), dashboardBtn = document.getElementById("dashboardBtn");
+    const stageTitle = document.getElementById("stageTitle"), stageLesson = document.getElementById("stageLesson"), stageTrack = document.getElementById("stageTrack"), topicLabel = document.getElementById("topicLabel"), questionText = document.getElementById("questionText"), answers = document.getElementById("answers"), feedback = document.getElementById("feedback"), whyText = document.getElementById("whyText");
+    const pointsBox = document.getElementById("pointsBox"), accuracyBox = document.getElementById("accuracyBox"), streakBox = document.getElementById("streakBox"), rankBox = document.getElementById("rankBox");
+
+    let index = 0, correct = 0, wrong = 0, streak = 0, bestStreak = 0, answered = false, completed = false, startedAt = null, finalPayload = null;
 
     if (!launchedFromPortal) {
       startPanel.classList.add("hidden");
@@ -135,13 +153,49 @@
       panel.classList.remove("hidden");
     }
 
+    function stageIndex() { return Math.min(STAGES.length - 1, Math.floor(index / 2)); }
+    function points() { return (correct * 150) + (bestStreak * 75) - (wrong * 50); }
+    function accuracy() { const done = correct + wrong; return done ? Math.round((correct / done) * 100) : 0; }
+    function rank(score = points(), acc = accuracy()) {
+      if (score >= 1200 && acc >= 90) return "SHIELD PRO";
+      if (score >= 900 && acc >= 80) return "GUARDIAN";
+      if (score >= 650) return "DEFENDER";
+      return "TRAINEE";
+    }
+
+    function updateStage() {
+      const idx = stageIndex();
+      const stage = STAGES[idx];
+      stageTitle.textContent = `STAGE ${idx + 1}: ${stage.name}`;
+      stageLesson.textContent = stage.lesson;
+      stageTrack.innerHTML = STAGES.map((s, i) => `<div class="stage-pill ${i === idx ? "active" : ""}">${s.name}</div>`).join("");
+    }
+
+    function updateStats() {
+      const score = points(), acc = accuracy();
+      pointsBox.textContent = score;
+      accuracyBox.textContent = `${acc}%`;
+      streakBox.textContent = streak;
+      rankBox.textContent = rank(score, acc);
+    }
+
+    function loadLeaderboard() {
+      const list = document.getElementById("leaderboardList");
+      const board = JSON.parse(localStorage.getItem("sccyberPasswordShieldLeaderboard") || "[]");
+      if (!board.length) { list.textContent = "No scores yet."; return; }
+      list.innerHTML = board.slice(0, 5).map((row, i) => `${i + 1}. ${row.points} · ${row.rank} · ${row.accuracy}% · ${row.time}s`).join("<br>");
+    }
+
+    function saveLeaderboard(payload) {
+      const board = JSON.parse(localStorage.getItem("sccyberPasswordShieldLeaderboard") || "[]");
+      board.push({ points: payload.score, rank: rank(payload.score, payload.accuracy), accuracy: payload.accuracy, time: payload.durationSeconds, date: new Date().toLocaleDateString() });
+      board.sort((a, b) => b.points - a.points);
+      localStorage.setItem("sccyberPasswordShieldLeaderboard", JSON.stringify(board.slice(0, 10)));
+      loadLeaderboard();
+    }
+
     function startGame() {
-      index = 0;
-      correct = 0;
-      answered = false;
-      completed = false;
-      finalPayload = null;
-      startedAt = Date.now();
+      index = 0; correct = 0; wrong = 0; streak = 0; bestStreak = 0; answered = false; completed = false; finalPayload = null; startedAt = Date.now();
       show(gamePanel);
       renderQuestion();
     }
@@ -149,68 +203,52 @@
     function renderQuestion() {
       const item = questions[index];
       answered = false;
-      qCount.textContent = `${index + 1}/${questions.length}`;
-      scoreBox.textContent = correct;
-      const accuracy = index ? Math.round((correct / index) * 100) : 0;
-      accuracyBox.textContent = `${accuracy}%`;
-      statusBox.textContent = "PLAY";
       topicLabel.textContent = item.topic;
       questionText.textContent = item.q;
       feedback.textContent = "";
+      whyText.textContent = "Choose carefully. The learning point will appear after your answer.";
       nextBtn.classList.add("hidden");
       answers.innerHTML = "";
       item.a.forEach((text, answerIndex) => {
         const btn = document.createElement("button");
         btn.className = "answer";
         btn.textContent = text;
-        btn.addEventListener("click", () => choose(answerIndex, btn));
+        btn.addEventListener("click", () => choose(answerIndex));
         answers.appendChild(btn);
       });
+      updateStage();
+      updateStats();
     }
 
-    function choose(answerIndex, button) {
+    function choose(answerIndex) {
       if (answered) return;
       answered = true;
       const item = questions[index];
       const isCorrect = answerIndex === item.c;
-      if (isCorrect) correct += 1;
-      Array.from(answers.children).forEach((btn, i) => {
-        btn.classList.add(i === item.c ? "correct" : i === answerIndex ? "wrong" : "");
-      });
-      scoreBox.textContent = correct;
-      accuracyBox.textContent = `${Math.round((correct / (index + 1)) * 100)}%`;
-      feedback.textContent = `${isCorrect ? "Correct." : "Not quite."} ${item.why}`;
+      if (isCorrect) { correct += 1; streak += 1; bestStreak = Math.max(bestStreak, streak); } else { wrong += 1; streak = 0; }
+      Array.from(answers.children).forEach((btn, i) => btn.classList.add(i === item.c ? "correct" : i === answerIndex ? "wrong" : ""));
+      const learning = `${isCorrect ? "Correct." : "Not quite."} ${item.why} ${STAGES[stageIndex()].lesson}`;
+      feedback.innerHTML = `${isCorrect ? "Correct." : "Not quite."}<span class="why">Why this matters: ${item.why}</span>`;
+      whyText.textContent = learning;
       nextBtn.textContent = index === questions.length - 1 ? "Finish" : "Next";
       nextBtn.classList.remove("hidden");
+      updateStats();
     }
 
     function finishGame() {
       completed = true;
-      const accuracy = Math.round((correct / questions.length) * 100);
-      const passed = accuracy >= 80;
+      const acc = Math.round((correct / questions.length) * 100);
+      const passed = acc >= 80;
       const durationSeconds = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
-      const score = correct * 100;
-      finalPayload = {
-        type: "SCCYBER_GAME_ATTEMPT",
-        game: "password-shield",
-        score,
-        totalQuestions: questions.length,
-        correct,
-        wrong: questions.length - correct,
-        answered: questions.length,
-        accuracy,
-        durationSeconds,
-        completed: true,
-        passed,
-        createdAt: new Date().toISOString()
-      };
-
+      const finalPoints = points();
+      finalPayload = { type:"SCCYBER_GAME_ATTEMPT", game:"password-shield", score:finalPoints, totalQuestions:questions.length, correct, wrong, answered:questions.length, accuracy:acc, durationSeconds, completed:true, passed, createdAt:new Date().toISOString() };
       document.getElementById("resultTitle").textContent = passed ? "Shield Up" : "Try Again";
       document.getElementById("resultText").textContent = passed ? "Good work. You showed safe password habits." : "You need 80% to pass. Review the weak points and try again.";
-      document.getElementById("finalScore").textContent = `${accuracy}%`;
+      document.getElementById("finalScore").textContent = `${acc}%`;
       document.getElementById("finalCorrect").textContent = `${correct}/${questions.length}`;
-      document.getElementById("finalPoints").textContent = score;
-      document.getElementById("finalStatus").textContent = passed ? "PASS" : "TRY AGAIN";
+      document.getElementById("finalPoints").textContent = finalPoints;
+      document.getElementById("finalRank").textContent = rank(finalPoints, acc);
+      saveLeaderboard(finalPayload);
       show(resultPanel);
       postAttempt();
     }
@@ -220,24 +258,12 @@
       window.parent.postMessage(finalPayload, "*");
     }
 
-    nextBtn.addEventListener("click", () => {
-      if (index >= questions.length - 1) finishGame();
-      else { index += 1; renderQuestion(); }
-    });
-
+    nextBtn.addEventListener("click", () => { if (index >= questions.length - 1) finishGame(); else { index += 1; renderQuestion(); } });
     startBtn.addEventListener("click", startGame);
     playAgainBtn.addEventListener("click", startGame);
-    dashboardBtn.addEventListener("click", () => {
-      postAttempt();
-      window.parent.postMessage({ type: "SCCYBER_RETURN_TO_DASHBOARD" }, "*");
-    });
-
-    window.addEventListener("message", event => {
-      const data = event.data || {};
-      if (data.type === "SCCYBER_REQUEST_ATTEMPT") {
-        postAttempt();
-      }
-    });
+    dashboardBtn.addEventListener("click", () => { postAttempt(); window.parent.postMessage({ type:"SCCYBER_RETURN_TO_DASHBOARD" }, "*"); });
+    window.addEventListener("message", event => { const data = event.data || {}; if (data.type === "SCCYBER_REQUEST_ATTEMPT") postAttempt(); });
+    loadLeaderboard();
   </script>
 </body>
 </html>
