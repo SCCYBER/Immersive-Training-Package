@@ -4,6 +4,23 @@ function sccyberCompletedAttemptsFor(profile, gameKey) {
   });
 }
 
+function sccyberAttemptPassed(attempt) {
+  const passMark = typeof PASS_MARK !== "undefined" ? PASS_MARK : 80;
+  const accuracy = typeof attemptAccuracy === "function" ? attemptAccuracy(attempt) : Number(attempt.accuracy || 0);
+  return attempt.passed === true || accuracy >= passMark;
+}
+
+function sccyberGameResultState(profile, gameKey) {
+  const completedAttempts = sccyberCompletedAttemptsFor(profile, gameKey);
+
+  if (!completedAttempts.length) {
+    return "none";
+  }
+
+  const hasPass = completedAttempts.some(sccyberAttemptPassed);
+  return hasPass ? "done" : "try-again";
+}
+
 function sccyberRenderGameCompletionBadges() {
   const profile = typeof loadProfile === "function" ? loadProfile() : null;
 
@@ -14,13 +31,17 @@ function sccyberRenderGameCompletionBadges() {
     if (!badge) {
       badge = document.createElement("div");
       badge.className = "game-complete-badge hidden";
-      badge.textContent = "✓ DONE";
       card.insertBefore(badge, card.firstChild);
     }
 
-    const isDone = key && sccyberCompletedAttemptsFor(profile, key).length > 0;
-    badge.classList.toggle("hidden", !isDone);
-    card.classList.toggle("game-completed", !!isDone);
+    const state = key ? sccyberGameResultState(profile, key) : "none";
+
+    badge.classList.toggle("hidden", state === "none");
+    badge.classList.toggle("try-again", state === "try-again");
+    badge.textContent = state === "done" ? "✓ DONE" : "TRY AGAIN";
+
+    card.classList.toggle("game-completed", state === "done");
+    card.classList.toggle("game-try-again", state === "try-again");
   });
 }
 
