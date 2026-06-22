@@ -1,0 +1,269 @@
+:root{
+  --bg:#090216;
+  --panel:#13042d;
+  --panel-2:#1b0640;
+  --purple:#a94cff;
+  --purple-2:#6f1dce;
+  --green:#59ff9d;
+  --red:#ff3b6b;
+  --amber:#ffd44d;
+  --text:#f3ecff;
+  --muted:#b7a8d3;
+  --line:rgba(89,255,157,0.24);
+}
+
+body{
+  margin:0!important;
+  padding:32px 18px 48px!important;
+  background:var(--bg)!important;
+  color:var(--text)!important;
+  font-family:'Share Tech Mono', monospace!important;
+  text-align:center!important;
+}
+
+.bg-grid{
+  background:
+    linear-gradient(rgba(169,76,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(89,255,157,0.06) 1px, transparent 1px)!important;
+  background-size:28px 28px!important;
+}
+
+.bg-scanlines{
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,0.02) 0px,rgba(255,255,255,0.02) 1px,transparent 2px,transparent 4px)!important;
+}
+
+.shell{
+  position:relative!important;
+  z-index:2!important;
+  max-width:900px!important;
+  margin:0 auto!important;
+  padding:0!important;
+  background:linear-gradient(180deg, rgba(19,4,45,0.95), rgba(13,3,31,0.96))!important;
+  border:2px solid rgba(169,76,255,0.28)!important;
+  border-radius:18px!important;
+  box-shadow:0 0 40px rgba(111,29,206,0.35)!important;
+}
+
+.hero{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  padding:26px 18px 10px!important;
+  margin:0!important;
+}
+
+.logo{
+  width:170px!important;
+  max-width:60vw!important;
+  margin:0 auto 14px!important;
+  display:block!important;
+}
+
+.eyebrow,
+.label{
+  display:inline-block!important;
+  padding:8px 12px!important;
+  margin-bottom:14px!important;
+  border-radius:999px!important;
+  background:rgba(89,255,157,0.08)!important;
+  border:1px solid rgba(89,255,157,0.22)!important;
+  color:var(--green)!important;
+  font-family:'Press Start 2P', cursive!important;
+  font-size:10px!important;
+  line-height:1.5!important;
+}
+
+h1{
+  margin:0 0 12px!important;
+  font-family:'Press Start 2P', cursive!important;
+  font-size:clamp(18px, 3vw, 30px)!important;
+  line-height:1.5!important;
+  color:var(--purple)!important;
+  text-shadow:0 0 12px var(--purple), 0 0 24px rgba(89,255,157,0.18)!important;
+}
+
+.hero p{
+  margin:0 0 24px!important;
+  color:var(--muted)!important;
+  font-size:15px!important;
+}
+
+.panel{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  padding:0 18px 32px!important;
+}
+
+#startPanel,
+#lockPanel,
+#resultPanel{
+  padding:24px 18px 30px!important;
+}
+
+#startPanel,
+#lockPanel{
+  max-width:760px!important;
+  margin:0 auto!important;
+}
+
+.stage-panel,
+.stats-panel,
+.lesson-panel,
+.leaderboard-panel,
+#gamePanel > .question,
+.answers,
+.feedback{
+  max-width:100%!important;
+}
+
+.stage-panel,
+.stats-panel,
+.lesson-panel,
+.leaderboard-panel,
+#gamePanel{
+  background:rgba(12,3,30,0.9)!important;
+  border:1px solid rgba(169,76,255,0.2)!important;
+  border-radius:16px!important;
+  box-shadow:inset 0 0 18px rgba(169,76,255,0.05)!important;
+}
+
+#gamePanel{
+  padding:20px 16px 24px!important;
+  margin:0 18px 32px!important;
+}
+
+.stage-panel,
+.stats-panel,
+.lesson-panel,
+.leaderboard-panel{
+  margin:0 0 20px!important;
+  padding:20px 16px!important;
+}
+
+.stage-title,
+.panel-title{
+  display:block!important;
+  color:var(--amber)!important;
+  font-family:'Press Start 2P', cursive!important;
+  font-size:10px!important;
+  line-height:1.8!important;
+  margin-bottom:8px!important;
+  text-shadow:0 0 10px rgba(255,212,77,0.3)!important;
+}
+
+.stage-pill,
+.stat-pill{
+  background:var(--panel-2)!important;
+  border:1px solid rgba(89,255,157,0.22)!important;
+  border-radius:12px!important;
+  color:var(--green)!important;
+  font-family:'Press Start 2P', cursive!important;
+  box-shadow:0 0 12px rgba(89,255,157,0.08)!important;
+}
+
+.stage-pill.active{
+  border-color:var(--green)!important;
+  box-shadow:0 0 14px rgba(89,255,157,0.25)!important;
+}
+
+.question{
+  margin:0 0 16px!important;
+  font-size:22px!important;
+  line-height:1.5!important;
+  color:var(--text)!important;
+}
+
+.answers{
+  display:grid!important;
+  gap:12px!important;
+}
+
+.answer{
+  width:100%!important;
+  border-radius:12px!important;
+  padding:14px!important;
+  font-family:'Share Tech Mono', monospace!important;
+  font-size:17px!important;
+  color:var(--text)!important;
+  background:var(--panel-2)!important;
+  border:2px solid rgba(89,255,157,0.22)!important;
+  box-shadow:none!important;
+  text-align:center!important;
+  transition:transform 0.16s ease, background 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease!important;
+}
+
+.answer:hover{
+  transform:translateY(-2px)!important;
+  background:#220652!important;
+  box-shadow:0 0 18px rgba(89,255,157,0.12)!important;
+}
+
+.answer.correct{
+  background:rgba(89,255,157,0.16)!important;
+  border-color:var(--green)!important;
+  color:var(--green)!important;
+}
+
+.answer.wrong{
+  background:rgba(255,59,107,0.12)!important;
+  border-color:var(--red)!important;
+  color:var(--red)!important;
+}
+
+.feedback{
+  min-height:28px!important;
+  margin-top:16px!important;
+  margin-bottom:10px!important;
+  font-size:18px!important;
+  color:var(--green)!important;
+}
+
+button,
+#startBtn,
+#playAgainBtn{
+  border:none!important;
+  border-radius:12px!important;
+  padding:16px 14px!important;
+  font-family:'Press Start 2P', cursive!important;
+  font-size:13px!important;
+  line-height:1.6!important;
+  color:var(--bg)!important;
+  cursor:pointer!important;
+  background:linear-gradient(180deg, #7dffb4, #59ff9d)!important;
+  box-shadow:0 0 18px rgba(89,255,157,0.22)!important;
+}
+
+#nextBtn,
+.secondary{
+  margin-top:10px!important;
+  background:linear-gradient(90deg, var(--purple-2), var(--purple))!important;
+  color:#fff!important;
+  font-family:'Press Start 2P', cursive!important;
+  font-size:12px!important;
+  line-height:1.6!important;
+}
+
+.result-title{
+  font-family:'Press Start 2P', cursive!important;
+  color:var(--green)!important;
+  font-size:clamp(16px, 2.8vw, 26px)!important;
+  line-height:1.6!important;
+  margin:8px 0 16px!important;
+}
+
+#resultText{
+  color:var(--muted)!important;
+  font-size:18px!important;
+  line-height:1.6!important;
+  margin-bottom:18px!important;
+}
+
+@media(max-width:760px){
+  body{padding:18px 10px 28px!important;}
+  .shell{width:100%!important;}
+  .stats-grid,.stage-track{grid-template-columns:repeat(2,1fr)!important;}
+  .answer{font-size:15px!important;}
+}
