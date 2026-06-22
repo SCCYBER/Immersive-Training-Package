@@ -120,9 +120,12 @@
 
       .leaderboard-panel,
       #playAgainBtn,
-      #dashboardBtn,
-      #nextBtn{
+      #dashboardBtn{
         display:none !important;
+      }
+
+      #nextBtn{
+        display:none;
       }
 
       #resultCard{
