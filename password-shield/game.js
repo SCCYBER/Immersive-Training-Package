@@ -151,12 +151,16 @@ function choose(answerIndex) {
     else if (i === answerIndex) btn.classList.add("wrong");
   });
 
+  if (window.sccyberPasswordShieldFlash) {
+    window.sccyberPasswordShieldFlash(isCorrect ? "correct" : "wrong");
+  }
+
   feedback.innerHTML = `${isCorrect ? "Correct." : "Not quite."}<span class="why">Why this matters: ${item.why}</span>`;
   updateStats();
 
   if (index >= questions.length - 1) {
     nextBtn.style.display = "none";
-    setTimeout(finishGame, 1100);
+    setTimeout(finishGame, 1200);
     return;
   }
 
@@ -173,6 +177,7 @@ function saveLeaderboard(payload) {
 }
 
 function loadLeaderboard() {
+  if (!leaderboardList) return;
   const board = JSON.parse(localStorage.getItem("sccyberPasswordShieldLeaderboard") || "[]");
   leaderboardList.innerHTML = board.length ? board.slice(0, 5).map((row, i) => `${i + 1}. ${row.points} · ${row.rank} · ${row.accuracy}% · ${row.time}s`).join("<br>") : "No scores yet.";
 }
@@ -183,6 +188,7 @@ function finishGame() {
   const passed = acc >= 80;
   const durationSeconds = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
   const finalPoints = points();
+  const finalRank = rank(finalPoints, acc);
 
   finalPayload = {
     type: "SCCYBER_GAME_ATTEMPT",
@@ -200,11 +206,15 @@ function finishGame() {
   };
 
   resultTitle.textContent = passed ? "SHIELD UP" : "TRY AGAIN";
-  resultScore.textContent = `${acc}% · ${finalPoints} POINTS · ${rank(finalPoints, acc)}`;
+  resultScore.textContent = `${acc}% · ${finalPoints} POINTS · ${finalRank}`;
   resultCopy.textContent = passed ? "Good work. You showed safe password habits." : "You need 80% to pass. Review the weak points and try again.";
   resultCard.style.display = "block";
   saveLeaderboard(finalPayload);
   postAttempt();
+
+  if (window.sccyberPasswordShieldResultScreen) {
+    setTimeout(() => window.sccyberPasswordShieldResultScreen(passed, acc, finalPoints, finalRank), 350);
+  }
 }
 
 function postAttempt() {
