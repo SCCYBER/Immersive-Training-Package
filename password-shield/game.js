@@ -152,9 +152,16 @@ function choose(answerIndex) {
   });
 
   feedback.innerHTML = `${isCorrect ? "Correct." : "Not quite."}<span class="why">Why this matters: ${item.why}</span>`;
-  nextBtn.textContent = index === questions.length - 1 ? "FINISH" : "NEXT QUESTION";
-  nextBtn.style.display = "block";
   updateStats();
+
+  if (index >= questions.length - 1) {
+    nextBtn.style.display = "none";
+    setTimeout(finishGame, 1100);
+    return;
+  }
+
+  nextBtn.textContent = "NEXT QUESTION";
+  nextBtn.style.display = "block";
 }
 
 function saveLeaderboard(payload) {
@@ -206,19 +213,11 @@ function postAttempt() {
 }
 
 nextBtn.addEventListener("click", () => {
-  if (index >= questions.length - 1) finishGame();
-  else {
-    index += 1;
-    renderQuestion();
-  }
+  index += 1;
+  renderQuestion();
 });
 
 el("playNowBtn").addEventListener("click", startGame);
-el("playAgainBtn").addEventListener("click", startGame);
-el("dashboardBtn").addEventListener("click", () => {
-  postAttempt();
-  window.parent.postMessage({ type: "SCCYBER_RETURN_TO_DASHBOARD" }, "*");
-});
 
 window.addEventListener("message", event => {
   const data = event.data || {};
