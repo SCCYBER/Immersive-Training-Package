@@ -29,25 +29,23 @@
       <p>This module must be launched from inside the SCCYBER training portal.</p>
     </section>
 
-    <section class="game-panel">
-      <div class="stage-panel">
-        <div>
-          <div class="eyebrow">CURRENT ENVIRONMENT</div>
-          <h2 id="stageTitle">STAGE 1</h2>
-          <p id="stageLesson">Assess the situation and choose the safest action.</p>
-        </div>
-        <div class="stage-track" id="stageTrack"></div>
+    <section class="game-panel" id="gamePanel" style="display:none;">
+      <div class="progress-grid">
+        <div class="hud-box"><span>QUESTION</span><strong id="questionNumberBox">1</strong></div>
+        <div class="hud-box"><span>TOTAL</span><strong id="totalQuestionsBox">15</strong></div>
       </div>
 
-      <div class="hud-grid">
-        <div class="hud-box"><span>POINTS</span><strong id="pointsBox">0</strong></div>
-        <div class="hud-box"><span>ACCURACY</span><strong id="accuracyBox">0%</strong></div>
-        <div class="hud-box"><span>STREAK</span><strong id="streakBox">0</strong></div>
-        <div class="hud-box"><span>RANK</span><strong id="rankBox">TRAINEE</strong></div>
+      <div class="scenario-art" id="scenarioArt" aria-hidden="true">
+        <div class="pixel-scene office">
+          <div class="scene-screen"></div>
+          <div class="scene-desk"></div>
+          <div class="scene-person"></div>
+          <div class="scene-lock"></div>
+        </div>
       </div>
 
       <article class="question-card">
-        <div class="question-tag" id="tag">OFFICE</div>
+        <div class="question-tag" id="tag">OFFICE · 1/15</div>
         <h2 id="question">Question loading...</h2>
         <div class="answers" id="answers"></div>
         <div class="feedback" id="feedback"></div>
