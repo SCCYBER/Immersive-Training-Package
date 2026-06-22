@@ -42,6 +42,97 @@ function sccyberGameResultState(profile, gameKey) {
   return hasPass ? "done" : "try-again";
 }
 
+function sccyberRemoteAttemptToLocal(row, profile) {
+  const answered = row.answered || null;
+  const accuracy = row.accuracy !== null && row.accuracy !== undefined
+    ? row.accuracy
+    : answered && row.correct_count !== null && row.correct_count !== undefined
+      ? Math.round(Number(row.correct_count) / Number(answered) * 100)
+      : null;
+
+  return {
+    firstName: profile.firstName,
+    surname: profile.surname,
+    learnerName: profile.name,
+    departmentRole: profile.departmentRole,
+    game: row.game,
+    score: Number(row.score || 0),
+    source: "supabase",
+    totalQuestions: null,
+    correct: row.correct_count,
+    wrong: row.wrong_count,
+    answered: row.answered,
+    accuracy: accuracy,
+    durationSeconds: row.duration_seconds,
+    completed: true,
+    passed: row.passed === true || Number(accuracy || 0) >= (typeof PASS_MARK !== "undefined" ? PASS_MARK : 80),
+    role: null,
+    threatsStopped: null,
+    biggestWeakness: null,
+    createdAt: row.created_at || new Date().toISOString()
+  };
+}
+
+async function sccyberLoadSavedLearnerScores() {
+  const profile = typeof loadProfile === "function" ? loadProfile() : null;
+  const client = window.supabaseClient || (typeof supabaseClient !== "undefined" ? supabaseClient : null);
+
+  if (!profile || profile.mode !== "live" || !profile.supabaseUserId || !client) {
+    return;
+  }
+
+  if (profile.__scoresLoading) return;
+  profile.__scoresLoading = true;
+  if (typeof saveProfile === "function") saveProfile(profile);
+
+  try {
+    const result = await client
+      .from("attempts")
+      .select("game,score,accuracy,correct_count,wrong_count,answered,duration_seconds,passed,created_at")
+      .eq("user_id", profile.supabaseUserId)
+      .order("created_at", { ascending: true });
+
+    const current = typeof loadProfile === "function" ? loadProfile() : profile;
+    if (!current || current.supabaseUserId !== profile.supabaseUserId) return;
+
+    current.__scoresLoading = false;
+
+    if (result.error || !Array.isArray(result.data)) {
+      if (typeof saveProfile === "function") saveProfile(current);
+      return;
+    }
+
+    current.attempts = current.attempts || [];
+
+    result.data.forEach(function (row) {
+      const local = sccyberRemoteAttemptToLocal(row, current);
+      const exists = current.attempts.some(function (attempt) {
+        return attempt.game === local.game &&
+          String(attempt.createdAt || "") === String(local.createdAt || "") &&
+          Number(attempt.score || 0) === Number(local.score || 0);
+      });
+
+      if (!exists) current.attempts.push(local);
+    });
+
+    if (typeof games !== "undefined" && typeof bestScore === "function" && typeof attemptsFor === "function") {
+      current.scores = current.scores || {};
+      games.forEach(function (game) {
+        current.scores[game.key] = bestScore(attemptsFor(current, game.key));
+      });
+    }
+
+    if (typeof saveProfile === "function") saveProfile(current);
+    if (typeof updateDashboard === "function") updateDashboard();
+  } catch (e) {
+    const latest = typeof loadProfile === "function" ? loadProfile() : profile;
+    if (latest) {
+      latest.__scoresLoading = false;
+      if (typeof saveProfile === "function") saveProfile(latest);
+    }
+  }
+}
+
 function sccyberRenderGameCompletionBadges() {
   sccyberInstallCompletionBadgeStyles();
 
@@ -70,6 +161,7 @@ function sccyberRenderGameCompletionBadges() {
 
 window.addEventListener("load", function () {
   const originalUpdateDashboard = window.updateDashboard || (typeof updateDashboard === "function" ? updateDashboard : null);
+  const originalShowDashboard = window.showDashboard || (typeof showDashboard === "function" ? showDashboard : null);
 
   if (originalUpdateDashboard && !window.sccyberCompletionBadgesPatched) {
     window.sccyberCompletionBadgesPatched = true;
@@ -79,5 +171,14 @@ window.addEventListener("load", function () {
     };
   }
 
+  if (originalShowDashboard && !window.sccyberLearnerScoreSyncPatched) {
+    window.sccyberLearnerScoreSyncPatched = true;
+    showDashboard = function patchedShowDashboard() {
+      originalShowDashboard.apply(this, arguments);
+      setTimeout(sccyberLoadSavedLearnerScores, 150);
+    };
+  }
+
   setTimeout(sccyberRenderGameCompletionBadges, 250);
+  setTimeout(sccyberLoadSavedLearnerScores, 500);
 });
