@@ -133,6 +133,36 @@ async function sccyberLoadSavedLearnerScores() {
   }
 }
 
+function sccyberClarifyScoreWording() {
+  const profile = typeof loadProfile === "function" ? loadProfile() : null;
+  const totalGames = typeof games !== "undefined" ? games.length : 3;
+  const summary = profile && typeof calculateSummary === "function"
+    ? calculateSummary(profile)
+    : { completed: 0, avg: 0, status: "START TRAINING" };
+
+  const scoreCard = document.querySelector(".dashboard-preview .dash-card:first-child span");
+  const statusCard = document.getElementById("trainingStatus");
+  const reportAverageLabel = document.querySelector("#reportOutput .report-card:first-child span");
+
+  if (scoreCard) {
+    if (summary.completed > 0 && summary.completed < totalGames) {
+      scoreCard.textContent = "AVERAGE SO FAR";
+    } else if (summary.completed >= totalGames) {
+      scoreCard.textContent = "FINAL SCORE";
+    } else {
+      scoreCard.textContent = "AVERAGE SCORE";
+    }
+  }
+
+  if (statusCard && summary.completed > 0 && summary.completed < totalGames) {
+    statusCard.textContent = "IN PROGRESS";
+  }
+
+  if (reportAverageLabel) {
+    reportAverageLabel.textContent = summary.completed >= totalGames ? "Final Score" : "Average So Far";
+  }
+}
+
 function sccyberRenderGameCompletionBadges() {
   sccyberInstallCompletionBadgeStyles();
 
@@ -157,6 +187,8 @@ function sccyberRenderGameCompletionBadges() {
     card.classList.toggle("game-completed", state === "done");
     card.classList.toggle("game-try-again", state === "try-again");
   });
+
+  sccyberClarifyScoreWording();
 }
 
 window.addEventListener("load", function () {
@@ -168,6 +200,7 @@ window.addEventListener("load", function () {
     updateDashboard = function patchedUpdateDashboard() {
       originalUpdateDashboard.apply(this, arguments);
       sccyberRenderGameCompletionBadges();
+      sccyberClarifyScoreWording();
     };
   }
 
