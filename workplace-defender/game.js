@@ -69,7 +69,7 @@ function rank(score = points(), acc = accuracy()) {
 }
 
 function sceneHtml(scene) {
-  return `<div class="pixel-scene ${scene}"><div class="scene-bg"></div><div class="scene-object-a"></div><div class="scene-object-b"></div><div class="scene-object-c"></div><div class="scene-character hero-character"></div><div class="scene-character risk-character"></div><div class="scene-alert"></div></div>`;
+  return `<div class="pixel-scene ${scene}"><div class="scene-bg"></div><div class="scene-object-a"></div><div class="scene-object-b"></div><div class="scene-object-c"></div><div class="pixel-person arcade-man"><div class="hair"></div><div class="face"><span class="eye left"></span><span class="eye right"></span><span class="mouth"></span></div><div class="body"></div><div class="arm left"></div><div class="arm right"></div><div class="leg left"></div><div class="leg right"></div></div><div class="pixel-person arcade-woman"><div class="hair"></div><div class="face"><span class="eye left"></span><span class="eye right"></span><span class="mouth"></span></div><div class="body"></div><div class="arm left"></div><div class="arm right"></div><div class="leg left"></div><div class="leg right"></div></div><div class="scene-alert"></div></div>`;
 }
 
 function updateProgress() {
