@@ -1,17 +1,27 @@
 (function () {
-  function shuffleAnswerButtons() {
+  function makeVisualOrder(count) {
+    const order = Array.from({ length: count }, (_, i) => i);
+    for (let i = order.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [order[i], order[j]] = [order[j], order[i]];
+    }
+    return order;
+  }
+
+  function randomiseAnswerDisplayOnly() {
     const answers = document.getElementById("answers");
     if (!answers) return;
 
     const buttons = Array.from(answers.children);
     if (buttons.length < 2) return;
 
-    for (let i = buttons.length - 1; i > 0; i -= 1) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [buttons[i], buttons[j]] = [buttons[j], buttons[i]];
-    }
+    answers.style.display = "flex";
+    answers.style.flexDirection = "column";
 
-    buttons.forEach(button => answers.appendChild(button));
+    const visualOrder = makeVisualOrder(buttons.length);
+    buttons.forEach((button, originalIndex) => {
+      button.style.order = visualOrder[originalIndex];
+    });
   }
 
   function patchRenderQuestion() {
@@ -20,7 +30,7 @@
     const originalRenderQuestion = window.renderQuestion;
     window.renderQuestion = function () {
       originalRenderQuestion.apply(this, arguments);
-      shuffleAnswerButtons();
+      randomiseAnswerDisplayOnly();
     };
 
     window.__pikAnswersRandomised = true;
