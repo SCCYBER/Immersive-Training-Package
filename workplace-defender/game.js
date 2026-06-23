@@ -14,7 +14,7 @@ const questions = [
   { topic: "SOFTWARE", scene: "extension", q: "Pik receives a browser prompt asking to install an extension to view a document. What is safest?", a: ["Install it quickly", "Check with IT or use approved software only", "Install it then remove it later", "Forward the document to personal email"], c: 1, why: "Browser extensions can access data and should be approved before use." },
   { topic: "SOFTWARE", scene: "login", q: "A colleague shares login details with Pik for a paid tool so the team can avoid buying more licences. What should Pik do?", a: ["Use the shared login", "Save it in the browser", "Refuse and ask for proper access", "Only use it outside work hours"], c: 2, why: "Shared accounts weaken accountability and can breach policy." },
   { topic: "INFRA", scene: "cabinet", q: "Pik notices a network cabinet door left open in the office corridor. What should Pik do?", a: ["Ignore it because it is not Pik's job", "Take a photo and post it in chat", "Report it to the right team immediately", "Move cables around to tidy it"], c: 2, why: "Physical access to infrastructure can create serious security risk." },
-  { topic: "INFRA", scene: "usb", q: "A contractor asks Pik to plug an unknown USB device into a company laptop to transfer a file. What should Pik do?", a: ["Plug it in but do not open files", "Ask them to email it to a personal account", "Use only approved transfer methods", "Scan it at home first"], c: 2, why: "Unknown removable media can introduce malware or data leakage risk." },
+  { topic: "INFRA", scene: "usb", q: "A contractor asks Pik to plug an unknown USB device into a company laptop to transfer a file. What should Pik do?", a: ["Plug it in but do not open files", "Ask them to email it to a personal account", "Use only approved transfer methods", "Scan it at home first"], c: 2, why: "Unknown removable media can introduce security or data leakage risk." },
   { topic: "INFRA", scene: "incident", q: "Pik accidentally sends a sensitive file to the wrong person. What should Pik do?", a: ["Delete the sent email and hope it is fine", "Report it immediately and follow the incident process", "Ask the recipient nicely to ignore it", "Wait until someone complains"], c: 1, why: "Mistakes happen, but fast reporting limits harm and supports compliance." }
 ];
 
@@ -45,6 +45,7 @@ let answered = false;
 let completed = false;
 let startedAt = null;
 let finalPayload = null;
+let currentOptions = [];
 
 if (!launchedFromPortal) {
   startScreen.classList.add("hidden");
@@ -68,6 +69,15 @@ function rank(score = points(), acc = accuracy()) {
   return "TRAINEE";
 }
 
+function shuffleOptions(item) {
+  const options = item.a.map((text, originalIndex) => ({ text, originalIndex }));
+  for (let i = options.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [options[i], options[j]] = [options[j], options[i]];
+  }
+  return options;
+}
+
 function renderPikScene(scene) {
   if (typeof window.sceneHtml === "function") return window.sceneHtml(scene);
   return `<div class="single-pixel-scene"><div class="pik-fallback-avatar" aria-hidden="true"></div></div>`;
@@ -88,6 +98,7 @@ function startGame() {
   answered = false;
   completed = false;
   finalPayload = null;
+  currentOptions = [];
   startedAt = Date.now();
   startScreen.classList.add("hidden");
   startScreen.style.display = "none";
@@ -99,6 +110,7 @@ function startGame() {
 function renderQuestion() {
   const item = questions[index];
   answered = false;
+  currentOptions = shuffleOptions(item);
   tag.textContent = `QUESTION ${index + 1}/${questions.length}`;
   question.textContent = item.q;
   feedback.textContent = "";
@@ -106,23 +118,24 @@ function renderQuestion() {
   answers.innerHTML = "";
   scenarioArt.innerHTML = renderPikScene(item.scene || item.topic.toLowerCase());
 
-  item.a.forEach((text, answerIndex) => {
+  currentOptions.forEach((option, displayIndex) => {
     const btn = document.createElement("button");
     btn.className = "answer-btn";
-    btn.textContent = text;
-    btn.addEventListener("click", () => choose(answerIndex));
+    btn.textContent = option.text;
+    btn.addEventListener("click", () => choose(displayIndex));
     answers.appendChild(btn);
   });
 
   updateProgress();
 }
 
-function choose(answerIndex) {
+function choose(displayIndex) {
   if (answered) return;
   answered = true;
 
   const item = questions[index];
-  const isCorrect = answerIndex === item.c;
+  const chosen = currentOptions[displayIndex];
+  const isCorrect = chosen && chosen.originalIndex === item.c;
 
   if (isCorrect) {
     correct += 1;
@@ -134,9 +147,10 @@ function choose(answerIndex) {
   }
 
   Array.from(answers.children).forEach((btn, i) => {
+    const option = currentOptions[i];
     btn.classList.add("disabled");
-    if (i === item.c) btn.classList.add("correct");
-    else if (i === answerIndex) btn.classList.add("wrong");
+    if (option && option.originalIndex === item.c) btn.classList.add("correct");
+    else if (i === displayIndex) btn.classList.add("wrong");
   });
 
   if (window.sccyberWorkplaceDefenderFlash) {
