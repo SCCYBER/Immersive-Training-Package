@@ -46,10 +46,12 @@ function loadAdminRefreshFix() {
   document.body.appendChild(script);
 }
 
-function fixBruteForceLaunchUrl() {
-  const button = document.querySelector(".game-card[data-game='brute-force-lockdown'] .play-btn");
-  if (!button) return;
-  button.dataset.url = "https://sccyber.github.io/brute-force-breach/bf-core-917a.html?portal=1";
+function fixGameLaunchUrls() {
+  const brute = document.querySelector(".game-card[data-game='brute-force-lockdown'] .play-btn");
+  if (brute) brute.dataset.url = "https://sccyber.github.io/brute-force-breach/bf-core-917a.html?portal=1";
+
+  const breach = document.querySelector(".game-card[data-game='breach-lockdown'] .play-btn");
+  if (breach) breach.dataset.url = "https://sccyber.github.io/breach-lockdown/index.html?portal=1";
 }
 
 window.addEventListener("load", () => {
@@ -58,8 +60,8 @@ window.addEventListener("load", () => {
   setInterval(cleanLoginMessages, 300);
   cleanLoginMessages();
   loadAdminRefreshFix();
-  fixBruteForceLaunchUrl();
-  setTimeout(fixBruteForceLaunchUrl, 500);
+  fixGameLaunchUrls();
+  setTimeout(fixGameLaunchUrls, 500);
 });
 
 document.addEventListener("click", event => {
