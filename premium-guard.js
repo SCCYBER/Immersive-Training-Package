@@ -46,12 +46,20 @@ function loadAdminRefreshFix() {
   document.body.appendChild(script);
 }
 
+function fixBruteForceLaunchUrl() {
+  const button = document.querySelector(".game-card[data-game='brute-force-lockdown'] .play-btn");
+  if (!button) return;
+  button.dataset.url = "https://sccyber.github.io/brute-force-breach/bf-core-917a.html?portal=1";
+}
+
 window.addEventListener("load", () => {
   setTimeout(syncPremiumAccessFromDatabase, 800);
   setInterval(syncPremiumAccessFromDatabase, 30000);
   setInterval(cleanLoginMessages, 300);
   cleanLoginMessages();
   loadAdminRefreshFix();
+  fixBruteForceLaunchUrl();
+  setTimeout(fixBruteForceLaunchUrl, 500);
 });
 
 document.addEventListener("click", event => {
