@@ -4,9 +4,10 @@
       .sceneSvg{width:100%;height:100%;display:block;background:#090216;image-rendering:pixelated;}
       .px{shape-rendering:crispEdges;}
       .g{filter:drop-shadow(0 0 7px #59ff9d)}.p{filter:drop-shadow(0 0 7px #a94cff)}.r{filter:drop-shadow(0 0 7px #ff3b6b)}.y{filter:drop-shadow(0 0 7px #ffd44d)}
-      .bob{animation:bob 1.2s steps(2,end) infinite}.walk{animation:walk 4.2s steps(8,end) infinite}.paper{animation:paper 1.8s steps(4,end) infinite}.pulse{animation:pulse 1s steps(2,end) infinite}.shake{animation:shake .9s steps(3,end) infinite}.plug{animation:plug 1.5s steps(4,end) infinite}.fly{animation:fly 2.2s steps(6,end) infinite}.wifiPulse{animation:pulse 1.1s steps(2,end) infinite}
+      .bob{animation:bob 1.2s steps(2,end) infinite}.walk{animation:walk 4.2s steps(8,end) infinite}.chatWalk{animation:chatWalk 4.4s steps(9,end) infinite}.paper{animation:paper 1.8s steps(4,end) infinite}.pulse{animation:pulse 1s steps(2,end) infinite}.shake{animation:shake .9s steps(3,end) infinite}.plug{animation:plug 1.5s steps(4,end) infinite}.fly{animation:fly 2.2s steps(6,end) infinite}.wifiPulse{animation:pulse 1.1s steps(2,end) infinite}
       @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
       @keyframes walk{0%,15%{transform:translateX(0)}70%,100%{transform:translateX(210px)}}
+      @keyframes chatWalk{0%,15%{transform:translateX(0)}72%,100%{transform:translateX(205px)}}
       @keyframes paper{0%{transform:translateY(-32px);opacity:.3}75%,100%{transform:translateY(42px);opacity:1}}
       @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
       @keyframes shake{0%,100%{transform:rotate(0deg)}33%{transform:rotate(-4deg)}66%{transform:rotate(4deg)}}
@@ -16,7 +17,7 @@
   }
 
   function bg() {
-    return `<defs><linearGradient id="bg" x1="0" x2="1"><stop stop-color="#061b4d"/><stop offset=".55" stop-color="#17083e"/><stop offset="1" stop-color="#5c064d"/></linearGradient></defs><rect width="900" height="320" fill="#090216"/><rect width="900" height="320" fill="url(#bg)"/><g opacity=".18">${Array.from({length:24}).map((_,i)=>`<rect x="${18+i*38}" y="${20+(i%7)*36}" width="24" height="6" fill="${i%2?'#a94cff':'#59ff9d'}"/>`).join('')}</g><rect y="250" width="900" height="70" fill="#070018" opacity=".72"/>`;
+    return `<defs><linearGradient id="bg" x1="0" x2="1"><stop stop-color="#061b4d"/><stop offset=".55" stop-color="#17083e"/><stop offset="1" stop-color="#5c064d"/></linearGradient></defs><rect width="900" height="320" fill="#090216"/><rect width="900" height="320" fill="url(#bg)"/><g opacity=".18">${Array.from({length:24}).map((_,i)=>`<rect x="${18+i*38}" y="${20+(i%7)*36}" width="24" height="6" fill="${i%2?'#a94cff':'#59ff9d'}"/>`).join('')}</g><rect y="250" width="900" height="70" fill="#070018" opacity=".72"/><line x1="0" y1="252" x2="900" y2="252" stroke="#a94cff" stroke-width="3" opacity=".45"/>`;
   }
 
   function man(x,y,cls='bob') {
@@ -47,7 +48,7 @@
 
   window.renderWorkplaceDefenderScene = function(scene){
     const s = {
-      office: base(`${pc(45,42,true)}<rect x="30" y="246" width="270" height="26" fill="#a94cff" stroke="#070016" stroke-width="6"/>${man(360,96,'walk')} ${woman(735,90)} ${warn(620,48)}`),
+      office: base(`<g transform="translate(42 92) scale(.72)">${pc(0,0,true)}</g><rect x="35" y="239" width="205" height="20" fill="#a94cff" stroke="#070016" stroke-width="5"/>${woman(420,66,'chatWalk')} ${man(735,66)} ${warn(620,50)}`),
       printer: base(`${printer(45,48)}${man(420,96)}${woman(735,90)}${warn(630,48)}`),
       door: base(`${door(45,45)}${man(360,96)}${man(215,96,'walk')} ${woman(735,90)}${warn(625,48)}`),
       wifi: base(`${router(45,45)}${laptop(335,88)}${woman(735,90)}${warn(635,48)}`),
