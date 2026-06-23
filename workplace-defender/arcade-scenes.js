@@ -4,15 +4,14 @@
       .sceneSvg{width:100%;height:100%;display:block;background:#090216;image-rendering:pixelated;}
       .px{shape-rendering:crispEdges;}
       .g{filter:drop-shadow(0 0 7px #59ff9d)}.p{filter:drop-shadow(0 0 7px #a94cff)}.r{filter:drop-shadow(0 0 7px #ff3b6b)}.y{filter:drop-shadow(0 0 7px #ffd44d)}
-      .bob{animation:bob 1.2s steps(2,end) infinite}.walk{animation:walk 4.2s steps(8,end) infinite}.paper{animation:paper 1.8s steps(4,end) infinite}.pulse{animation:pulse 1s steps(2,end) infinite}.shake{animation:shake .9s steps(3,end) infinite}.plug{animation:plug 1.5s steps(4,end) infinite}.fly{animation:fly 2.2s steps(6,end) infinite}.doorOpen{animation:doorOpen 1.5s steps(2,end) infinite;transform-origin:392px 65px}.wifiPulse{animation:pulse 1.1s steps(2,end) infinite}
+      .bob{animation:bob 1.2s steps(2,end) infinite}.walk{animation:walk 4.2s steps(8,end) infinite}.paper{animation:paper 1.8s steps(4,end) infinite}.pulse{animation:pulse 1s steps(2,end) infinite}.shake{animation:shake .9s steps(3,end) infinite}.plug{animation:plug 1.5s steps(4,end) infinite}.fly{animation:fly 2.2s steps(6,end) infinite}.wifiPulse{animation:pulse 1.1s steps(2,end) infinite}
       @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-      @keyframes walk{0%,15%{transform:translateX(0)}70%,100%{transform:translateX(240px)}}
+      @keyframes walk{0%,15%{transform:translateX(0)}70%,100%{transform:translateX(210px)}}
       @keyframes paper{0%{transform:translateY(-32px);opacity:.3}75%,100%{transform:translateY(42px);opacity:1}}
       @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
       @keyframes shake{0%,100%{transform:rotate(0deg)}33%{transform:rotate(-4deg)}66%{transform:rotate(4deg)}}
-      @keyframes plug{0%,100%{transform:translateX(0)}50%{transform:translateX(-42px)}}
-      @keyframes fly{0%{transform:translateX(0)}75%,100%{transform:translateX(210px)}}
-      @keyframes doorOpen{0%,100%{transform:skewY(0deg)}50%{transform:skewY(-9deg)}}
+      @keyframes plug{0%,100%{transform:translateX(0)}50%{transform:translateX(-36px)}}
+      @keyframes fly{0%{transform:translateX(0)}75%,100%{transform:translateX(165px)}}
     </style>`;
   }
 
@@ -48,21 +47,21 @@
 
   window.renderWorkplaceDefenderScene = function(scene){
     const s = {
-      office: base(`${pc(55,42,true)}<rect x="38" y="246" width="270" height="26" fill="#a94cff" stroke="#070016" stroke-width="6"/>${man(300,96,'walk')} ${woman(720,90)} ${warn(600,48)}`),
-      printer: base(`${printer(60,48)}${man(330,96)}${woman(720,90)}${warn(600,48)}`),
-      door: base(`${door(75,45)}${man(305,96)}${man(155,96,'walk')} ${woman(720,90)}${warn(590,48)}`),
-      wifi: base(`${router(65,45)}${laptop(330,88)}${woman(720,90)}${warn(610,48)}`),
-      train: base(`<g class="px"><rect x="45" y="150" width="455" height="94" fill="#07142e" stroke="#59ff9d" stroke-width="7"/><rect x="95" y="170" width="75" height="42" fill="#10135d" stroke="#a94cff" stroke-width="5"/><rect x="205" y="170" width="75" height="42" fill="#10135d" stroke="#a94cff" stroke-width="5"/></g>${man(395,90)}${woman(720,90)}${warn(600,48)}`),
-      router: base(`${router(65,45)}${laptop(345,88)}${woman(720,90)}${warn(610,48)}`),
-      update: base(`${laptop(65,88)}${man(350,96)}${woman(720,90)}${warn(610,48)}`),
-      laptop: base(`${laptop(65,88)}${man(350,96)}${woman(720,90)}${warn(610,48)}`),
-      phone: base(`${phone(115,62)}${man(350,96)}${woman(720,90)}${warn(590,48)}`),
-      cloud: base(`${pc(55,52,false)}${cloud(355,45)}${woman(720,90)}${warn(615,48)}`),
-      extension: base(`${pc(55,52,false)}${cloud(355,45)}${woman(720,90)}${warn(615,48)}`),
-      login: base(`${pc(55,52,false)}${man(355,96)}${woman(720,90)}${warn(615,48)}`),
-      cabinet: base(`${cabinet(70,35)}${man(365,96)}${woman(720,90)}${warn(615,48)}`),
-      usb: base(`${laptop(65,90)}${usb(390,108)}${woman(720,90)}${warn(620,48)}`),
-      incident: base(`${pc(55,52,true)}${envelope(355,75)}${woman(720,90)}${warn(615,48)}`)
+      office: base(`${pc(45,42,true)}<rect x="30" y="246" width="270" height="26" fill="#a94cff" stroke="#070016" stroke-width="6"/>${man(360,96,'walk')} ${woman(735,90)} ${warn(620,48)}`),
+      printer: base(`${printer(45,48)}${man(420,96)}${woman(735,90)}${warn(630,48)}`),
+      door: base(`${door(45,45)}${man(360,96)}${man(215,96,'walk')} ${woman(735,90)}${warn(625,48)}`),
+      wifi: base(`${router(45,45)}${laptop(335,88)}${woman(735,90)}${warn(635,48)}`),
+      train: base(`<g class="px"><rect x="40" y="150" width="390" height="94" fill="#07142e" stroke="#59ff9d" stroke-width="7"/><rect x="85" y="170" width="75" height="42" fill="#10135d" stroke="#a94cff" stroke-width="5"/><rect x="195" y="170" width="75" height="42" fill="#10135d" stroke="#a94cff" stroke-width="5"/></g>${man(490,90)}${woman(735,90)}${warn(630,48)}`),
+      router: base(`${router(45,45)}${laptop(335,88)}${woman(735,90)}${warn(635,48)}`),
+      update: base(`${laptop(45,88)}${man(395,96)}${woman(735,90)}${warn(635,48)}`),
+      laptop: base(`${laptop(45,88)}${man(395,96)}${woman(735,90)}${warn(635,48)}`),
+      phone: base(`${phone(95,62)}${man(395,96)}${woman(735,90)}${warn(635,48)}`),
+      cloud: base(`${pc(45,52,false)}${cloud(335,45)}${woman(735,90)}${warn(635,48)}`),
+      extension: base(`${pc(45,52,false)}${cloud(335,45)}${woman(735,90)}${warn(635,48)}`),
+      login: base(`${pc(45,52,false)}${man(395,96)}${woman(735,90)}${warn(635,48)}`),
+      cabinet: base(`${cabinet(45,35)}${man(395,96)}${woman(735,90)}${warn(635,48)}`),
+      usb: base(`${laptop(45,90)}${usb(355,108)}${woman(735,90)}${warn(635,48)}`),
+      incident: base(`${pc(45,52,true)}${envelope(340,75)}${woman(735,90)}${warn(635,48)}`)
     };
     return s[scene] || s.office;
   };
