@@ -5,6 +5,36 @@
     button.remove();
   }
 
+  function currentAdminProfile() {
+    try {
+      return typeof loadProfile === "function"
+        ? loadProfile()
+        : JSON.parse(localStorage.getItem("sccyberPortalProfile") || "null");
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function addAdminResetScoresButton() {
+    const profile = currentAdminProfile();
+    if (!profile || profile.isAdmin !== true) return;
+    if (document.getElementById("adminResetOwnScoresBtn")) return;
+
+    const adminBtn = document.getElementById("adminBtn");
+    if (!adminBtn || !adminBtn.parentElement) return;
+
+    const button = document.createElement("button");
+    button.id = "adminResetOwnScoresBtn";
+    button.className = "small-btn";
+    button.type = "button";
+    button.textContent = "Reset Scores";
+    button.addEventListener("click", function () {
+      alert("Reset Scores button added. Action wiring is next.");
+    });
+
+    adminBtn.parentElement.insertBefore(button, adminBtn);
+  }
+
   function overrideMissingSavedLoginMessage() {
     if (typeof showSavedLogin !== "function" || window.sccyberSavedLoginMessageFixed) return;
     window.sccyberSavedLoginMessageFixed = true;
@@ -36,9 +66,13 @@
 
   window.addEventListener("load", function () {
     removeAdminRefreshButton();
+    addAdminResetScoresButton();
     overrideMissingSavedLoginMessage();
     setTimeout(removeAdminRefreshButton, 300);
+    setTimeout(addAdminResetScoresButton, 300);
     setTimeout(removeAdminRefreshButton, 1000);
+    setTimeout(addAdminResetScoresButton, 1000);
     setInterval(removeAdminRefreshButton, 2000);
+    setInterval(addAdminResetScoresButton, 2000);
   });
 })();
