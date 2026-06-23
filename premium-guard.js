@@ -38,11 +38,20 @@ function cleanLoginMessages() {
   }
 }
 
+function loadAdminRefreshFix() {
+  if (document.getElementById("sccyberAdminRefreshFixScript")) return;
+  const script = document.createElement("script");
+  script.id = "sccyberAdminRefreshFixScript";
+  script.src = "admin-refresh-fix.js?v=20260623a";
+  document.body.appendChild(script);
+}
+
 window.addEventListener("load", () => {
   setTimeout(syncPremiumAccessFromDatabase, 800);
   setInterval(syncPremiumAccessFromDatabase, 30000);
   setInterval(cleanLoginMessages, 300);
   cleanLoginMessages();
+  loadAdminRefreshFix();
 });
 
 document.addEventListener("click", event => {
