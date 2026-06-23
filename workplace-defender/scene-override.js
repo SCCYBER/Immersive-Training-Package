@@ -140,6 +140,30 @@
     .pik-eye-left{left:17px;}
     .pik-eye-right{right:17px;}
 
+    .pik-happy .pik-eye{
+      top:23px;
+      width:11px;
+      height:7px;
+      background:transparent;
+      border-radius:0;
+      border-top:4px solid #050508;
+    }
+
+    .pik-happy .pik-eye-left{left:15px;transform:rotate(10deg);}
+    .pik-happy .pik-eye-right{right:15px;transform:rotate(-10deg);}
+
+    .pik-sad .pik-eye{
+      top:25px;
+      width:12px;
+      height:7px;
+      background:transparent;
+      border-radius:0;
+      border-bottom:4px solid #050508;
+    }
+
+    .pik-sad .pik-eye-left{left:15px;transform:rotate(-14deg);}
+    .pik-sad .pik-eye-right{right:15px;transform:rotate(14deg);}
+
     .pik-mouth{
       left:24px;
       top:36px;
