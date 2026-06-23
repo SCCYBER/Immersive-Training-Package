@@ -1,13 +1,16 @@
 (function () {
+  let pikMood = "neutral";
+
   function renderPikOnly() {
     return `
       <div class="pik-visual-only" aria-hidden="true">
-        <div class="pik-css">
+        <div class="pik-css pik-${pikMood}">
           <div class="pik-ear pik-ear-left"></div>
           <div class="pik-ear pik-ear-right"></div>
           <div class="pik-head">
             <div class="pik-eye pik-eye-left"></div>
             <div class="pik-eye pik-eye-right"></div>
+            <div class="pik-mouth"></div>
             <div class="pik-face-shadow"></div>
           </div>
           <div class="pik-body">
@@ -22,6 +25,7 @@
   }
 
   window.sceneHtml = function () {
+    pikMood = "neutral";
     return renderPikOnly();
   };
 
@@ -32,6 +36,15 @@
     if (!box) return;
     box.innerHTML = renderPikOnly();
   }
+
+  function setPikMood(mood) {
+    pikMood = mood;
+    forcePikIntoVisualBox();
+  }
+
+  window.sccyberWorkplaceDefenderFlash = function (state) {
+    setPikMood(state === "correct" ? "happy" : "sad");
+  };
 
   const style = document.createElement("style");
   style.textContent = `
@@ -81,6 +94,21 @@
       image-rendering:pixelated;
     }
 
+    .pik-happy{
+      animation:pikCelebrate .35s steps(2,end) 2;
+      filter:drop-shadow(0 0 16px rgba(89,255,157,.85));
+    }
+
+    .pik-sad{
+      transform:translateY(8px);
+      filter:drop-shadow(0 0 14px rgba(255,59,107,.65));
+    }
+
+    @keyframes pikCelebrate{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-10px)}
+    }
+
     .pik-head{
       left:20px;
       top:8px;
@@ -111,6 +139,21 @@
 
     .pik-eye-left{left:17px;}
     .pik-eye-right{right:17px;}
+
+    .pik-mouth{
+      left:24px;
+      top:36px;
+      width:9px;
+      height:4px;
+      background:#050508;
+      display:none;
+    }
+
+    .pik-sad .pik-mouth{
+      display:block;
+      transform:rotate(180deg);
+      border-radius:8px 8px 0 0;
+    }
 
     .pik-face-shadow{
       left:0;
@@ -147,6 +190,30 @@
 
     .pik-arm-left{left:16px;}
     .pik-arm-right{right:16px;}
+
+    .pik-happy .pik-arm-left{
+      left:14px;
+      top:36px;
+      transform:rotate(-38deg);
+    }
+
+    .pik-happy .pik-arm-right{
+      right:14px;
+      top:36px;
+      transform:rotate(38deg);
+    }
+
+    .pik-sad .pik-arm-left{
+      top:80px;
+      left:17px;
+      transform:rotate(20deg);
+    }
+
+    .pik-sad .pik-arm-right{
+      top:80px;
+      right:17px;
+      transform:rotate(-20deg);
+    }
 
     .pik-leg{
       top:88px;
@@ -195,6 +262,9 @@
       .scenario-art{min-height:110px !important;}
       .pik-visual-only{min-height:110px;}
       .pik-css{width:64px;height:78px;transform:scale(.72);}
+      .pik-sad{transform:scale(.72) translateY(8px);}
+      .pik-happy{animation:pikCelebrateMobile .35s steps(2,end) 2;}
+      @keyframes pikCelebrateMobile{0%,100%{transform:scale(.72) translateY(0)}50%{transform:scale(.72) translateY(-10px)}}
       #question{font-size:12px !important;line-height:1.18 !important;}
       .answer-btn{font-size:10.5px !important;line-height:1.15 !important;padding:6px 7px !important;}
       .question-card{padding:9px !important;}
@@ -206,5 +276,4 @@
 
   forcePikIntoVisualBox();
   window.addEventListener("load", forcePikIntoVisualBox);
-  setInterval(forcePikIntoVisualBox, 500);
 })();
