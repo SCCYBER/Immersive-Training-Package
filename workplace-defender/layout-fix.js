@@ -30,131 +30,173 @@
       overflow:hidden !important;
     }
 
-    #startScreen .logo{
-      margin-left:auto !important;
-      margin-right:auto !important;
-    }
+    #startScreen .logo{margin-left:auto !important;margin-right:auto !important;}
+    #startScreen .start-title-main,#startScreen h1,#startScreen p{text-align:center !important;margin-left:auto !important;margin-right:auto !important;max-width:880px !important;}
+    #startScreen .arcade-green-btn{margin-left:auto !important;margin-right:auto !important;}
+    #gamePanel{margin-top:0 !important;}
 
-    #startScreen .start-title-main,
-    #startScreen h1,
-    #startScreen p{
-      text-align:center !important;
-      margin-left:auto !important;
-      margin-right:auto !important;
-      max-width:880px !important;
-    }
-
-    #startScreen .arcade-green-btn{
-      margin-left:auto !important;
-      margin-right:auto !important;
-    }
-
-    #gamePanel{
-      margin-top:0 !important;
-    }
-
-    .scene-character{
+    .pixel-person{
       position:absolute !important;
-      width:44px !important;
-      height:68px !important;
-      z-index:5 !important;
-      border:3px solid rgba(255,255,255,.82) !important;
-      border-radius:12px 12px 7px 7px !important;
-      box-shadow:0 0 14px rgba(169,76,255,.35) !important;
-      animation:wdCharacterBob 1.5s ease-in-out infinite !important;
+      width:96px !important;
+      height:148px !important;
+      z-index:8 !important;
+      image-rendering:pixelated !important;
+      filter:drop-shadow(0 0 12px rgba(169,76,255,.55)) !important;
+      animation:wdCharacterBob 1.6s ease-in-out infinite !important;
     }
 
-    .scene-character:before{
+    .pixel-person *{position:absolute !important;box-sizing:border-box !important;}
+
+    .pixel-person .face{
+      width:64px !important;
+      height:58px !important;
+      left:16px !important;
+      top:28px !important;
+      background:#f1a36d !important;
+      border:4px solid #090216 !important;
+      box-shadow:0 0 0 3px rgba(255,255,255,.72), inset -8px -8px rgba(78,31,79,.14) !important;
+    }
+
+    .pixel-person .hair{
+      width:78px !important;
+      height:34px !important;
+      left:9px !important;
+      top:13px !important;
+      background:#22346f !important;
+      border:4px solid #090216 !important;
+      box-shadow:0 0 0 3px rgba(255,255,255,.42) !important;
+    }
+
+    .pixel-person .eye{
+      width:9px !important;
+      height:9px !important;
+      top:20px !important;
+      background:#090216 !important;
+      box-shadow:0 0 0 2px rgba(255,255,255,.55) !important;
+    }
+
+    .pixel-person .eye.left{left:14px !important;}
+    .pixel-person .eye.right{right:14px !important;}
+
+    .pixel-person .mouth{
+      width:25px !important;
+      height:6px !important;
+      left:19px !important;
+      bottom:13px !important;
+      background:#090216 !important;
+    }
+
+    .pixel-person .body{
+      width:70px !important;
+      height:58px !important;
+      left:13px !important;
+      top:88px !important;
+      background:#1d5fff !important;
+      border:4px solid #090216 !important;
+      box-shadow:0 0 0 3px rgba(255,255,255,.46), inset -10px -8px rgba(9,2,22,.24) !important;
+    }
+
+    .pixel-person .arm{
+      width:20px !important;
+      height:56px !important;
+      top:92px !important;
+      background:#f1a36d !important;
+      border:4px solid #090216 !important;
+    }
+
+    .pixel-person .arm.left{left:0 !important;transform:rotate(8deg) !important;}
+    .pixel-person .arm.right{right:0 !important;transform:rotate(-8deg) !important;}
+
+    .pixel-person .leg{
+      width:24px !important;
+      height:34px !important;
+      top:138px !important;
+      background:#07142e !important;
+      border:4px solid #090216 !important;
+    }
+
+    .pixel-person .leg.left{left:18px !important;}
+    .pixel-person .leg.right{right:18px !important;}
+
+    .arcade-man{
+      left:56% !important;
+      bottom:12% !important;
+    }
+
+    .arcade-man .hair{
+      background:#1d5fff !important;
+      height:28px !important;
+      top:10px !important;
+      border-radius:2px !important;
+    }
+
+    .arcade-man .hair:after{
       content:"";
       position:absolute;
       width:34px;
-      height:28px;
-      left:2px;
-      top:-26px;
-      border:3px solid rgba(255,255,255,.82);
-      border-radius:10px;
-      background:#ffd44d;
-      box-shadow:0 0 12px rgba(255,212,77,.35);
+      height:18px;
+      right:-18px;
+      top:5px;
+      background:#1d5fff;
+      border:4px solid #090216;
     }
 
-    .scene-character:after{
-      content:"";
-      position:absolute;
-      width:8px;
-      height:8px;
-      left:9px;
-      top:-15px;
-      background:#090216;
-      box-shadow:16px 0 #090216, 8px 10px #090216;
+    .arcade-man .face{
+      background:#d8895d !important;
     }
 
-    .hero-character{
-      left:56% !important;
-      bottom:22% !important;
-      background:#59ff9d !important;
-      border-color:#59ff9d !important;
+    .arcade-man .body{
+      background:#1336a8 !important;
     }
 
-    .risk-character{
-      right:13% !important;
-      bottom:21% !important;
-      background:#ff3b6b !important;
-      border-color:#ff3b6b !important;
-      animation-delay:.25s !important;
+    .arcade-woman{
+      right:11% !important;
+      bottom:12% !important;
+      animation-delay:.22s !important;
     }
 
-    .risk-character:before{
-      background:#ff3b6b !important;
-      box-shadow:0 0 12px rgba(255,59,107,.45) !important;
+    .arcade-woman .hair{
+      width:88px !important;
+      height:66px !important;
+      left:4px !important;
+      top:5px !important;
+      background:#ff4fa3 !important;
+      border-radius:14px 14px 6px 6px !important;
     }
 
-    .risk-character:after{
-      background:#ffffff !important;
-      box-shadow:16px 0 #ffffff, 8px 10px #ffffff !important;
+    .arcade-woman .face{
+      background:#f0b06f !important;
+      top:34px !important;
     }
 
-    .office .hero-character,
-    .printer .hero-character,
-    .laptop .hero-character,
-    .update .hero-character{
-      left:61% !important;
-      bottom:25% !important;
+    .arcade-woman .body{
+      background:#ffd44d !important;
     }
 
-    .door .hero-character{
-      left:55% !important;
-      bottom:22% !important;
+    .arcade-woman .leg{
+      background:#601a98 !important;
     }
 
-    .door .risk-character{
-      right:20% !important;
-      bottom:22% !important;
-    }
+    .office .arcade-man,.printer .arcade-man,.laptop .arcade-man,.update .arcade-man{left:54% !important;bottom:12% !important;}
+    .office .arcade-woman,.printer .arcade-woman,.laptop .arcade-woman,.update .arcade-woman{right:10% !important;bottom:12% !important;}
 
-    .wifi .hero-character,
-    .router .hero-character,
-    .train .hero-character{
-      left:59% !important;
-      bottom:22% !important;
-    }
+    .door .arcade-man{left:47% !important;bottom:11% !important;}
+    .door .arcade-woman{right:15% !important;bottom:11% !important;}
 
-    .cloud .hero-character,
-    .extension .hero-character,
-    .login .hero-character{
-      left:50% !important;
-      bottom:24% !important;
-    }
+    .wifi .arcade-man,.router .arcade-man,.train .arcade-man{left:53% !important;bottom:11% !important;}
+    .wifi .arcade-woman,.router .arcade-woman,.train .arcade-woman{right:10% !important;bottom:11% !important;}
 
-    .cabinet .hero-character,
-    .usb .hero-character,
-    .incident .hero-character{
-      left:59% !important;
-      bottom:24% !important;
-    }
+    .cloud .arcade-man,.extension .arcade-man,.login .arcade-man{left:48% !important;bottom:12% !important;}
+    .cloud .arcade-woman,.extension .arcade-woman,.login .arcade-woman{right:10% !important;bottom:12% !important;}
+
+    .cabinet .arcade-man,.usb .arcade-man,.incident .arcade-man{left:54% !important;bottom:12% !important;}
+    .cabinet .arcade-woman,.usb .arcade-woman,.incident .arcade-woman{right:10% !important;bottom:12% !important;}
+
+    .scene-character,.hero-character,.risk-character{display:none !important;}
 
     @keyframes wdCharacterBob{
       0%,100%{transform:translateY(0);}
-      50%{transform:translateY(-8px);}
+      50%{transform:translateY(-7px);}
     }
   `;
   document.head.appendChild(style);
