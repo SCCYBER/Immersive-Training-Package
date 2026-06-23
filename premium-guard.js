@@ -42,7 +42,7 @@ function loadAdminRefreshFix() {
   if (document.getElementById("sccyberAdminRefreshFixScript")) return;
   const script = document.createElement("script");
   script.id = "sccyberAdminRefreshFixScript";
-  script.src = "admin-refresh-fix.js?v=20260623a";
+  script.src = "admin-refresh-fix.js?v=20260624b";
   document.body.appendChild(script);
 }
 
