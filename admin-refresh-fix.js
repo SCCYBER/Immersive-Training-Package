@@ -1,11 +1,11 @@
 (function () {
   async function runStableAdminRefresh(button) {
-    if (!button || button.dataset.sccyberRefreshing === "true") return;
+    const originalText = button ? button.textContent || "Refresh" : "Refresh";
 
-    const originalText = button.textContent || "Refresh";
-    button.dataset.sccyberRefreshing = "true";
-    button.disabled = true;
-    button.textContent = "Refreshing...";
+    if (button) {
+      button.disabled = true;
+      button.textContent = "Refreshing...";
+    }
 
     try {
       if (typeof sccyberSyncGameRegistryFromCards === "function") {
@@ -24,50 +24,51 @@
         setTimeout(attachStableAdminButtons, 500);
       }
 
-      const selected = document.getElementById("adminSelectedReport");
-      if (selected && selected.textContent.trim() === "") {
-        selected.textContent = "Select a learner to view their report.";
+      if (button) {
+        button.textContent = "Refreshed";
+        setTimeout(function () {
+          button.textContent = originalText;
+        }, 900);
       }
-
-      button.textContent = "Refreshed";
-      setTimeout(function () {
-        button.textContent = originalText;
-      }, 900);
     } catch (error) {
       console.error("SCCYBER admin refresh failed", error);
-      button.textContent = "Refresh failed";
+
+      if (button) {
+        button.textContent = "Refresh failed";
+        setTimeout(function () {
+          button.textContent = originalText;
+        }, 1600);
+      }
 
       const output = document.getElementById("adminOutput");
       if (output) {
         output.textContent = "Refresh failed. Check your admin session, database connection or Supabase policy.";
       }
-
-      setTimeout(function () {
-        button.textContent = originalText;
-      }, 1600);
     } finally {
-      button.disabled = false;
-      delete button.dataset.sccyberRefreshing;
+      if (button) button.disabled = false;
     }
   }
 
   function bindAdminRefreshButton() {
     const button = document.getElementById("refreshAdminBtn");
-    if (!button || button.dataset.sccyberRefreshFixBound === "true") return;
+    if (!button) return;
 
-    button.dataset.sccyberRefreshFixBound = "true";
-
-    button.addEventListener("click", function (event) {
+    button.onclick = function (event) {
       event.preventDefault();
       event.stopPropagation();
-      event.stopImmediatePropagation();
       runStableAdminRefresh(button);
-    }, true);
+      return false;
+    };
   }
+
+  window.sccyberAdminRefresh = function () {
+    runStableAdminRefresh(document.getElementById("refreshAdminBtn"));
+  };
 
   window.addEventListener("load", function () {
     bindAdminRefreshButton();
     setTimeout(bindAdminRefreshButton, 300);
     setTimeout(bindAdminRefreshButton, 1000);
+    setInterval(bindAdminRefreshButton, 2000);
   });
 })();
