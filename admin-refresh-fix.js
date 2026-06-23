@@ -15,6 +15,15 @@
     }
   }
 
+  function clearLocalAdminScores(profile) {
+    if (!profile) return;
+    profile.attempts = [];
+    profile.scores = {};
+    if (typeof saveProfile === "function") saveProfile(profile);
+    else localStorage.setItem("sccyberPortalProfile", JSON.stringify(profile));
+    if (typeof updateDashboard === "function") updateDashboard();
+  }
+
   function addAdminResetScoresButton() {
     const profile = currentAdminProfile();
     if (!profile || profile.isAdmin !== true) return;
@@ -28,8 +37,16 @@
     button.className = "small-btn";
     button.type = "button";
     button.textContent = "Reset Scores";
-    button.addEventListener("click", function () {
-      alert("Reset Scores button added. Action wiring is next.");
+    button.addEventListener("click", async function () {
+      const latest = currentAdminProfile();
+      if (!latest || latest.isAdmin !== true) return;
+      if (!confirm("Reset your own training scores?")) return;
+
+      if (latest.supabaseUserId && typeof resetLearnerScores === "function") {
+        await resetLearnerScores(latest.supabaseUserId);
+      }
+
+      clearLocalAdminScores(latest);
     });
 
     adminBtn.parentElement.insertBefore(button, adminBtn);
