@@ -69,7 +69,7 @@ function rank(score = points(), acc = accuracy()) {
 }
 
 function sceneHtml(scene) {
-  return `<div class="pixel-scene ${scene}"><div class="scene-bg"></div><div class="scene-object-a"></div><div class="scene-object-b"></div><div class="scene-object-c"></div><div class="scene-alert"></div></div>`;
+  return `<div class="pixel-scene ${scene}"><div class="scene-bg"></div><div class="scene-object-a"></div><div class="scene-object-b"></div><div class="scene-object-c"></div><div class="scene-character hero-character"></div><div class="scene-character risk-character"></div><div class="scene-alert"></div></div>`;
 }
 
 function updateProgress() {
@@ -89,6 +89,7 @@ function startGame() {
   finalPayload = null;
   startedAt = Date.now();
   startScreen.classList.add("hidden");
+  startScreen.style.display = "none";
   gamePanel.style.display = "block";
   resultCard.style.display = "none";
   renderQuestion();
