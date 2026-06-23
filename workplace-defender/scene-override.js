@@ -102,14 +102,15 @@
     .pik-ear-right{right:7px;}
 
     .pik-eye{
-      top:22px;
-      width:7px;
-      height:14px;
+      top:24px;
+      width:8px;
+      height:8px;
       background:#050508;
+      border-radius:50%;
     }
 
-    .pik-eye-left{left:18px;}
-    .pik-eye-right{right:18px;}
+    .pik-eye-left{left:17px;}
+    .pik-eye-right{right:17px;}
 
     .pik-face-shadow{
       left:0;
