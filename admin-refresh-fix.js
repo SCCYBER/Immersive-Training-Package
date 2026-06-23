@@ -1,51 +1,8 @@
 (function () {
-  async function runStableAdminRefresh(button) {
-    const originalText = button ? button.textContent || "Refresh" : "Refresh";
-
-    if (button) {
-      button.disabled = true;
-      button.textContent = "Refreshing...";
-    }
-
-    try {
-      if (typeof sccyberSyncGameRegistryFromCards === "function") sccyberSyncGameRegistryFromCards();
-      if (typeof loadAdminData !== "function") throw new Error("Admin data loader is not available.");
-
-      await loadAdminData();
-
-      if (typeof attachStableAdminButtons === "function") {
-        attachStableAdminButtons();
-        setTimeout(attachStableAdminButtons, 150);
-        setTimeout(attachStableAdminButtons, 500);
-      }
-
-      if (button) {
-        button.textContent = "Refreshed";
-        setTimeout(function () { button.textContent = originalText; }, 900);
-      }
-    } catch (error) {
-      console.error("SCCYBER admin refresh failed", error);
-      if (button) {
-        button.textContent = "Refresh failed";
-        setTimeout(function () { button.textContent = originalText; }, 1600);
-      }
-      const output = document.getElementById("adminOutput");
-      if (output) output.textContent = "Refresh failed. Check your admin session, database connection or Supabase policy.";
-    } finally {
-      if (button) button.disabled = false;
-    }
-  }
-
-  function bindAdminRefreshButton() {
+  function removeAdminRefreshButton() {
     const button = document.getElementById("refreshAdminBtn");
     if (!button) return;
-
-    button.onclick = function (event) {
-      event.preventDefault();
-      event.stopPropagation();
-      runStableAdminRefresh(button);
-      return false;
-    };
+    button.remove();
   }
 
   function overrideMissingSavedLoginMessage() {
@@ -66,8 +23,7 @@
                 <button class="small-btn fixed-close-admin-panel" type="button">Close</button>
               </div>
               <p>No saved password is stored in this browser for ${username}.</p>
-              <p>This usually means the login was created before password saving was added, created on another device, or browser storage was cleared.</p>
-              <p>Use <strong>Reset Login</strong> for this learner to generate a new password. The new password will then show here.</p>
+              <p>Use <strong>Reset Login</strong> to generate a new password. The new password will then show here.</p>
             </div>
           `);
         }
@@ -78,16 +34,11 @@
     };
   }
 
-  window.sccyberAdminRefresh = function () {
-    runStableAdminRefresh(document.getElementById("refreshAdminBtn"));
-  };
-
   window.addEventListener("load", function () {
-    bindAdminRefreshButton();
+    removeAdminRefreshButton();
     overrideMissingSavedLoginMessage();
-    setTimeout(bindAdminRefreshButton, 300);
-    setTimeout(bindAdminRefreshButton, 1000);
-    setTimeout(overrideMissingSavedLoginMessage, 1000);
-    setInterval(bindAdminRefreshButton, 2000);
+    setTimeout(removeAdminRefreshButton, 300);
+    setTimeout(removeAdminRefreshButton, 1000);
+    setInterval(removeAdminRefreshButton, 2000);
   });
 })();
