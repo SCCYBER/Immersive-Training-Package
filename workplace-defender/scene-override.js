@@ -130,39 +130,45 @@
     .pik-ear-right{right:7px;}
 
     .pik-eye{
-      top:24px;
-      width:8px;
-      height:8px;
-      background:#050508;
-      border-radius:50%;
+      top:23px;
+      width:10px;
+      height:10px;
+      background:#050508 !important;
+      border:0 !important;
+      border-radius:0 !important;
+      z-index:20 !important;
     }
 
-    .pik-eye-left{left:17px;}
-    .pik-eye-right{right:17px;}
+    .pik-eye-left{left:15px;}
+    .pik-eye-right{right:15px;}
 
     .pik-happy .pik-eye{
-      top:23px;
-      width:11px;
-      height:7px;
-      background:transparent;
-      border-radius:0;
-      border-top:4px solid #050508;
+      top:22px;
+      width:13px;
+      height:8px;
+      background:transparent !important;
+      border:0 !important;
+      border-bottom:4px solid #050508 !important;
+      border-radius:0 0 12px 12px !important;
+      z-index:20 !important;
     }
 
-    .pik-happy .pik-eye-left{left:15px;transform:rotate(10deg);}
-    .pik-happy .pik-eye-right{right:15px;transform:rotate(-10deg);}
+    .pik-happy .pik-eye-left{left:14px;transform:rotate(-8deg);}
+    .pik-happy .pik-eye-right{right:14px;transform:rotate(8deg);}
 
     .pik-sad .pik-eye{
-      top:25px;
-      width:12px;
-      height:7px;
-      background:transparent;
-      border-radius:0;
-      border-bottom:4px solid #050508;
+      top:24px;
+      width:13px;
+      height:8px;
+      background:transparent !important;
+      border:0 !important;
+      border-top:4px solid #050508 !important;
+      border-radius:12px 12px 0 0 !important;
+      z-index:20 !important;
     }
 
-    .pik-sad .pik-eye-left{left:15px;transform:rotate(-14deg);}
-    .pik-sad .pik-eye-right{right:15px;transform:rotate(14deg);}
+    .pik-sad .pik-eye-left{left:14px;transform:rotate(14deg);}
+    .pik-sad .pik-eye-right{right:14px;transform:rotate(-14deg);}
 
     .pik-mouth{
       left:24px;
@@ -171,6 +177,7 @@
       height:4px;
       background:#050508;
       display:none;
+      z-index:20;
     }
 
     .pik-sad .pik-mouth{
@@ -185,6 +192,7 @@
       width:22px;
       height:14px;
       background:#d9d9d9;
+      z-index:1;
     }
 
     .pik-body{
