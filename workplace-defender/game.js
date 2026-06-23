@@ -70,7 +70,7 @@ function rank(score = points(), acc = accuracy()) {
 
 function renderPikScene(scene) {
   if (typeof window.sceneHtml === "function") return window.sceneHtml(scene);
-  return `<div class="single-pixel-scene"><div class="single-pixel-label">THIS IS PIK</div></div>`;
+  return `<div class="single-pixel-scene"><div class="pik-fallback-avatar" aria-hidden="true"></div></div>`;
 }
 
 function updateProgress() {
@@ -99,7 +99,7 @@ function startGame() {
 function renderQuestion() {
   const item = questions[index];
   answered = false;
-  tag.textContent = `${item.topic} · ${index + 1}/${questions.length}`;
+  tag.textContent = `QUESTION ${index + 1}/${questions.length}`;
   question.textContent = item.q;
   feedback.textContent = "";
   nextBtn.style.display = "none";
