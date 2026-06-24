@@ -7,7 +7,8 @@ function add(){
  document.head.appendChild(s);
 }
 function loadLasers(){if(document.getElementById('laserBeamScript'))return;var s=document.createElement('script');s.id='laserBeamScript';s.src='landing-laser-beams.js?v=20260624a';document.body.appendChild(s)}
+function loadComingSoon(){if(document.getElementById('comingSoonTileScript'))return;var s=document.createElement('script');s.id='comingSoonTileScript';s.src='dashboard-coming-soon.js?v=20260624a';document.body.appendChild(s)}
 function patch(){document.querySelectorAll('.pik-pop').forEach(function(p){if(p.dataset.headOnly)return;p.dataset.headOnly='1';p.innerHTML='<div class="pik-head"><div class="pik-eye left"></div><div class="pik-eye right"></div><div class="pik-mouth"></div></div>';});}
-window.addEventListener('load',function(){add();loadLasers();setInterval(patch,100);});
-if(document.readyState==='interactive'||document.readyState==='complete'){add();loadLasers();setInterval(patch,100);}
+window.addEventListener('load',function(){add();loadLasers();loadComingSoon();setInterval(patch,100);});
+if(document.readyState==='interactive'||document.readyState==='complete'){add();loadLasers();loadComingSoon();setInterval(patch,100);}
 })();
