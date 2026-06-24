@@ -14,6 +14,13 @@
     s.src='landing-typewriter-effect.js?v=20260624a';
     document.body.appendChild(s);
   }
-  window.addEventListener('load',function(){addTitleEffect();loadTypewriter();});
-  if(document.readyState==='interactive'||document.readyState==='complete')setTimeout(function(){addTitleEffect();loadTypewriter();},50);
+  function loadPikStyle(){
+    if(document.getElementById('pikApprovedStyleScript'))return;
+    var s=document.createElement('script');
+    s.id='pikApprovedStyleScript';
+    s.src='landing-pik-style-fix.js?v=20260624a';
+    document.body.appendChild(s);
+  }
+  window.addEventListener('load',function(){addTitleEffect();loadTypewriter();loadPikStyle();});
+  if(document.readyState==='interactive'||document.readyState==='complete')setTimeout(function(){addTitleEffect();loadTypewriter();loadPikStyle();},50);
 })();
