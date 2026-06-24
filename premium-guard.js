@@ -54,6 +54,14 @@ function loadLandingPage() {
   document.body.appendChild(script);
 }
 
+function loadLandingTitleEffect() {
+  if (document.getElementById("sccyberLandingTitleEffectScript")) return;
+  const script = document.createElement("script");
+  script.id = "sccyberLandingTitleEffectScript";
+  script.src = "landing-title-effect.js?v=20260624a";
+  document.body.appendChild(script);
+}
+
 function fixGameLaunchUrls() {
   const brute = document.querySelector(".game-card[data-game='brute-force-lockdown'] .play-btn");
   if (brute) brute.dataset.url = "https://sccyber.github.io/brute-force-breach/bf-core-917a.html?portal=1";
@@ -68,6 +76,7 @@ function runPortalHelpers() {
   setInterval(cleanLoginMessages, 300);
   cleanLoginMessages();
   loadLandingPage();
+  loadLandingTitleEffect();
   loadAdminRefreshFix();
   fixGameLaunchUrls();
   setTimeout(fixGameLaunchUrls, 500);
