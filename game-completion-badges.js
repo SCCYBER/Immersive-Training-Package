@@ -19,6 +19,23 @@ function sccyberInstallCompletionBadgeStyles() {
   document.head.appendChild(style);
 }
 
+function sccyberAddAdminCompanyRemoveButtons() {
+  const output = document.getElementById("adminOutput");
+  if (!output) return;
+  output.querySelectorAll("[data-org-row]").forEach(function (row) {
+    if (row.querySelector(".fixed-remove-company")) return;
+    const save = row.querySelector(".admin-update-org");
+    if (!save || !save.parentElement) return;
+    const button = document.createElement("button");
+    button.className = "small-btn fixed-remove-company";
+    button.type = "button";
+    button.textContent = "Remove";
+    button.style.marginLeft = "8px";
+    button.dataset.id = save.dataset.id || "";
+    save.parentElement.appendChild(button);
+  });
+}
+
 function sccyberCompletedAttemptsFor(profile, gameKey) {
   return (profile?.attempts || []).filter(function (attempt) {
     return attempt.game === gameKey && attempt.completed === true;
@@ -201,6 +218,7 @@ window.addEventListener("load", function () {
       originalUpdateDashboard.apply(this, arguments);
       sccyberRenderGameCompletionBadges();
       sccyberClarifyScoreWording();
+      sccyberAddAdminCompanyRemoveButtons();
     };
   }
 
@@ -209,9 +227,11 @@ window.addEventListener("load", function () {
     showDashboard = function patchedShowDashboard() {
       originalShowDashboard.apply(this, arguments);
       setTimeout(sccyberLoadSavedLearnerScores, 150);
+      setTimeout(sccyberAddAdminCompanyRemoveButtons, 300);
     };
   }
 
   setTimeout(sccyberRenderGameCompletionBadges, 250);
   setTimeout(sccyberLoadSavedLearnerScores, 500);
+  setInterval(sccyberAddAdminCompanyRemoveButtons, 1000);
 });
