@@ -19,22 +19,19 @@
       .landing-subtitle{color:#ffd44d;font-family:'Press Start 2P',cursive;font-size:clamp(10px,2.2vw,15px);line-height:1.8;margin:0 auto 16px;max-width:760px;}
       .landing-copy{color:#d8c7ff;font-size:18px;line-height:1.65;max-width:820px;margin:0 auto 22px;}
       .landing-copy strong{color:#59ff9d;}
-      .landing-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0 8px;}
-      .landing-primary{border:0;border-radius:14px;padding:15px 20px;background:#59ff9d;color:#090216;font-weight:800;font-family:'Press Start 2P',cursive;font-size:10px;line-height:1.6;cursor:pointer;box-shadow:0 0 22px rgba(89,255,157,.32);}
-      .landing-secondary{color:#b9a8d5;font-size:13px;line-height:1.6;}
+      .landing-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0 8px;text-align:center;}
+      .landing-primary{border:0;border-radius:14px;padding:15px 24px;background:#59ff9d;color:#090216;font-weight:800;font-family:'Press Start 2P',cursive;font-size:10px;line-height:1.6;cursor:pointer;box-shadow:0 0 22px rgba(89,255,157,.32);margin:0 auto;display:inline-block;}
       .landing-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px;}
-      .landing-tags span{border:1px solid rgba(255,212,77,.25);border-radius:999px;padding:8px 10px;color:#ffd44d;background:rgba(255,212,77,.06);font-size:12px;}
+      .landing-tags span{border:1px solid rgba(255,212,77,.25);border-radius:999px;padding:8px 12px;color:#ffd44d;background:rgba(255,212,77,.06);font-size:12px;}
       .landing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px;}
       .landing-card{background:rgba(8,2,20,.92);border:1px solid rgba(89,255,157,.16);border-radius:18px;padding:18px;text-align:left;min-height:148px;}
       .landing-card-icon{font-size:28px;margin-bottom:10px;}
       .landing-card-title{font-family:'Press Start 2P',cursive;color:#59ff9d;font-size:10px;line-height:1.7;margin-bottom:8px;}
       .landing-card p{color:#b9a8d5;font-size:14px;line-height:1.55;margin:0;}
-      .landing-modules{margin-top:18px;background:rgba(8,2,20,.72);border:1px solid rgba(169,76,255,.22);border-radius:18px;padding:16px;}
-      .landing-modules-title{font-family:'Press Start 2P',cursive;color:#ffd44d;font-size:10px;line-height:1.7;margin-bottom:12px;text-align:center;}
-      .landing-module-list{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
-      .landing-module{border:1px solid rgba(169,76,255,.22);border-radius:14px;padding:12px 8px;text-align:center;background:rgba(27,6,64,.62);color:#fff;font-size:12px;line-height:1.4;}
-      .landing-module strong{display:block;color:#59ff9d;margin-bottom:5px;font-size:18px;}
-      @media(max-width:850px){.sccyber-landing{padding:16px 10px 26px}.landing-hero{padding:20px 14px;border-radius:18px}.landing-copy{font-size:15px}.landing-grid{grid-template-columns:1fr}.landing-module-list{grid-template-columns:1fr 1fr}.landing-primary{width:100%;font-size:9px}.landing-card{min-height:auto}.landing-title{font-size:24px}.landing-subtitle{font-size:10px}}
+      .landing-strapline{margin-top:18px;background:rgba(8,2,20,.72);border:1px solid rgba(169,76,255,.22);border-radius:18px;padding:20px 16px;text-align:center;font-family:'Press Start 2P',cursive;font-size:clamp(13px,2.8vw,22px);line-height:1.8;box-shadow:0 0 28px rgba(169,76,255,.12);}
+      .landing-strapline .purple{color:#a94cff;text-shadow:0 0 16px rgba(169,76,255,.35);}
+      .landing-strapline .green{color:#59ff9d;text-shadow:0 0 16px rgba(89,255,157,.35);}
+      @media(max-width:850px){.sccyber-landing{padding:16px 10px 26px}.landing-hero{padding:20px 14px;border-radius:18px}.landing-copy{font-size:15px}.landing-grid{grid-template-columns:1fr}.landing-primary{width:100%;font-size:9px}.landing-card{min-height:auto}.landing-title{font-size:24px}.landing-subtitle{font-size:10px}.landing-strapline{font-size:13px}}
     `;
     document.head.appendChild(style);
   }
@@ -60,10 +57,9 @@
           <p class="landing-subtitle">Move beyond tick box compliance.</p>
           <p class="landing-copy">Develop real world cybersecurity awareness through <strong>interactive simulations</strong>, <strong>gamified challenges</strong> and <strong>scenario based learning</strong> designed to improve decision making and strengthen cyber resilience.</p>
           <div class="landing-actions">
-            <button id="enterTrainingPortalBtn" class="landing-primary" type="button">ENTER TRAINING PORTAL</button>
-            <div class="landing-secondary">Interactive • Gamified • Immersive</div>
+            <button id="enterTrainingPortalBtn" class="landing-primary" type="button">ENTER HERE</button>
           </div>
-          <div class="landing-tags"><span>Cyber awareness is not broken</span><span>The delivery is outdated</span><span>Train people through experience</span></div>
+          <div class="landing-tags"><span>Interactive • Gamified • Immersive</span></div>
         </div>
       </div>
 
@@ -73,16 +69,7 @@
         <div class="landing-card"><div class="landing-card-icon">📊</div><div class="landing-card-title">PROGRESS TRACKING</div><p>Track learner completion, performance and training outcomes through reporting.</p></div>
       </div>
 
-      <div class="landing-modules">
-        <div class="landing-modules-title">TRAINING MODULES</div>
-        <div class="landing-module-list">
-          <div class="landing-module"><strong>🔑</strong>Password Shield</div>
-          <div class="landing-module"><strong>🏢</strong>Workplace Defender</div>
-          <div class="landing-module"><strong>🎣</strong>Phishing Frenzy</div>
-          <div class="landing-module"><strong>🛡</strong>Breach Lockdown</div>
-          <div class="landing-module"><strong>🔐</strong>Brute Force Lockdown</div>
-        </div>
-      </div>
+      <div class="landing-strapline"><span class="purple">In the background.</span> <span class="green">Always on</span></div>
     `;
 
     auth.parentNode.insertBefore(section, auth);
