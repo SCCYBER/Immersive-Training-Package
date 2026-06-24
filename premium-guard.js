@@ -46,6 +46,14 @@ function loadAdminRefreshFix() {
   document.body.appendChild(script);
 }
 
+function loadLandingPage() {
+  if (document.getElementById("sccyberLandingPageScript")) return;
+  const script = document.createElement("script");
+  script.id = "sccyberLandingPageScript";
+  script.src = "landing-page.js?v=20260624a";
+  document.body.appendChild(script);
+}
+
 function fixGameLaunchUrls() {
   const brute = document.querySelector(".game-card[data-game='brute-force-lockdown'] .play-btn");
   if (brute) brute.dataset.url = "https://sccyber.github.io/brute-force-breach/bf-core-917a.html?portal=1";
@@ -54,15 +62,21 @@ function fixGameLaunchUrls() {
   if (breach) breach.dataset.url = "https://sccyber.github.io/breach-lockdown/index.html?portal=1";
 }
 
-window.addEventListener("load", () => {
+function runPortalHelpers() {
   setTimeout(syncPremiumAccessFromDatabase, 800);
   setInterval(syncPremiumAccessFromDatabase, 30000);
   setInterval(cleanLoginMessages, 300);
   cleanLoginMessages();
+  loadLandingPage();
   loadAdminRefreshFix();
   fixGameLaunchUrls();
   setTimeout(fixGameLaunchUrls, 500);
-});
+}
+
+window.addEventListener("load", runPortalHelpers);
+if (document.readyState === "interactive" || document.readyState === "complete") {
+  setTimeout(runPortalHelpers, 50);
+}
 
 document.addEventListener("click", event => {
   const premiumButton = event.target.closest(".game-card[data-premium='true'] .play-btn");
