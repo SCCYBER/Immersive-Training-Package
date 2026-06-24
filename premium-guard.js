@@ -63,6 +63,9 @@ function loadLandingTitleEffect() {
 }
 
 function fixGameLaunchUrls() {
+  const phishing = document.querySelector(".game-card[data-game='phishing-frenzy'] .play-btn");
+  if (phishing) phishing.dataset.url = "https://sccyber.github.io/phishing-frenzy/index.html?portal=1";
+
   const brute = document.querySelector(".game-card[data-game='brute-force-lockdown'] .play-btn");
   if (brute) brute.dataset.url = "https://sccyber.github.io/brute-force-breach/bf-core-917a.html?portal=1";
 
