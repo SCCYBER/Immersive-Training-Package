@@ -1,8 +1,4 @@
 (function(){
-  function hasProfile(){
-    try{var p=JSON.parse(localStorage.getItem('sccyberPortalProfile')||'null');return !!(p&&p.firstName&&p.surname&&p.departmentRole);}catch(e){return false;}
-  }
-
   function addStyles(){
     if(document.getElementById('sccyberLandingStyles'))return;
     var style=document.createElement('style');
@@ -10,7 +6,8 @@
     style.textContent=`
       .sccyber-landing{position:relative;z-index:5;max-width:1120px;margin:0 auto;padding:28px 18px 34px;}
       .sccyber-landing.hidden{display:none!important;}
-      .landing-hero{background:linear-gradient(135deg,rgba(11,3,34,.96),rgba(36,7,75,.94));border:1px solid rgba(169,76,255,.35);box-shadow:0 0 42px rgba(124,58,237,.22);border-radius:24px;padding:28px;text-align:center;overflow:hidden;position:relative;}
+      .landing-packages{position:absolute;top:16px;right:16px;z-index:4;border:1px solid rgba(169,76,255,.45);border-radius:12px;padding:10px 12px;background:rgba(8,2,20,.88);color:#ffd44d;text-decoration:none;font-family:'Press Start 2P',cursive;font-size:8px;line-height:1.5;box-shadow:0 0 18px rgba(169,76,255,.18);}
+      .landing-hero{background:linear-gradient(135deg,rgba(11,3,34,.96),rgba(36,7,75,.94));border:1px solid rgba(169,76,255,.35);box-shadow:0 0 42px rgba(124,58,237,.22);border-radius:24px;padding:48px 28px 28px;text-align:center;overflow:hidden;position:relative;}
       .landing-hero:before{content:'';position:absolute;inset:-2px;background:radial-gradient(circle at 20% 20%,rgba(89,255,157,.18),transparent 28%),radial-gradient(circle at 80% 20%,rgba(169,76,255,.22),transparent 30%);pointer-events:none;}
       .landing-inner{position:relative;z-index:2;}
       .landing-logo{width:112px;max-width:32vw;margin:0 auto 12px;display:block;}
@@ -31,57 +28,71 @@
       .landing-strapline{margin-top:18px;background:rgba(8,2,20,.72);border:1px solid rgba(169,76,255,.22);border-radius:18px;padding:20px 16px;text-align:center;font-family:'Press Start 2P',cursive;font-size:clamp(13px,2.8vw,22px);line-height:1.8;box-shadow:0 0 28px rgba(169,76,255,.12);}
       .landing-strapline .purple{color:#a94cff;text-shadow:0 0 16px rgba(169,76,255,.35);}
       .landing-strapline .green{color:#59ff9d;text-shadow:0 0 16px rgba(89,255,157,.35);}
-      @media(max-width:850px){.sccyber-landing{padding:16px 10px 26px}.landing-hero{padding:20px 14px;border-radius:18px}.landing-copy{font-size:15px}.landing-grid{grid-template-columns:1fr}.landing-primary{width:100%;font-size:9px}.landing-card{min-height:auto}.landing-title{font-size:24px}.landing-subtitle{font-size:10px}.landing-strapline{font-size:13px}}
+      @media(max-width:850px){.sccyber-landing{padding:16px 10px 26px}.landing-packages{position:relative;top:auto;right:auto;display:inline-block;margin-bottom:12px}.landing-hero{padding:20px 14px;border-radius:18px}.landing-copy{font-size:15px}.landing-grid{grid-template-columns:1fr}.landing-primary{width:100%;font-size:9px}.landing-card{min-height:auto}.landing-title{font-size:24px}.landing-subtitle{font-size:10px}.landing-strapline{font-size:13px}}
     `;
     document.head.appendChild(style);
   }
 
-  function buildLanding(){
-    if(document.getElementById('sccyberLanding'))return;
+  function hideMainViews(){
     var auth=document.getElementById('authView');
-    var dashboard=document.getElementById('dashboardView');
-    if(!auth||!dashboard)return;
-    if(hasProfile())return;
+    var dash=document.getElementById('dashboardView');
+    var report=document.getElementById('reportView');
+    var game=document.getElementById('gameView');
+    var admin=document.getElementById('adminView');
+    if(auth)auth.classList.add('hidden');
+    if(dash)dash.classList.add('hidden');
+    if(report)report.classList.add('hidden');
+    if(game)game.classList.add('hidden');
+    if(admin)admin.classList.add('hidden');
+  }
 
-    auth.classList.add('hidden');
-
+  function showLanding(){
+    addStyles();
+    hideMainViews();
+    var existing=document.getElementById('sccyberLanding');
+    if(existing){existing.classList.remove('hidden');return;}
+    var auth=document.getElementById('authView');
+    if(!auth)return;
     var section=document.createElement('section');
     section.id='sccyberLanding';
     section.className='sccyber-landing';
     section.innerHTML=`
       <div class="landing-hero">
+        <a class="landing-packages" href="https://www.sccyber.co.uk/services/training-and-workshops" target="_blank" rel="noopener">Packages</a>
         <div class="landing-inner">
           <img class="landing-logo" src="https://sccyber.github.io/breach-lockdown/logo.png?v=sccyber" alt="SCCYBER logo">
           <div class="landing-eyebrow">SCCYBER TRAINING PORTAL</div>
           <h1 class="landing-title">Immersive Cybersecurity Training</h1>
           <p class="landing-subtitle">Move beyond tick box compliance.</p>
           <p class="landing-copy">Develop real world cybersecurity awareness through <strong>interactive simulations</strong>, <strong>gamified challenges</strong> and <strong>scenario based learning</strong> designed to improve decision making and strengthen cyber resilience.</p>
-          <div class="landing-actions">
-            <button id="enterTrainingPortalBtn" class="landing-primary" type="button">ENTER HERE</button>
-          </div>
+          <div class="landing-actions"><button id="enterTrainingPortalBtn" class="landing-primary" type="button">ENTER HERE</button></div>
           <div class="landing-tags"><span>Interactive • Gamified • Immersive</span></div>
         </div>
       </div>
-
       <div class="landing-grid">
         <div class="landing-card"><div class="landing-card-icon">🎮</div><div class="landing-card-title">INTERACTIVE LEARNING</div><p>Arcade style modules designed to improve engagement, retention and participation.</p></div>
         <div class="landing-card"><div class="landing-card-icon">🛡</div><div class="landing-card-title">REAL WORLD SCENARIOS</div><p>Practice making security decisions in realistic workplace situations and cyber events.</p></div>
         <div class="landing-card"><div class="landing-card-icon">📊</div><div class="landing-card-title">PROGRESS TRACKING</div><p>Track learner completion, performance and training outcomes through reporting.</p></div>
       </div>
-
       <div class="landing-strapline"><span class="purple">In the background.</span> <span class="green">Always on</span></div>
     `;
-
-    auth.parentNode.insertBefore(section, auth);
-
+    auth.parentNode.insertBefore(section,auth);
     var btn=document.getElementById('enterTrainingPortalBtn');
-    if(btn){btn.addEventListener('click',function(){section.classList.add('hidden');auth.classList.remove('hidden');sessionStorage.setItem('sccyberLandingSeen','true');window.scrollTo(0,0);});}
+    if(btn){btn.addEventListener('click',function(){section.classList.add('hidden');auth.classList.remove('hidden');window.scrollTo(0,0);});}
+  }
+
+  function patchLogout(){
+    if(typeof logout!=='function'||window.sccyberLandingLogoutPatched)return;
+    window.sccyberLandingLogoutPatched=true;
+    var original=logout;
+    logout=async function(){await original.apply(this,arguments);setTimeout(showLanding,50);};
   }
 
   function install(){
-    if(sessionStorage.getItem('sccyberLandingSeen')==='true')return;
-    addStyles();
-    buildLanding();
+    showLanding();
+    patchLogout();
+    setTimeout(showLanding,250);
+    setTimeout(patchLogout,500);
   }
 
   window.addEventListener('load',install);
