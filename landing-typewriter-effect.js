@@ -11,6 +11,14 @@
     document.head.appendChild(style);
   }
 
+  function loadPikPop(){
+    if(document.getElementById('sccyberPikPopScript'))return;
+    var s=document.createElement('script');
+    s.id='sccyberPikPopScript';
+    s.src='landing-pik-pop.js?v=20260624a';
+    document.body.appendChild(s);
+  }
+
   function typePlain(el,text,speed,done){
     var i=0;
     el.textContent='';
@@ -44,6 +52,7 @@
 
   function run(){
     addStyles();
+    loadPikPop();
     var subtitle=document.querySelector('.landing-subtitle');
     var copy=document.querySelector('.landing-copy');
     if(!subtitle||!copy||subtitle.dataset.typewriterDone==='true')return;
@@ -54,8 +63,9 @@
     setTimeout(function(){typePlain(subtitle,subtitleText,65,function(){typeCopy(copy);});},250);
   }
 
-  window.addEventListener('load',function(){blankLandingText();setTimeout(run,350);});
-  document.addEventListener('click',function(e){if(e.target&&e.target.id==='loginHomeBtn')setTimeout(function(){blankLandingText();run();},250);});
+  window.addEventListener('load',function(){loadPikPop();blankLandingText();setTimeout(run,350);});
+  document.addEventListener('click',function(e){if(e.target&&e.target.id==='loginHomeBtn')setTimeout(function(){blankLandingText();run();loadPikPop();},250);});
+  setTimeout(loadPikPop,100);
   setTimeout(blankLandingText,150);
   setTimeout(run,700);
 })();
