@@ -15,10 +15,10 @@
     document.body.appendChild(s);
   }
   function loadPikStyle(){
-    if(document.getElementById('pikApprovedStyleScript'))return;
+    if(document.getElementById('pikHeadOnlyScript'))return;
     var s=document.createElement('script');
-    s.id='pikApprovedStyleScript';
-    s.src='landing-pik-style-fix.js?v=20260624a';
+    s.id='pikHeadOnlyScript';
+    s.src='landing-pik-head-only.js?v=20260624a';
     document.body.appendChild(s);
   }
   window.addEventListener('load',function(){addTitleEffect();loadTypewriter();loadPikStyle();});
