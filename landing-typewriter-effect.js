@@ -7,7 +7,7 @@
     if(document.getElementById('sccyberTypewriterStyles'))return;
     var style=document.createElement('style');
     style.id='sccyberTypewriterStyles';
-    style.textContent='.landing-subtitle.typewriter-active:after,.landing-copy.typewriter-active:after{content:"_";display:inline-block;color:#59ff9d;margin-left:4px;animation:sccyberCursorBlink .75s infinite}@keyframes sccyberCursorBlink{0%,45%{opacity:1}46%,100%{opacity:0}}';
+    style.textContent='.landing-subtitle.typewriter-active:after,.landing-copy.typewriter-active:after,.landing-copy.typewriter-finished:after{content:"_";display:inline-block;color:#59ff9d;margin-left:4px;animation:sccyberCursorBlink .75s infinite}@keyframes sccyberCursorBlink{0%,45%{opacity:1}46%,100%{opacity:0}}';
     document.head.appendChild(style);
   }
 
@@ -18,7 +18,7 @@
     function tick(){
       el.textContent=text.slice(0,i++);
       if(i<=text.length)setTimeout(tick,speed);
-      else{el.classList.remove('typewriter-active');if(done)setTimeout(done,250);}
+      else{el.classList.remove('typewriter-active');if(done)setTimeout(done,450);}
     }
     tick();
   }
@@ -29,10 +29,17 @@
     el.classList.add('typewriter-active');
     function tick(){
       el.textContent=copyText.slice(0,i++);
-      if(i<=copyText.length)setTimeout(tick,18);
-      else{el.classList.remove('typewriter-active');el.innerHTML=copyHtml;if(done)done();}
+      if(i<=copyText.length)setTimeout(tick,28);
+      else{el.classList.remove('typewriter-active');el.classList.add('typewriter-finished');el.innerHTML=copyHtml;if(done)done();}
     }
     tick();
+  }
+
+  function blankLandingText(){
+    var subtitle=document.querySelector('.landing-subtitle');
+    var copy=document.querySelector('.landing-copy');
+    if(subtitle&&!subtitle.dataset.typewriterDone)subtitle.textContent='';
+    if(copy&&!copy.dataset.typewriterDone)copy.textContent='';
   }
 
   function run(){
@@ -41,10 +48,14 @@
     var copy=document.querySelector('.landing-copy');
     if(!subtitle||!copy||subtitle.dataset.typewriterDone==='true')return;
     subtitle.dataset.typewriterDone='true';
-    typePlain(subtitle,subtitleText,42,function(){typeCopy(copy);});
+    copy.dataset.typewriterDone='true';
+    subtitle.textContent='';
+    copy.textContent='';
+    setTimeout(function(){typePlain(subtitle,subtitleText,65,function(){typeCopy(copy);});},250);
   }
 
-  window.addEventListener('load',function(){setTimeout(run,600);});
-  document.addEventListener('click',function(e){if(e.target&&e.target.id==='loginHomeBtn')setTimeout(run,400);});
-  setTimeout(run,1200);
+  window.addEventListener('load',function(){blankLandingText();setTimeout(run,350);});
+  document.addEventListener('click',function(e){if(e.target&&e.target.id==='loginHomeBtn')setTimeout(function(){blankLandingText();run();},250);});
+  setTimeout(blankLandingText,150);
+  setTimeout(run,700);
 })();
