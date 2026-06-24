@@ -38,6 +38,7 @@
     document.head.appendChild(style);
   }
 
+  function hasSavedSession(){try{var p=JSON.parse(localStorage.getItem('sccyberPortalProfile')||'null');return !!(p&&p.firstName&&p.surname&&p.departmentRole);}catch(e){return false;}}
   function hideMainViews(){
     var auth=document.getElementById('authView');
     var dash=document.getElementById('dashboardView');
@@ -52,6 +53,7 @@
   }
 
   function showLanding(){
+    if(hasSavedSession()&&typeof showDashboard==='function'){var l=document.getElementById('sccyberLanding');if(l)l.classList.add('hidden');showDashboard();return;}
     addStyles();
     hideMainViews();
     var existing=document.getElementById('sccyberLanding');
