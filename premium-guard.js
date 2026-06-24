@@ -50,7 +50,7 @@ function loadLandingPage() {
   if (document.getElementById("sccyberLandingPageScript")) return;
   const script = document.createElement("script");
   script.id = "sccyberLandingPageScript";
-  script.src = "landing-page.js?v=20260624a";
+  script.src = "landing-page.js?v=20260624b";
   document.body.appendChild(script);
 }
 
