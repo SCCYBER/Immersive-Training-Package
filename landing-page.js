@@ -16,8 +16,11 @@
       .landing-subtitle{color:#ffd44d;font-family:'Press Start 2P',cursive;font-size:clamp(10px,2.2vw,15px);line-height:1.8;margin:0 auto 16px;max-width:760px;}
       .landing-copy{color:#d8c7ff;font-size:18px;line-height:1.65;max-width:820px;margin:0 auto 22px;}
       .landing-copy strong{color:#59ff9d;}
-      .landing-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:20px 0 8px;text-align:center;}
-      .landing-primary{border:0;border-radius:14px;padding:15px 24px;background:#59ff9d;color:#090216;font-weight:800;font-family:'Press Start 2P',cursive;font-size:10px;line-height:1.6;cursor:pointer;box-shadow:0 0 22px rgba(89,255,157,.32);margin:0 auto;display:inline-block;}
+      .landing-actions{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:20px 0 8px;text-align:center;}
+      .landing-primary{border:0;border-radius:14px;padding:15px 24px;background:#59ff9d;color:#090216;font-weight:800;font-family:'Press Start 2P',cursive;font-size:10px;line-height:1.6;cursor:pointer;box-shadow:0 0 22px rgba(89,255,157,.32);display:inline-block;}
+      .landing-arrow{font-family:'Press Start 2P',cursive;font-size:16px;color:#a94cff;text-shadow:0 0 14px rgba(169,76,255,.65);line-height:1;animation:sccyberArrowPulse 1s infinite alternate;}
+      .landing-arrow.right{color:#59ff9d;text-shadow:0 0 14px rgba(89,255,157,.65);}
+      @keyframes sccyberArrowPulse{from{opacity:.55;transform:scale(.96)}to{opacity:1;transform:scale(1.08)}}
       .landing-tags{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:18px;}
       .landing-tags span{border:1px solid rgba(255,212,77,.25);border-radius:999px;padding:8px 12px;color:#ffd44d;background:rgba(255,212,77,.06);font-size:12px;}
       .landing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px;}
@@ -28,7 +31,9 @@
       .landing-strapline{margin-top:18px;background:rgba(8,2,20,.72);border:1px solid rgba(169,76,255,.22);border-radius:18px;padding:20px 16px;text-align:center;font-family:'Press Start 2P',cursive;font-size:clamp(13px,2.8vw,22px);line-height:1.8;box-shadow:0 0 28px rgba(169,76,255,.12);}
       .landing-strapline .purple{color:#a94cff;text-shadow:0 0 16px rgba(169,76,255,.35);}
       .landing-strapline .green{color:#59ff9d;text-shadow:0 0 16px rgba(89,255,157,.35);}
-      @media(max-width:850px){.sccyber-landing{padding:16px 10px 26px}.landing-packages{position:relative;top:auto;right:auto;display:inline-block;margin-bottom:12px}.landing-hero{padding:20px 14px;border-radius:18px}.landing-copy{font-size:15px}.landing-grid{grid-template-columns:1fr}.landing-primary{width:100%;font-size:9px}.landing-card{min-height:auto}.landing-title{font-size:24px}.landing-subtitle{font-size:10px}.landing-strapline{font-size:13px}}
+      .login-home-btn{position:absolute;top:16px;left:16px;z-index:7;border:1px solid rgba(89,255,157,.55);border-radius:12px;padding:9px 11px;background:rgba(8,2,20,.9);color:#59ff9d;font-size:18px;line-height:1;cursor:pointer;box-shadow:0 0 18px rgba(89,255,157,.18);}
+      #authView{position:relative;}
+      @media(max-width:850px){.sccyber-landing{padding:16px 10px 26px}.landing-packages{position:relative;top:auto;right:auto;display:inline-block;margin-bottom:12px}.landing-hero{padding:20px 14px;border-radius:18px}.landing-copy{font-size:15px}.landing-grid{grid-template-columns:1fr}.landing-primary{font-size:9px}.landing-arrow{font-size:13px}.landing-card{min-height:auto}.landing-title{font-size:24px}.landing-subtitle{font-size:10px}.landing-strapline{font-size:13px}.login-home-btn{top:8px;left:8px}}
     `;
     document.head.appendChild(style);
   }
@@ -58,14 +63,14 @@
     section.className='sccyber-landing';
     section.innerHTML=`
       <div class="landing-hero">
-        <a class="landing-packages" href="https://www.sccyber.co.uk/services/training-and-workshops" target="_blank" rel="noopener">Packages</a>
+        <a class="landing-packages" href="https://www.sccyber.co.uk/contact/" target="_blank" rel="noopener">Contact</a>
         <div class="landing-inner">
           <img class="landing-logo" src="https://sccyber.github.io/breach-lockdown/logo.png?v=sccyber" alt="SCCYBER logo">
           <div class="landing-eyebrow">SCCYBER TRAINING PORTAL</div>
           <h1 class="landing-title">Immersive Cybersecurity Training</h1>
           <p class="landing-subtitle">Move beyond tick box compliance.</p>
           <p class="landing-copy">Develop real world cybersecurity awareness through <strong>interactive simulations</strong>, <strong>gamified challenges</strong> and <strong>scenario based learning</strong> designed to improve decision making and strengthen cyber resilience.</p>
-          <div class="landing-actions"><button id="enterTrainingPortalBtn" class="landing-primary" type="button">ENTER HERE</button></div>
+          <div class="landing-actions"><span class="landing-arrow left">&gt;&gt;</span><button id="enterTrainingPortalBtn" class="landing-primary" type="button">ENTER HERE</button><span class="landing-arrow right">&lt;&lt;</span></div>
           <div class="landing-tags"><span>Interactive • Gamified • Immersive</span></div>
         </div>
       </div>
@@ -78,7 +83,20 @@
     `;
     auth.parentNode.insertBefore(section,auth);
     var btn=document.getElementById('enterTrainingPortalBtn');
-    if(btn){btn.addEventListener('click',function(){section.classList.add('hidden');auth.classList.remove('hidden');window.scrollTo(0,0);});}
+    if(btn){btn.addEventListener('click',function(){section.classList.add('hidden');auth.classList.remove('hidden');addLoginHomeButton();window.scrollTo(0,0);});}
+  }
+
+  function addLoginHomeButton(){
+    var auth=document.getElementById('authView');
+    if(!auth||document.getElementById('loginHomeBtn'))return;
+    var b=document.createElement('button');
+    b.id='loginHomeBtn';
+    b.className='login-home-btn';
+    b.type='button';
+    b.textContent='⌂';
+    b.title='Back to landing page';
+    b.addEventListener('click',function(){showLanding();});
+    auth.appendChild(b);
   }
 
   function patchLogout(){
@@ -93,6 +111,7 @@
     patchLogout();
     setTimeout(showLanding,250);
     setTimeout(patchLogout,500);
+    setTimeout(addLoginHomeButton,700);
   }
 
   window.addEventListener('load',install);
