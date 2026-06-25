@@ -12,12 +12,22 @@ function addStyles(){
 }
 function markReady(){document.body.classList.add('companies-ready')}
 function isArchived(id){try{if(typeof adminOrgs==='undefined'||!Array.isArray(adminOrgs))return false;var o=adminOrgs.find(function(x){return String(x.id)===String(id)});return !!(o&&o.billing_status==='removed')}catch(e){return false}}
+function filterCompanyDropdown(){
+ var select=document.getElementById('newLearnerCompany');
+ if(!select)return;
+ var hidden=getHidden();
+ Array.from(select.options).forEach(function(opt){
+  if(!opt.value)return;
+  if(hidden.indexOf(opt.value)!==-1||isArchived(opt.value))opt.remove();
+ });
+}
 function applyHidden(){
  var hidden=getHidden();
  document.querySelectorAll('[data-org-row]').forEach(function(row){
   var id=row.getAttribute('data-org-row');
   if(hidden.indexOf(id)!==-1||isArchived(id))row.remove();
  });
+ filterCompanyDropdown();
  updateCounts();
  markReady();
 }
@@ -29,6 +39,7 @@ function patchRender(){
   document.body.classList.remove('companies-ready');
   original(rows,billingRows);
   addButtons();
+  filterCompanyDropdown();
  };
 }
 function addButtons(){
@@ -47,6 +58,7 @@ function addButtons(){
   b.style.marginLeft='8px';
   save.parentElement.appendChild(b);
  });
+ filterCompanyDropdown();
  updateCounts();
  markReady();
 }
@@ -73,9 +85,10 @@ document.addEventListener('click',async function(e){
  var saved=false;if(window.sccyberArchiveOrg)saved=await window.sccyberArchiveOrg(id);
  if(id){var hidden=getHidden();hidden.push(id);setHidden(hidden);}
  if(row)row.remove();
+ filterCompanyDropdown();
  updateCounts();
  alert(saved?'Company removed from the admin dashboard.':'Hidden on this browser, but the database did not update.');
 });
-window.addEventListener('load',function(){loadArchive();addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();updateCounts();},1000);});
-if(document.readyState==='interactive'||document.readyState==='complete'){loadArchive();addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();updateCounts();},1000);}
+window.addEventListener('load',function(){loadArchive();addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();filterCompanyDropdown();updateCounts();},1000);});
+if(document.readyState==='interactive'||document.readyState==='complete'){loadArchive();addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();filterCompanyDropdown();updateCounts();},1000);}
 })();
