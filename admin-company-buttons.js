@@ -1,5 +1,9 @@
 (function(){
+function cleanDeadButtons(){
+ document.querySelectorAll('.fixed-remove-company').forEach(function(b){b.remove();});
+}
 function addButtons(){
+ cleanDeadButtons();
  document.querySelectorAll('[data-org-row]').forEach(function(row){
   if(row.querySelector('.admin-remove-org'))return;
   var save=row.querySelector('.admin-update-org');
