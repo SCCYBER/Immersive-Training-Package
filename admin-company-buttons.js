@@ -6,15 +6,27 @@ function addStyles(){
  if(document.getElementById('companyRemoveButtonStyles'))return;
  var s=document.createElement('style');
  s.id='companyRemoveButtonStyles';
- s.textContent='.fixed-remove-company{display:none!important}.admin-remove-org{display:inline-block!important}';
+ s.textContent='#adminOutput{visibility:hidden}.companies-ready #adminOutput{visibility:visible}.fixed-remove-company{display:none!important}.admin-remove-org{display:inline-block!important}';
  document.head.appendChild(s);
 }
+function markReady(){document.body.classList.add('companies-ready')}
 function applyHidden(){
  var hidden=getHidden();
  document.querySelectorAll('[data-org-row]').forEach(function(row){
   if(hidden.indexOf(row.getAttribute('data-org-row'))!==-1)row.remove();
  });
  updateCounts();
+ markReady();
+}
+function patchRender(){
+ if(typeof renderAdmin!=='function'||window.sccyberCompanyRenderPatched)return;
+ window.sccyberCompanyRenderPatched=true;
+ var original=renderAdmin;
+ renderAdmin=function(rows,billingRows){
+  document.body.classList.remove('companies-ready');
+  original(rows,billingRows);
+  addButtons();
+ };
 }
 function addButtons(){
  addStyles();
@@ -31,6 +43,7 @@ function addButtons(){
   b.style.marginLeft='8px';
   save.parentElement.appendChild(b);
  });
+ markReady();
 }
 function updateCounts(){
  var companyCount=document.getElementById('adminCompanyCount');
@@ -49,6 +62,6 @@ document.addEventListener('click',function(e){
  updateCounts();
  alert('Removed from this admin view. It will stay hidden on this browser. For permanent removal, delete the company record in Supabase after deactivating its learners.');
 });
-window.addEventListener('load',function(){addButtons();setInterval(addButtons,1000);});
-if(document.readyState==='interactive'||document.readyState==='complete'){addButtons();setInterval(addButtons,1000);}
+window.addEventListener('load',function(){addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();},1000);});
+if(document.readyState==='interactive'||document.readyState==='complete'){addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();},1000);}
 })();
