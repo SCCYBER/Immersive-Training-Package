@@ -44,6 +44,7 @@
 
   function hasSavedSession(){try{var p=JSON.parse(localStorage.getItem('sccyberPortalProfile')||'null');return !!(p&&p.firstName&&p.surname&&p.departmentRole);}catch(e){return false;}}
   function hideMainViews(){
+    document.body.classList.remove('sccyber-login-open');
     var auth=document.getElementById('authView');
     var dash=document.getElementById('dashboardView');
     var report=document.getElementById('reportView');
@@ -56,8 +57,15 @@
     if(admin)admin.classList.add('hidden');
   }
 
+  function showLogin(auth){
+    document.body.classList.add('sccyber-login-open');
+    auth.classList.remove('hidden');
+    addLoginHomeButton();
+    window.scrollTo(0,0);
+  }
+
   function showLanding(){
-    if(hasSavedSession()&&typeof showDashboard==='function'){var l=document.getElementById('sccyberLanding');if(l)l.classList.add('hidden');showDashboard();return;}
+    if(hasSavedSession()&&typeof showDashboard==='function'){var l=document.getElementById('sccyberLanding');if(l)l.classList.add('hidden');document.body.classList.remove('sccyber-login-open');showDashboard();return;}
     addStyles();
     hideMainViews();
     var existing=document.getElementById('sccyberLanding');
@@ -89,7 +97,7 @@
     `;
     auth.parentNode.insertBefore(section,auth);
     var btn=document.getElementById('enterTrainingPortalBtn');
-    if(btn){btn.addEventListener('click',function(){btn.disabled=true;section.classList.add('pixel-fizzle');setTimeout(function(){section.classList.add('hidden');section.classList.remove('pixel-fizzle');auth.classList.remove('hidden');addLoginHomeButton();window.scrollTo(0,0);},850);});}
+    if(btn){btn.addEventListener('click',function(){btn.disabled=true;section.classList.add('pixel-fizzle');setTimeout(function(){section.classList.add('hidden');section.classList.remove('pixel-fizzle');showLogin(auth);btn.disabled=false;},850);});}
   }
 
   function addLoginHomeButton(){
@@ -117,7 +125,6 @@
     patchLogout();
     setTimeout(showLanding,250);
     setTimeout(patchLogout,500);
-    setTimeout(addLoginHomeButton,700);
   }
 
   window.addEventListener('load',install);
