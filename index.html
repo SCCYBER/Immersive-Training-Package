@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SCCYBER Training Portal</title>
+  <style id="sccyber-first-paint-guard">#authView{display:none!important;}body.sccyber-login-open #authView{display:block!important;}</style>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
@@ -14,7 +15,7 @@
   <div class="bg-scanlines"></div>
 
   <main class="portal-shell">
-    <section id="authView" class="auth-view">
+    <section id="authView" class="auth-view hidden">
       <header class="hero">
         <img src="https://sccyber.github.io/breach-lockdown/logo.png?v=sccyber" alt="SCCYBER logo" class="logo">
         <div class="eyebrow">SCCYBER TRAINING PORTAL</div>
@@ -78,122 +79,16 @@
       <section class="game-library">
         <div class="section-title">TRAINING GAMES</div>
         <div class="games-grid">
-          <article class="game-card live" data-game="password-shield" data-premium="false">
-            <div class="game-icon">🔑</div><div class="game-type">FREE MODULE</div><h2>Password Shield</h2>
-            <p>Build safer password habits by choosing the right action in everyday situations.</p>
-            <div class="game-score" id="score-password-shield">No attempts yet</div>
-            <div class="game-meta"><span>Free</span><span>Easy</span><span>Passwords</span></div>
-            <button class="launch-btn play-btn" data-title="Password Shield" data-url="password-shield/index.html?portal=1">Play</button>
-          </article>
-          <article class="game-card live" data-game="workplace-defender" data-premium="true">
-            <div class="game-icon">🏢</div><div class="game-type">PREMIUM MODULE</div><h2>Workplace Defender</h2>
-            <p>Handle realistic office, remote working, device, software and infrastructure security scenarios.</p>
-            <div class="game-score" id="score-workplace-defender">Premium access required</div>
-            <div class="game-meta"><span>Premium</span><span>Intermediate</span><span>Best Practice</span></div>
-            <button class="launch-btn play-btn premium-btn" data-title="Workplace Defender" data-url="workplace-defender/index.html?portal=1">Upgrade to Play</button>
-          </article>
-          <article class="game-card live" data-game="phishing-frenzy" data-premium="true">
-            <div class="game-icon">🎣</div><div class="game-type">PREMIUM MODULE</div><h2>Phishing Frenzy</h2>
-            <p>Investigate emails, spot phishing indicators and climb the cyber career ladder.</p>
-            <div class="game-score" id="score-phishing-frenzy">Premium access required</div>
-            <div class="game-meta"><span>Premium</span><span>Easy</span><span>Phishing</span></div>
-            <button class="launch-btn play-btn premium-btn" data-title="Phishing Frenzy" data-url="https://sccyber.github.io/phishing-frenzy/?portal=1">Upgrade to Play</button>
-          </article>
-          <article class="game-card live" data-game="breach-lockdown" data-premium="true">
-            <div class="game-icon">🛡</div><div class="game-type">PREMIUM MODULE</div><h2>Breach Lockdown</h2>
-            <p>Answer cybersecurity questions and stop the breach before ransomware takes over.</p>
-            <div class="game-score" id="score-breach-lockdown">Premium access required</div>
-            <div class="game-meta"><span>Premium</span><span>Intermediate</span><span>Awareness</span></div>
-            <button class="launch-btn play-btn premium-btn" data-title="Breach Lockdown" data-url="https://sccyber.github.io/breach-lockdown/?portal=1">Upgrade to Play</button>
-          </article>
-          <article class="game-card live" data-game="brute-force-lockdown" data-premium="true">
-            <div class="game-icon">🔐</div><div class="game-type">PREMIUM MODULE</div><h2>Brute Force Lockdown</h2>
-            <p>Defend the network using lockout, MFA and isolation before attackers spread across the estate.</p>
-            <div class="game-score" id="score-brute-force-lockdown">Premium access required</div>
-            <div class="game-meta"><span>Premium</span><span>Advanced</span><span>Defence</span></div>
-            <button class="launch-btn play-btn premium-btn" data-title="Brute Force Lockdown" data-url="https://sccyber.github.io/brute-force-breach/?portal=1">Upgrade to Play</button>
-          </article>
+          <article class="game-card" data-game="breach-lockdown" data-premium="true"><div class="game-icon">🛡️</div><h2>Breach Lockdown</h2><p>Respond to incidents and contain cyber threats before the breach spreads.</p><div class="game-score" id="score-breach-lockdown">Premium access required</div><button class="play-btn launch-btn" data-url="https://sccyber.github.io/breach-lockdown/index.html?portal=1">Upgrade to Play</button></article>
+          <article class="game-card" data-game="brute-force-lockdown" data-premium="true"><div class="game-icon">🔐</div><h2>Brute Force Lockdown</h2><p>Stop password attacks and strengthen account security decisions.</p><div class="game-score" id="score-brute-force-lockdown">Premium access required</div><button class="play-btn launch-btn" data-url="https://sccyber.github.io/brute-force-breach/bf-core-917a.html?portal=1">Upgrade to Play</button></article>
+          <article class="game-card" data-game="phishing-frenzy" data-premium="true"><div class="game-icon">🎣</div><h2>Phishing Frenzy</h2><p>Investigate suspicious messages and spot phishing before it lands.</p><div class="game-score" id="score-phishing-frenzy">Premium access required</div><button class="play-btn launch-btn" data-url="https://sccyber.github.io/phishing-frenzy/index.html?portal=1">Upgrade to Play</button></article>
         </div>
       </section>
     </div>
-
-    <section class="admin-view hidden" id="adminView">
-      <div class="game-topbar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(8,2,20,.95);border:1px solid rgba(89,255,157,.18);border-radius:14px;padding:12px;margin-bottom:10px;">
-        <button id="adminBackBtn" class="small-btn">Back to Dashboard</button>
-        <div><div class="section-title">ADMIN DASHBOARD</div><strong style="display:block;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:12px;line-height:1.6;margin-top:4px;">SCCYBER Control Panel</strong></div>
-      </div>
-
-      <section class="report-terminal">
-        <div class="report-header"><div><div class="section-title">CONTROL CENTRE</div><p>Manage companies, licences, learners, billing and reports.</p></div><button id="refreshAdminBtn" class="launch-btn">Refresh</button></div>
-        <div class="report-grid"><div class="report-card"><span>Companies</span><strong id="adminCompanyCount">0</strong></div><div class="report-card"><span>Total Licences</span><strong id="adminLicenceCount">0</strong></div><div class="report-card"><span>Learners</span><strong id="adminLearnerCount">0</strong></div></div>
-      </section>
-
-      <section class="report-terminal">
-        <div class="section-title">ADD COMPANY</div>
-        <div class="login-row profile-grid" style="margin-top:12px;">
-          <input id="newCompanyName" type="text" maxlength="80" placeholder="Company / School name">
-          <input id="newCompanyLicences" type="number" min="0" placeholder="Licences">
-          <select id="newCompanyPremium"><option value="false">Premium off</option><option value="true">Premium on</option></select>
-          <select id="newCompanyBilling"><option value="trial">Trial</option><option value="pending">Pending</option><option value="paid">Paid</option><option value="overdue">Overdue</option></select>
-          <button id="addCompanyBtn" class="launch-btn">Add Company</button>
-        </div>
-        <div id="companyMessage" class="auth-message"></div>
-      </section>
-
-      <section class="report-terminal"><div class="section-title">COMPANIES</div><div class="report-output" id="adminOutput">Company data will appear here.</div></section>
-
-      <section class="report-terminal">
-        <div class="section-title">ADD LEARNER RECORD</div>
-        <p style="color:#b9a8d5;">This creates the learner record. Secure login creation is handled by the protected login service.</p>
-        <div class="login-row profile-grid" style="margin-top:12px;">
-          <input id="newLearnerUsername" type="text" maxlength="40" placeholder="Username">
-          <input id="newLearnerFirstName" type="text" maxlength="40" placeholder="First name">
-          <input id="newLearnerSurname" type="text" maxlength="40" placeholder="Surname">
-          <input id="newLearnerRole" type="text" maxlength="80" placeholder="Department / Role">
-          <select id="newLearnerCompany"><option value="">Select company</option></select>
-          <button id="addLearnerBtn" class="launch-btn">Add Learner</button>
-        </div>
-        <div id="learnerMessage" class="auth-message"></div>
-      </section>
-
-      <section class="report-terminal"><div class="section-title">LEARNERS & REPORTS</div><div class="report-output" id="adminLearnerOutput">Learner reports will appear here.</div></section>
-      <section class="report-terminal"><div class="section-title">SELECTED LEARNER REPORT</div><div class="report-output" id="adminSelectedReport">Select a learner to view their report.</div></section>
-      <section class="report-terminal"><div class="section-title">BILLING & PREMIUM</div><div class="report-output" id="billingOutput">Billing status and PayPal payment records will appear here.</div></section>
-    </section>
-
-    <section class="report-view hidden" id="reportView">
-      <div class="game-topbar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(8,2,20,.95);border:1px solid rgba(89,255,157,.18);border-radius:14px;padding:12px;margin-bottom:10px;">
-        <button id="reportBackBtn" class="small-btn">Back to Dashboard</button>
-        <div><div class="section-title">REPORT TERMINAL</div><strong style="display:block;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:12px;line-height:1.6;margin-top:4px;">Learner Report</strong></div>
-      </div>
-      <section class="report-terminal" id="reportTerminal">
-        <div class="report-header"><div><div class="section-title">PERFORMANCE REPORT</div><p>Live learner performance report generated from completed attempts.</p></div><div class="report-badge" id="reportBadge">AWAITING DATA</div></div>
-        <div class="report-grid"><div class="report-card"><span>Progress</span><strong id="reportProgress">0 / 5</strong></div><div class="report-card"><span>Total Attempts</span><strong id="reportAttempts">0</strong></div><div class="report-card"><span>Pass Mark</span><strong>80%</strong></div></div>
-        <div class="report-output" id="reportOutput">Complete at least one module to generate report data.</div>
-      </section>
-    </section>
-
-    <section class="game-view hidden" id="gameView" style="min-height:700px;">
-      <div class="game-topbar" style="display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(8,2,20,.95);border:1px solid rgba(89,255,157,.18);border-radius:14px;padding:12px;margin-bottom:10px;">
-        <button id="backBtn" class="small-btn">Back to Dashboard</button>
-        <div><div class="section-title">NOW PLAYING</div><strong id="activeGameTitle" style="display:block;color:#59ff9d;font-family:'Press Start 2P',cursive;font-size:12px;line-height:1.6;margin-top:4px;">Game</strong></div>
-      </div>
-      <iframe id="gameFrame" title="SCCYBER Training Game" style="width:100%;height:760px;border:1px solid rgba(169,76,255,.35);border-radius:16px;background:#090216;"></iframe>
-    </section>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-config.js"></script>
+  <script src="config.js"></script>
   <script src="script.js"></script>
-  <script src="game-architecture-guard.js"></script>
-  <script src="attempt-guard.js"></script>
-  <script src="completion-only-attempts.js"></script>
-  <script src="premium-guard.js"></script>
-  <script src="admin-stability-fix.js"></script>
-  <script src="admin-controls-restore.js"></script>
-  <script src="admin-controls-v2.js"></script>
-  <script src="admin-learner-profile-fields.js"></script>
-  <script src="admin-report-status.js"></script>
-  <script src="game-completion-badges.js"></script>
+  <script src="premium-guard.js?v=20260625a"></script>
 </body>
 </html>
