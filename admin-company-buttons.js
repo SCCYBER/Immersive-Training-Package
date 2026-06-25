@@ -2,6 +2,7 @@
 var hiddenKey='sccyberHiddenCompanyIds';
 function getHidden(){try{return JSON.parse(localStorage.getItem(hiddenKey)||'[]')}catch(e){return[]}}
 function setHidden(ids){localStorage.setItem(hiddenKey,JSON.stringify(Array.from(new Set(ids))))}
+function loadArchive(){if(document.getElementById('companyArchiveScript'))return;var s=document.createElement('script');s.id='companyArchiveScript';s.src='admin-company-archive.js?v=20260625a';document.body.appendChild(s)}
 function addStyles(){
  if(document.getElementById('companyRemoveButtonStyles'))return;
  var s=document.createElement('style');
@@ -10,10 +11,12 @@ function addStyles(){
  document.head.appendChild(s);
 }
 function markReady(){document.body.classList.add('companies-ready')}
+function isArchived(id){try{if(typeof adminOrgs==='undefined'||!Array.isArray(adminOrgs))return false;var o=adminOrgs.find(function(x){return String(x.id)===String(id)});return !!(o&&o.billing_status==='removed')}catch(e){return false}}
 function applyHidden(){
  var hidden=getHidden();
  document.querySelectorAll('[data-org-row]').forEach(function(row){
-  if(hidden.indexOf(row.getAttribute('data-org-row'))!==-1)row.remove();
+  var id=row.getAttribute('data-org-row');
+  if(hidden.indexOf(id)!==-1||isArchived(id))row.remove();
  });
  updateCounts();
  markReady();
@@ -29,6 +32,7 @@ function patchRender(){
  };
 }
 function addButtons(){
+ loadArchive();
  addStyles();
  applyHidden();
  document.querySelectorAll('[data-org-row]').forEach(function(row){
@@ -53,27 +57,25 @@ function updateCounts(){
  if(companyCount)companyCount.textContent=rows.length;
  if(licenceCount){
   var total=0;
-  rows.forEach(function(row){
-   var input=row.querySelector('.org-licences');
-   total+=Number(input&&input.value?input.value:0);
-  });
+  rows.forEach(function(row){var input=row.querySelector('.org-licences');total+=Number(input&&input.value?input.value:0);});
   licenceCount.textContent=total;
  }
 }
 document.addEventListener('input',function(e){if(e.target&&e.target.classList.contains('org-licences'))updateCounts();});
-document.addEventListener('click',function(e){
+document.addEventListener('click',async function(e){
  var b=e.target.closest('.admin-remove-org');
  if(!b)return;
  e.preventDefault();
  var row=b.closest('[data-org-row]');
  var id=b.dataset.id||row&&row.getAttribute('data-org-row');
  var name=row&&row.querySelector('strong')?row.querySelector('strong').textContent:'this company';
- if(!confirm('Remove '+name+' from this admin view?'))return;
+ if(!confirm('Remove '+name+' from the admin dashboard?'))return;
+ var saved=false;if(window.sccyberArchiveOrg)saved=await window.sccyberArchiveOrg(id);
  if(id){var hidden=getHidden();hidden.push(id);setHidden(hidden);}
  if(row)row.remove();
  updateCounts();
- alert('Removed from this admin view. It will stay hidden on this browser. For permanent removal, delete the company record in Supabase after deactivating its learners.');
+ alert(saved?'Company removed from the admin dashboard.':'Hidden on this browser, but the database did not update.');
 });
-window.addEventListener('load',function(){addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();updateCounts();},1000);});
-if(document.readyState==='interactive'||document.readyState==='complete'){addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();updateCounts();},1000);}
+window.addEventListener('load',function(){loadArchive();addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();updateCounts();},1000);});
+if(document.readyState==='interactive'||document.readyState==='complete'){loadArchive();addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();updateCounts();},1000);}
 })();
