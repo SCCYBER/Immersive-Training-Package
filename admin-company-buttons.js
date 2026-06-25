@@ -1,9 +1,13 @@
 (function(){
-function cleanDeadButtons(){
- document.querySelectorAll('.fixed-remove-company').forEach(function(b){b.remove();});
+function addStyles(){
+ if(document.getElementById('companyRemoveButtonStyles'))return;
+ var s=document.createElement('style');
+ s.id='companyRemoveButtonStyles';
+ s.textContent='.fixed-remove-company{display:none!important}.admin-remove-org{display:inline-block!important}';
+ document.head.appendChild(s);
 }
 function addButtons(){
- cleanDeadButtons();
+ addStyles();
  document.querySelectorAll('[data-org-row]').forEach(function(row){
   if(row.querySelector('.admin-remove-org'))return;
   var save=row.querySelector('.admin-update-org');
