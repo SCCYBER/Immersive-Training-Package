@@ -6,6 +6,10 @@
     style.textContent=`
       .sccyber-landing{position:relative;z-index:5;max-width:1120px;margin:0 auto;padding:28px 18px 34px;}
       .sccyber-landing.hidden{display:none!important;}
+      .sccyber-landing.pixel-fizzle{animation:sccyberPixelFade .85s steps(7,end) forwards;filter:contrast(1.7) saturate(1.35);}
+      .sccyber-landing.pixel-fizzle:after{content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(89,255,157,.18) 0 2px,transparent 2px 8px),repeating-linear-gradient(90deg,rgba(169,76,255,.18) 0 2px,transparent 2px 8px);mix-blend-mode:screen;animation:sccyberPixelStatic .85s steps(8,end) forwards;}
+      @keyframes sccyberPixelFade{0%{opacity:1;transform:scale(1);clip-path:inset(0 0 0 0)}25%{opacity:.92;transform:scale(1.01);clip-path:inset(3% 0 0 0)}50%{opacity:.72;transform:scale(.995);clip-path:inset(9% 3% 8% 2%)}75%{opacity:.38;transform:scale(1.015);clip-path:inset(20% 7% 21% 8%)}100%{opacity:0;transform:scale(1.04);clip-path:inset(50% 50% 50% 50%)}}
+      @keyframes sccyberPixelStatic{0%{opacity:0;transform:translate(0,0) scale(1)}15%{opacity:.9;transform:translate(6px,-4px) scale(1.03)}35%{opacity:.65;transform:translate(-8px,5px) scale(1)}55%{opacity:.95;transform:translate(10px,3px) scale(1.04)}80%{opacity:.45;transform:translate(-6px,-6px) scale(1.02)}100%{opacity:0;transform:translate(0,0) scale(1.08)}}
       .landing-packages{position:absolute;top:16px;right:16px;z-index:4;border:1px solid rgba(169,76,255,.45);border-radius:12px;padding:10px 12px;background:rgba(8,2,20,.88);color:#ffd44d;text-decoration:none;font-family:'Press Start 2P',cursive;font-size:8px;line-height:1.5;box-shadow:0 0 18px rgba(169,76,255,.18);}
       .landing-hero{background:linear-gradient(135deg,rgba(11,3,34,.96),rgba(36,7,75,.94));border:1px solid rgba(169,76,255,.35);box-shadow:0 0 42px rgba(124,58,237,.22);border-radius:24px;padding:48px 28px 28px;text-align:center;overflow:hidden;position:relative;}
       .landing-hero:before{content:'';position:absolute;inset:-2px;background:radial-gradient(circle at 20% 20%,rgba(89,255,157,.18),transparent 28%),radial-gradient(circle at 80% 20%,rgba(169,76,255,.22),transparent 30%);pointer-events:none;}
@@ -57,7 +61,7 @@
     addStyles();
     hideMainViews();
     var existing=document.getElementById('sccyberLanding');
-    if(existing){existing.classList.remove('hidden');return;}
+    if(existing){existing.classList.remove('hidden');existing.classList.remove('pixel-fizzle');return;}
     var auth=document.getElementById('authView');
     if(!auth)return;
     var section=document.createElement('section');
@@ -85,7 +89,7 @@
     `;
     auth.parentNode.insertBefore(section,auth);
     var btn=document.getElementById('enterTrainingPortalBtn');
-    if(btn){btn.addEventListener('click',function(){section.classList.add('hidden');auth.classList.remove('hidden');addLoginHomeButton();window.scrollTo(0,0);});}
+    if(btn){btn.addEventListener('click',function(){btn.disabled=true;section.classList.add('pixel-fizzle');setTimeout(function(){section.classList.add('hidden');section.classList.remove('pixel-fizzle');auth.classList.remove('hidden');addLoginHomeButton();window.scrollTo(0,0);},850);});}
   }
 
   function addLoginHomeButton(){
