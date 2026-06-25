@@ -8,13 +8,30 @@ async function syncPremiumAccessFromDatabase() {
 
     const { data, error } = await client
       .from("profiles")
-      .select("premium_enabled")
+      .select("premium_enabled, organisation")
       .eq("id", profile.supabaseUserId)
       .single();
 
     if (error || !data) return;
 
-    const allowed = data.premium_enabled === true;
+    let companyAllowed = true;
+    if (data.organisation) {
+      const orgResult = await client
+        .from("organisations")
+        .select("premium_enabled, licence_count, billing_status")
+        .eq("name", data.organisation)
+        .single();
+
+      if (orgResult.error || !orgResult.data) {
+        companyAllowed = false;
+      } else {
+        companyAllowed = orgResult.data.premium_enabled === true &&
+          Number(orgResult.data.licence_count || 0) > 0 &&
+          orgResult.data.billing_status !== "removed";
+      }
+    }
+
+    const allowed = data.premium_enabled === true && companyAllowed === true;
     if (profile.premiumEnabled !== allowed) {
       profile.premiumEnabled = allowed;
       localStorage.setItem("sccyberPortalProfile", JSON.stringify(profile));
