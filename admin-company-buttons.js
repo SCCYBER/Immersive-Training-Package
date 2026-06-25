@@ -43,12 +43,24 @@ function addButtons(){
   b.style.marginLeft='8px';
   save.parentElement.appendChild(b);
  });
+ updateCounts();
  markReady();
 }
 function updateCounts(){
+ var rows=document.querySelectorAll('[data-org-row]');
  var companyCount=document.getElementById('adminCompanyCount');
- if(companyCount)companyCount.textContent=document.querySelectorAll('[data-org-row]').length;
+ var licenceCount=document.getElementById('adminLicenceCount');
+ if(companyCount)companyCount.textContent=rows.length;
+ if(licenceCount){
+  var total=0;
+  rows.forEach(function(row){
+   var input=row.querySelector('.org-licences');
+   total+=Number(input&&input.value?input.value:0);
+  });
+  licenceCount.textContent=total;
+ }
 }
+document.addEventListener('input',function(e){if(e.target&&e.target.classList.contains('org-licences'))updateCounts();});
 document.addEventListener('click',function(e){
  var b=e.target.closest('.admin-remove-org');
  if(!b)return;
@@ -62,6 +74,6 @@ document.addEventListener('click',function(e){
  updateCounts();
  alert('Removed from this admin view. It will stay hidden on this browser. For permanent removal, delete the company record in Supabase after deactivating its learners.');
 });
-window.addEventListener('load',function(){addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();},1000);});
-if(document.readyState==='interactive'||document.readyState==='complete'){addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();},1000);}
+window.addEventListener('load',function(){addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();updateCounts();},1000);});
+if(document.readyState==='interactive'||document.readyState==='complete'){addStyles();patchRender();addButtons();setInterval(function(){patchRender();addButtons();updateCounts();},1000);}
 })();
