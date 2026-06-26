@@ -53,12 +53,76 @@ async function addLearnerRecordWithAssignedFields(event) {
   }
 
   if (!error) {
+    if (typeof sccyberAudit === "function") {
+      await sccyberAudit("learner_add", "learner", username, { username, organisation_id: organisationId, first_name: firstName, surname, department_role: role });
+    }
     ["newLearnerUsername", "newLearnerFirstName", "newLearnerSurname", "newLearnerRole"].forEach(id => {
       const el = document.getElementById(id);
       if (el) el.value = "";
     });
     if (typeof loadAdminData === "function") await loadAdminData();
   }
+}
+
+function sccyberAuditProfile() {
+  try { return JSON.parse(localStorage.getItem("sccyberPortalProfile") || "null"); } catch (e) { return null; }
+}
+
+async function sccyberAudit(action, targetType, targetId, details) {
+  try {
+    const client = window.supabaseClient || supabaseClient;
+    const profile = sccyberAuditProfile();
+    if (!client || !profile || profile.isAdmin !== true || !profile.supabaseUserId) return;
+    await client.from("admin_audit_logs").insert({
+      admin_user_id: profile.supabaseUserId,
+      admin_username: profile.username || profile.name || "admin",
+      action,
+      target_type: targetType || null,
+      target_id: String(targetId || ""),
+      details: details || {},
+      created_at: new Date().toISOString()
+    });
+  } catch (e) {}
+}
+
+function sccyberPatchAdminAuditActions() {
+  if (window.sccyberAdminAuditActionsPatched) return;
+  if (typeof addCompany !== "function" || typeof updateCompany !== "function" || typeof removeLearnerRecord !== "function" || typeof resetLearnerScores !== "function") return;
+  window.sccyberAdminAuditActionsPatched = true;
+
+  const originalAddCompany = addCompany;
+  addCompany = async function () {
+    const name = document.getElementById("newCompanyName")?.value.trim() || "";
+    const licences = document.getElementById("newCompanyLicences")?.value || "";
+    const premium = document.getElementById("newCompanyPremium")?.value || "";
+    const billing = document.getElementById("newCompanyBilling")?.value || "";
+    await originalAddCompany.apply(this, arguments);
+    await sccyberAudit("company_add", "organisation", name, { name, licences, premium, billing_status: billing });
+  };
+
+  const originalUpdateCompany = updateCompany;
+  updateCompany = async function (id) {
+    const row = document.querySelector(`[data-org-row="${id}"]`);
+    const details = row ? {
+      licences: row.querySelector(".org-licences")?.value || null,
+      premium: row.querySelector(".org-premium")?.value || null,
+      billing_status: row.querySelector(".org-billing")?.value || null
+    } : {};
+    await originalUpdateCompany.apply(this, arguments);
+    await sccyberAudit("company_update", "organisation", id, details);
+  };
+
+  const originalRemoveLearner = removeLearnerRecord;
+  removeLearnerRecord = async function (id, username) {
+    await originalRemoveLearner.apply(this, arguments);
+    await sccyberAudit("learner_remove", "learner", id, { username: username || "" });
+  };
+
+  const originalResetScores = resetLearnerScores;
+  resetLearnerScores = async function (id) {
+    await originalResetScores.apply(this, arguments);
+    await sccyberAudit("learner_scores_reset", "profile", id, { profile_id: id });
+  };
 }
 
 window.addEventListener("load", () => {
@@ -71,4 +135,8 @@ window.addEventListener("load", () => {
     btn.dataset.sccyberAssignedFieldsBound = "true";
     btn.addEventListener("click", addLearnerRecordWithAssignedFields, true);
   }
+
+  sccyberPatchAdminAuditActions();
+  setTimeout(sccyberPatchAdminAuditActions, 300);
+  setTimeout(sccyberPatchAdminAuditActions, 1000);
 });
