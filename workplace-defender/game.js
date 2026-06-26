@@ -1,4 +1,8 @@
-const launchedFromPortal = window.top !== window.self;
+const portalParams = new URLSearchParams(window.location.search);
+const allowedParentOrigins = ["https://sccyber.github.io", window.location.origin];
+function referrerOrigin(){try{return document.referrer?new URL(document.referrer).origin:null}catch(e){return null}}
+const parentOrigin = referrerOrigin();
+const launchedFromPortal = window.top !== window.self && portalParams.get("portal") === "1" && parentOrigin && allowedParentOrigins.includes(parentOrigin);
 
 const questions = [
   { topic: "OFFICE", scene: "office", q: "This is Pik. Pik is leaving their desk for a quick chat, but a spreadsheet with customer details is open on screen. What should Pik do?", a: ["Leave it because Pik will only be gone for a minute", "Lock the screen before walking away", "Turn the monitor slightly", "Ask someone nearby to watch it"], c: 1, why: "Screens should be locked whenever someone leaves their desk, even briefly." },
@@ -204,8 +208,8 @@ function finishGame() {
 }
 
 function postAttempt() {
-  if (!completed || !finalPayload) return;
-  window.parent.postMessage(finalPayload, "*");
+  if (!completed || !finalPayload || !launchedFromPortal) return;
+  window.parent.postMessage(finalPayload, parentOrigin);
 }
 
 nextBtn.addEventListener("click", () => {
@@ -216,6 +220,7 @@ nextBtn.addEventListener("click", () => {
 el("playNowBtn").addEventListener("click", startGame);
 
 window.addEventListener("message", event => {
+  if (!launchedFromPortal || event.source !== window.parent || event.origin !== parentOrigin) return;
   const data = event.data || {};
   if (data.type === "SCCYBER_REQUEST_ATTEMPT") postAttempt();
 });
