@@ -1,4 +1,8 @@
-const launchedFromPortal = window.top !== window.self;
+const portalParams = new URLSearchParams(window.location.search);
+const allowedParentOrigins = ["https://sccyber.github.io", window.location.origin];
+function referrerOrigin(){try{return document.referrer?new URL(document.referrer).origin:null}catch(e){return null}}
+const parentOrigin = referrerOrigin();
+const launchedFromPortal = window.top !== window.self && portalParams.get("portal") === "1" && parentOrigin && allowedParentOrigins.includes(parentOrigin);
 
 const stages = [
   { name: "CREATE", lesson: "Use long, unique and hard to guess passwords." },
@@ -219,8 +223,8 @@ function finishGame() {
 }
 
 function postAttempt() {
-  if (!completed || !finalPayload) return;
-  window.parent.postMessage(finalPayload, "*");
+  if (!completed || !finalPayload || !launchedFromPortal) return;
+  window.parent.postMessage(finalPayload, parentOrigin);
 }
 
 nextBtn.addEventListener("click", () => {
@@ -231,6 +235,7 @@ nextBtn.addEventListener("click", () => {
 el("playNowBtn").addEventListener("click", startGame);
 
 window.addEventListener("message", event => {
+  if (!launchedFromPortal || event.source !== window.parent || event.origin !== parentOrigin) return;
   const data = event.data || {};
   if (data.type === "SCCYBER_REQUEST_ATTEMPT") postAttempt();
 });
