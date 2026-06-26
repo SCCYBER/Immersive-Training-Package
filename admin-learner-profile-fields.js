@@ -33,6 +33,22 @@ async function addLearnerRecordWithAssignedFields(event) {
     return;
   }
 
+  const { data: existingLearners, error: checkError } = await client
+    .from("learners")
+    .select("id")
+    .eq("username", username)
+    .limit(1);
+
+  if (checkError) {
+    if (learnerMessage) learnerMessage.textContent = "Could not check username. Refresh and try again.";
+    return;
+  }
+
+  if (existingLearners && existingLearners.length > 0) {
+    if (learnerMessage) learnerMessage.textContent = `Username '${username}' already exists. Use a different username.`;
+    return;
+  }
+
   if (learnerMessage) learnerMessage.textContent = "Adding learner...";
 
   const payload = {
@@ -47,8 +63,9 @@ async function addLearnerRecordWithAssignedFields(event) {
   const { error } = await client.from("learners").insert(payload);
 
   if (learnerMessage) {
+    const duplicate = error && (String(error.code) === "23505" || String(error.message || "").toLowerCase().includes("duplicate"));
     learnerMessage.textContent = error
-      ? `Could not add learner: ${error.message || "Unknown database error."}`
+      ? duplicate ? `Username '${username}' already exists. Use a different username.` : `Could not add learner: ${error.message || "Unknown database error."}`
       : `Learner added. Username: ${username}`;
   }
 
