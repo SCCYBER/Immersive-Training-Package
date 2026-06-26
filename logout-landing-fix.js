@@ -21,6 +21,11 @@ function loadLoginGuard(){
  if(document.getElementById('loginGuardScript'))return;
  var s=document.createElement('script');s.id='loginGuardScript';s.src='login-rate-limit.js?v=20260626a';document.body.appendChild(s);
 }
+function loadAdminSelfReset(){
+ if(document.getElementById('adminSelfResetScript'))return;
+ var s=document.createElement('script');s.id='adminSelfResetScript';s.src='admin-self-reset.js?v=20260626a';document.body.appendChild(s);
+}
+function loadHelpers(){loadLoginGuard();loadAdminSelfReset()}
 document.addEventListener('click',function(e){
  var btn=e.target.closest('#logoutBtn');
  if(!btn)return;
@@ -30,5 +35,5 @@ document.addEventListener('click',function(e){
  forceLogout();
 },true);
 window.sccyberForceLogoutToLanding=forceLogout;
-window.addEventListener('load',loadLoginGuard);if(document.readyState==='interactive'||document.readyState==='complete')setTimeout(loadLoginGuard,100);
+window.addEventListener('load',loadHelpers);if(document.readyState==='interactive'||document.readyState==='complete')setTimeout(loadHelpers,100);
 })();
