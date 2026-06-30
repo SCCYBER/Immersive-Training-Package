@@ -5,6 +5,8 @@ function sccyberSyncGameRegistryFromCards() {
   const ordered = [];
 
   document.querySelectorAll(".game-card[data-game]").forEach(card => {
+    if (card.dataset.reporting === "excluded" || card.dataset.status === "admin-preview") return;
+
     const key = card.dataset.game;
     const current = existing.get(key) || {};
     const meta = Array.from(card.querySelectorAll(".game-meta span")).map(span => span.textContent.trim());

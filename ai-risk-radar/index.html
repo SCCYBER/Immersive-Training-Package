@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SCCYBER - AI Risk Radar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="bg-scanlines"></div>
+
+  <section class="access-lock" id="accessLock">
+    <div class="start-panel">
+      <img src="https://sccyber.github.io/breach-lockdown/logo.png" alt="SCCYBER logo" class="start-logo">
+      <div class="start-badge">PORTAL ACCESS REQUIRED</div>
+      <h1 class="start-title-main">ACCESS LOCKED</h1>
+      <p class="start-copy">AI Risk Radar is currently available only as an SCCYBER admin preview.</p>
+      <a class="arcade-green-btn lock-link" href="../">RETURN TO PORTAL</a>
+    </div>
+  </section>
+
+  <section class="start-screen" id="startScreen">
+    <div class="start-panel">
+      <img src="https://sccyber.github.io/breach-lockdown/logo.png" alt="SCCYBER logo" class="start-logo">
+      <div class="start-badge">ADMIN PREVIEW MODULE</div>
+      <h1 class="start-title-main">AI RISK RADAR</h1>
+      <p class="start-subtitle">Review workplace AI requests and keep shadow AI, data leaks and deepfake fraud under control.</p>
+      <div class="briefing-card">
+        <div class="briefing-title">MISSION BRIEFING</div>
+        <p>Handle 10 realistic employee AI-use scenarios.</p>
+        <p>Choose the safest workplace action. Score 80% or higher to pass when the module goes live.</p>
+        <p>Preview scores stay inside this game and do not affect learner reports.</p>
+      </div>
+      <button id="playNowBtn" class="arcade-green-btn" type="button">START PREVIEW</button>
+    </div>
+  </section>
+
+  <div class="risk-flash" id="riskFlash"></div>
+
+  <main class="game-shell" id="gameShell">
+    <img src="https://sccyber.github.io/breach-lockdown/logo.png" alt="SCCYBER logo" class="logo">
+    <h1 class="title">AI RISK RADAR</h1>
+    <p class="subtitle">Classify AI use before risk spreads across the organisation</p>
+
+    <section class="hud">
+      <div class="hud-box">SCORE: <span id="scoreBox">0</span></div>
+      <div class="hud-box">ACCURACY: <span id="accuracyBox">0%</span></div>
+      <div class="hud-box">CASE: <span id="caseBox">1 / 10</span></div>
+      <div class="hud-box">RISK: <span id="riskBox">LOW</span></div>
+    </section>
+
+    <section class="radar-card">
+      <div class="section-title">AI RISK SIGNAL</div>
+      <div class="radar-wrap" id="radarWrap">
+        <div class="radar-grid"></div>
+        <div class="radar-sweep"></div>
+        <div class="radar-ring ring-one"></div>
+        <div class="radar-ring ring-two"></div>
+        <div class="radar-ring ring-three"></div>
+        <div class="signal-blip" id="signalBlip"></div>
+        <div class="radar-core">AI</div>
+      </div>
+      <div class="risk-meter">
+        <div class="risk-meter-labels"><span>CONTROLLED</span><span>SHADOW AI</span></div>
+        <div class="risk-track"><div class="risk-fill" id="riskFill"></div></div>
+      </div>
+    </section>
+
+    <section class="case-card">
+      <div class="case-topline">
+        <div class="tag" id="tag">DATA SHARING</div>
+        <div class="difficulty" id="difficultyTag">REVIEW</div>
+      </div>
+      <h2 class="case-title" id="caseTitle"></h2>
+      <p class="case-copy" id="caseCopy"></p>
+      <div class="policy-note" id="policyNote"></div>
+    </section>
+
+    <section class="decision-card">
+      <div class="section-title">CHOOSE THE SAFEST WORKPLACE ACTION</div>
+      <div class="answers" id="answers"></div>
+      <div class="feedback" id="feedback"></div>
+      <button class="next-btn" id="nextBtn" type="button">NEXT CASE</button>
+    </section>
+
+    <section class="result-card" id="resultCard">
+      <img src="https://sccyber.github.io/breach-lockdown/logo.png" alt="SCCYBER logo" class="result-logo">
+      <div class="result-topline" id="resultTopline">AI RISK CONTAINED</div>
+      <h2 id="resultTitle">MISSION PASSED</h2>
+      <div class="result-score" id="resultScore"></div>
+      <div class="result-copy" id="resultCopy"></div>
+      <div class="result-breakdown" id="resultBreakdown"></div>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
