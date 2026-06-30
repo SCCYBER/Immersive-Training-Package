@@ -5,8 +5,20 @@ function showLandingOnly(){
  hide('authView');hide('dashboardView');hide('reportView');hide('gameView');hide('adminView');
  var landing=document.getElementById('sccyberLanding');
  if(landing){landing.classList.remove('hidden');landing.classList.remove('pixel-fizzle')}
- else if(typeof showLanding==='function'){showLanding()}
+ else if(typeof window.sccyberShowLanding==='function'){window.sccyberShowLanding()}
  window.scrollTo(0,0);
+}
+function ensureLandingThenShow(){
+ if(typeof window.sccyberShowLanding==='function'){showLandingOnly();return}
+ if(document.getElementById('sccyberLandingPageScript')){
+  setTimeout(showLandingOnly,120);
+  return;
+ }
+ var s=document.createElement('script');
+ s.id='sccyberLandingPageScript';
+ s.src='landing-page.js?v=20260630a';
+ s.onload=showLandingOnly;
+ document.body.appendChild(s);
 }
 async function forceLogout(){
  try{localStorage.removeItem('sccyberPortalProfile')}catch(e){}
@@ -14,8 +26,8 @@ async function forceLogout(){
  var user=document.getElementById('usernameInput');if(user)user.value='';
  var pass=document.getElementById('passwordInput');if(pass)pass.value='';
  var msg=document.getElementById('authMessage');if(msg)msg.textContent='';
- showLandingOnly();
- setTimeout(showLandingOnly,100);
+ ensureLandingThenShow();
+ setTimeout(ensureLandingThenShow,100);
 }
 function loadLoginGuard(){
  if(document.getElementById('loginGuardScript'))return;

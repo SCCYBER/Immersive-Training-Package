@@ -68,6 +68,8 @@
 
   function addLoginHomeButton(){var auth=authEl();if(!auth||document.getElementById('loginHomeBtn'))return;var b=document.createElement('button');b.id='loginHomeBtn';b.className='login-home-btn';b.type='button';b.textContent='⌂';b.title='Back to landing page';b.addEventListener('click',function(){showLanding()});auth.appendChild(b)}
   function patchLogout(){if(typeof logout!=='function'||window.sccyberLandingLogoutPatched)return;window.sccyberLandingLogoutPatched=true;var original=logout;logout=async function(){await original.apply(this,arguments);localStorage.removeItem('sccyberPortalProfile');hideMainViews();setTimeout(function(){var l=landingEl();if(l){l.classList.remove('hidden');l.classList.remove('pixel-fizzle')}else{showLanding()}},50)}}
+  window.sccyberShowLanding=showLanding;
+  window.sccyberHideMainViews=hideMainViews;
   function install(){addStyles();patchDashboard();showLanding();patchLogout();setTimeout(function(){patchDashboard();patchLogout()},500)}
   window.addEventListener('load',install);if(document.readyState==='interactive'||document.readyState==='complete')setTimeout(install,50);
 })();
