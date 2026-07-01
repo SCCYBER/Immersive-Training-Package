@@ -117,10 +117,10 @@
         var profile=(adminProfiles||[]).find(function(p){return p.id===row.user_id})||{};
         var org=(adminOrgs||[]).find(function(o){return o.id===row.organisation_id});
         var uid=row.user_id||"";
-        return '<div class="report-line" data-fixed-admin-buttons="true" data-admin-controls-v2="true" data-learner-id="'+escapeHtml(row.id||"")+'" data-username="'+escapeHtml(row.username||"")+'" data-user-id="'+escapeHtml(uid)+'"><strong>'+escapeHtml(row.username||"No username")+'</strong><span>'+escapeHtml(org?org.name:"No company")+'</span><span>'+(uid?"Login active":"No login yet")+(profile.premium_enabled?" · Premium":"")+'</span><span></span></div>';
+        return '<div class="report-line" data-fixed-admin-buttons="true" data-admin-controls-v2="true" data-learner-id="'+escapeHtml(row.id||"")+'" data-username="'+escapeHtml(row.username||"")+'" data-user-id="'+escapeHtml(uid)+'" data-org-id="'+escapeHtml(row.organisation_id||"")+'"><strong>'+escapeHtml(row.username||"No username")+'</strong><span>'+escapeHtml(org?org.name:"No company")+'</span><span>'+(uid?"Login active":"No login yet")+(profile.premium_enabled?" · Premium":"")+'</span><span></span></div>';
       }).join("")||"No learners yet.";
       adminLearnerOutput.querySelectorAll(".report-line[data-admin-controls-v2='true']").forEach(function(row){
-        if(typeof sccyberBuildLearnerButtons==="function")sccyberBuildLearnerButtons(row,row.dataset.username,row.dataset.userId,row.dataset.learnerId);
+        if(typeof sccyberBuildLearnerButtons==="function")sccyberBuildLearnerButtons(row,row.dataset.username,row.dataset.userId,row.dataset.learnerId,row.dataset.orgId);
       });
     };
   }

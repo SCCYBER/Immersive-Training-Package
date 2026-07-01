@@ -95,20 +95,20 @@ function showSavedLogin(username) {
   `);
 }
 
-async function callLoginService(action, username, secret) {
+async function callLoginService(action, username, secret, organisationId) {
   const client = safeAdminClient();
-  const body = { action: action, username: username, password: secret };
+  const body = { action: action, username: username, password: secret, organisation_id: organisationId || null };
   const { data, error } = await client.functions.invoke("create-learner-login", { body });
   if (error || data?.error) throw new Error(data?.error || error?.message || "Action failed.");
   return data;
 }
 
-async function createLearnerAccess(username, button) {
+async function createLearnerAccess(username, button, organisationId) {
   const secret = makeLoginSecret();
   button.disabled = true;
   button.textContent = "Creating...";
   try {
-    await callLoginService("create", username, secret);
+    await callLoginService("create", username, secret, organisationId);
     saveLoginSecret(username, secret);
     showSavedLogin(username);
     if (typeof loadAdminData === "function") await loadAdminData();
@@ -120,13 +120,13 @@ async function createLearnerAccess(username, button) {
   }
 }
 
-async function resetLearnerAccess(username, button) {
+async function resetLearnerAccess(username, button, organisationId) {
   if (!confirm(`Generate new login details for ${username}?`)) return;
   const secret = makeLoginSecret();
   button.disabled = true;
   button.textContent = "Resetting...";
   try {
-    await callLoginService("reset-password", username, secret);
+    await callLoginService("reset-password", username, secret, organisationId);
     saveLoginSecret(username, secret);
     showSavedLogin(username);
   } catch (e) {
@@ -168,6 +168,7 @@ function attachStableAdminButtons() {
     const show = document.createElement("button");
     show.className = "small-btn fixed-show-login";
     show.dataset.username = username;
+    if (row.dataset.orgId) show.dataset.orgId = row.dataset.orgId;
     show.textContent = "Show Credentials";
     actionCell.appendChild(show);
     actionCell.appendChild(document.createElement("br"));
@@ -176,6 +177,7 @@ function attachStableAdminButtons() {
       const reset = document.createElement("button");
       reset.className = "small-btn fixed-reset-login";
       reset.dataset.username = username;
+      if (row.dataset.orgId) reset.dataset.orgId = row.dataset.orgId;
       reset.textContent = "Reset Login";
       actionCell.appendChild(reset);
       actionCell.appendChild(document.createElement("br"));
@@ -183,6 +185,7 @@ function attachStableAdminButtons() {
       const create = document.createElement("button");
       create.className = "small-btn fixed-create-login";
       create.dataset.username = username;
+      if (row.dataset.orgId) create.dataset.orgId = row.dataset.orgId;
       create.textContent = "Create Login";
       actionCell.appendChild(create);
       actionCell.appendChild(document.createElement("br"));
@@ -237,7 +240,7 @@ document.addEventListener("click", event => {
   if (create) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    createLearnerAccess(create.dataset.username, create);
+    createLearnerAccess(create.dataset.username, create, create.dataset.orgId);
     return;
   }
 
@@ -245,7 +248,7 @@ document.addEventListener("click", event => {
   if (reset) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    resetLearnerAccess(reset.dataset.username, reset);
+    resetLearnerAccess(reset.dataset.username, reset, reset.dataset.orgId);
     return;
   }
 

@@ -2,7 +2,7 @@ function sccyberAddBreak(target) {
   target.appendChild(document.createElement("br"));
 }
 
-function sccyberBuildLearnerButtons(row, username, userId, learnerId) {
+function sccyberBuildLearnerButtons(row, username, userId, learnerId, organisationId) {
   const cell = row.querySelector("span:last-child");
   if (!cell) return;
 
@@ -20,6 +20,7 @@ function sccyberBuildLearnerButtons(row, username, userId, learnerId) {
   const show = document.createElement("button");
   show.className = "small-btn fixed-show-login";
   show.dataset.username = username;
+  if (organisationId) show.dataset.orgId = organisationId;
   show.textContent = "Show Login";
   cell.appendChild(show);
   sccyberAddBreak(cell);
@@ -28,6 +29,7 @@ function sccyberBuildLearnerButtons(row, username, userId, learnerId) {
     const reset = document.createElement("button");
     reset.className = "small-btn fixed-reset-login";
     reset.dataset.username = username;
+    if (organisationId) reset.dataset.orgId = organisationId;
     reset.textContent = "Reset Login";
     cell.appendChild(reset);
     sccyberAddBreak(cell);
@@ -35,6 +37,7 @@ function sccyberBuildLearnerButtons(row, username, userId, learnerId) {
     const create = document.createElement("button");
     create.className = "small-btn fixed-create-login";
     create.dataset.username = username;
+    if (organisationId) create.dataset.orgId = organisationId;
     create.textContent = "Create Login";
     cell.appendChild(create);
     sccyberAddBreak(cell);
@@ -60,11 +63,11 @@ function sccyberRenderLearnerRowsV2(rows) {
     const profile = adminProfiles.find(p => p.id === row.user_id) || {};
     const org = adminOrgs.find(o => o.id === row.organisation_id);
     const uid = row.user_id || "";
-    return `<div class="report-line" data-fixed-admin-buttons="true" data-admin-controls-v2="true" data-learner-id="${row.id}" data-username="${row.username}" data-user-id="${uid}"><strong>${row.username}</strong><span>${org ? org.name : "No company"}</span><span>${uid ? "Login active" : "No login yet"}${profile.premium_enabled ? " · Premium" : ""}</span><span></span></div>`;
+    return `<div class="report-line" data-fixed-admin-buttons="true" data-admin-controls-v2="true" data-learner-id="${row.id}" data-username="${row.username}" data-user-id="${uid}" data-org-id="${row.organisation_id || ""}"><strong>${row.username}</strong><span>${org ? org.name : "No company"}</span><span>${uid ? "Login active" : "No login yet"}${profile.premium_enabled ? " · Premium" : ""}</span><span></span></div>`;
   }).join("") || "No learners yet.";
 
   adminLearnerOutput.querySelectorAll(".report-line[data-admin-controls-v2='true']").forEach(row => {
-    sccyberBuildLearnerButtons(row, row.dataset.username, row.dataset.userId, row.dataset.learnerId);
+    sccyberBuildLearnerButtons(row, row.dataset.username, row.dataset.userId, row.dataset.learnerId, row.dataset.orgId);
   });
 }
 
@@ -94,9 +97,10 @@ function attachStableAdminButtons() {
     const remove = row.querySelector(".admin-remove-learner, .remove-learner, .fixed-remove-learner");
     const userId = report?.dataset.id || row.dataset.userId || "";
     const learnerId = remove?.dataset.id || row.dataset.learnerId || "";
+    const organisationId = row.dataset.orgId || "";
 
     if (!username) return;
-    sccyberBuildLearnerButtons(row, username, userId, learnerId);
+    sccyberBuildLearnerButtons(row, username, userId, learnerId, organisationId);
   });
 }
 
