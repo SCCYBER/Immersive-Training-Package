@@ -1,4 +1,5 @@
-const games=[{key:"breach-lockdown",name:"Breach Lockdown",tier:"Intermediate",premium:true},{key:"brute-force-lockdown",name:"Brute Force Lockdown",tier:"Advanced",premium:true},{key:"phishing-frenzy",name:"Phishing Frenzy",tier:"Easy",premium:true}];
+const games=[{key:"password-shield",name:"Password Shield",tier:"Easy",premium:false},{key:"workplace-defender",name:"Workplace Defender",tier:"Intermediate",premium:true},{key:"phishing-frenzy",name:"Phishing Frenzy",tier:"Easy",premium:true},{key:"breach-lockdown",name:"Breach Lockdown",tier:"Intermediate",premium:true},{key:"brute-force-lockdown",name:"Brute Force Lockdown",tier:"Advanced",premium:true}];
+window.games=games;
 const storageKey="sccyberPortalProfile",PASS_MARK=80;
 let currentGameKey=null,currentGameOrigin=null,supabaseClient=null,adminProfiles=[],adminAttempts=[],adminOrgs=[];
 const trustedGameOrigins=[location.origin,"https://sccyber.github.io"];
