@@ -17,22 +17,24 @@ function launchAdminPreview(){
  openGame('AI Risk Radar','ai-risk-radar/index.html?portal=1&preview=admin','ai-risk-radar');
 }
 function configureTile(card){
- var admin=isAdmin();
- card.className='game-card live coming-soon-card'+(admin?' admin-preview-card':'');
+ card.className='game-card live coming-soon-card admin-preview-card';
  card.setAttribute('data-premium','true');
  card.setAttribute('data-reporting','excluded');
  card.setAttribute('data-status','admin-preview');
- card.innerHTML='<div class="game-icon">🤖</div><div class="game-type">PREMIUM MODULE</div><h2>AI Risk Radar</h2><p>Work through 10 AI security scenarios covering data sharing, shadow AI, deepfakes and safe use of AI tools.</p><div class="game-score" id="score-ai-risk-radar">'+(admin?'Admin preview only':'Coming soon')+'</div><div class="game-meta"><span>Premium</span><span>Easy</span><span>AI Security</span></div><button class="launch-btn '+(admin?'ai-preview-btn':'')+'" type="button" '+(admin?'':'disabled')+'>'+(admin?'Admin Preview':'Coming Soon')+'</button>';
- if(admin){
-  card.querySelector('.ai-preview-btn').addEventListener('click',function(event){
-   event.preventDefault();
-   event.stopPropagation();
-   launchAdminPreview();
-  });
- }
+ card.innerHTML='<div class="game-icon">🤖</div><div class="game-type">ADMIN PREVIEW</div><h2>AI Risk Radar</h2><p>Work through 10 AI security scenarios covering data sharing, shadow AI, deepfakes and safe use of AI tools.</p><div class="game-score" id="score-ai-risk-radar">Admin preview only</div><div class="game-meta"><span>Admin only</span><span>Easy</span><span>AI Security</span></div><button class="launch-btn ai-preview-btn" type="button">Admin Preview</button>';
+ card.querySelector('.ai-preview-btn').addEventListener('click',function(event){
+  event.preventDefault();
+  event.stopPropagation();
+  launchAdminPreview();
+ });
+}
+function removeTile(){
+ var existing=document.querySelector('[data-game="ai-risk-radar"]');
+ if(existing)existing.remove();
 }
 function addTile(){
  addStyles();
+ if(!isAdmin()){removeTile();return;}
  var existing=document.querySelector('[data-game="ai-risk-radar"]');
  if(existing){configureTile(existing);return;}
  var grid=document.querySelector('.games-grid');
@@ -42,7 +44,37 @@ function addTile(){
  configureTile(card);
  grid.appendChild(card);
 }
-window.addEventListener('load',addTile);
-if(document.readyState==='interactive'||document.readyState==='complete')setTimeout(addTile,150);
+function installHooks(){
+ if(window.sccyberAiRiskRadarPreviewHooked)return;
+ window.sccyberAiRiskRadarPreviewHooked=true;
+ if(typeof showDashboard==='function'){
+  var originalShowDashboard=showDashboard;
+  showDashboard=function(){
+   var result=originalShowDashboard.apply(this,arguments);
+   setTimeout(addTile,0);
+   return result;
+  };
+ }
+ if(typeof updateDashboard==='function'){
+  var originalUpdateDashboard=updateDashboard;
+  updateDashboard=function(){
+   var result=originalUpdateDashboard.apply(this,arguments);
+   setTimeout(addTile,0);
+   return result;
+  };
+ }
+ if(typeof logout==='function'){
+  var originalLogout=logout;
+  logout=async function(){
+   var result=await originalLogout.apply(this,arguments);
+   removeTile();
+   return result;
+  };
+ }
+}
+function install(){installHooks();addTile();}
+window.addEventListener('load',install);
+if(document.readyState==='interactive'||document.readyState==='complete')setTimeout(install,150);
 setTimeout(addTile,800);
+setTimeout(install,1600);
 })();
