@@ -11,6 +11,7 @@ function addStyles(){
  document.head.appendChild(s);
 }
 function markReady(){document.body.classList.add('companies-ready')}
+function companyBrowserActive(){return !!window.sccyberCompanyBrowserOwnsCounts}
 function isArchived(id){try{if(typeof adminOrgs==='undefined'||!Array.isArray(adminOrgs))return false;var o=adminOrgs.find(function(x){return String(x.id)===String(id)});return !!(o&&o.billing_status==='removed')}catch(e){return false}}
 function filterCompanyDropdown(){
  var select=document.getElementById('newLearnerCompany');
@@ -22,6 +23,11 @@ function filterCompanyDropdown(){
  });
 }
 function applyHidden(){
+ if(companyBrowserActive()){
+  filterCompanyDropdown();
+  markReady();
+  return;
+ }
  var hidden=getHidden();
  document.querySelectorAll('[data-org-row]').forEach(function(row){
   var id=row.getAttribute('data-org-row');
@@ -32,6 +38,7 @@ function applyHidden(){
  markReady();
 }
 function patchRender(){
+ if(companyBrowserActive())return;
  if(typeof renderAdmin!=='function'||window.sccyberCompanyRenderPatched)return;
  window.sccyberCompanyRenderPatched=true;
  var original=renderAdmin;
@@ -45,6 +52,11 @@ function patchRender(){
 function addButtons(){
  loadArchive();
  addStyles();
+ if(companyBrowserActive()){
+  filterCompanyDropdown();
+  markReady();
+  return;
+ }
  applyHidden();
  document.querySelectorAll('[data-org-row]').forEach(function(row){
   if(row.querySelector('.admin-remove-org'))return;
@@ -63,7 +75,7 @@ function addButtons(){
  markReady();
 }
 function updateCounts(){
- if(window.sccyberCompanyBrowserOwnsCounts)return;
+ if(companyBrowserActive())return;
  var rows=document.querySelectorAll('[data-org-row]');
  var companyCount=document.getElementById('adminCompanyCount');
  var licenceCount=document.getElementById('adminLicenceCount');
