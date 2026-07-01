@@ -38,32 +38,106 @@ function savedSecretValue(saved) {
   return saved?.secret || saved?.password || "";
 }
 
+function ensureAdminModal() {
+  const oldReport = document.getElementById("adminSelectedReport");
+  const oldSection = oldReport?.closest(".report-terminal");
+  if (oldSection) oldSection.remove();
+
+  if (!document.getElementById("adminModalRuntimeStyles")) {
+    const style = document.createElement("style");
+    style.id = "adminModalRuntimeStyles";
+    style.textContent = `
+      .admin-modal{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+      .admin-modal-backdrop{position:absolute;inset:0;background:rgba(3,1,9,.78);backdrop-filter:blur(6px)}
+      .admin-modal-panel{position:relative;width:min(920px,100%);max-height:min(82vh,760px);overflow:auto;background:linear-gradient(180deg,rgba(18,4,42,.98),rgba(8,2,20,.99));border:1px solid rgba(89,255,157,.32);border-radius:16px;padding:14px;box-shadow:0 0 34px rgba(89,255,157,.13),0 0 60px rgba(109,29,208,.28)}
+      .admin-modal-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+      .admin-modal-body{max-height:calc(82vh - 100px);overflow:auto}
+      .admin-modal-body .report-grid{margin-top:10px}
+      .admin-modal-body .report-line{grid-template-columns:1.1fr .8fr 1.7fr .8fr}
+      @media(max-width:900px){.admin-modal{padding:8px}.admin-modal-panel{max-height:90vh}.admin-modal-header{align-items:flex-start;flex-direction:column}.admin-modal-body .report-line{grid-template-columns:1fr}}
+    `;
+    document.head.appendChild(style);
+  }
+
+  let modal = document.getElementById("adminActionModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.className = "admin-modal hidden";
+    modal.id = "adminActionModal";
+    modal.setAttribute("aria-hidden", "true");
+    modal.innerHTML = `
+      <div class="admin-modal-backdrop"></div>
+      <section class="admin-modal-panel" role="dialog" aria-modal="true" aria-labelledby="adminActionModalTitle">
+        <div class="admin-modal-header">
+          <div class="section-title" id="adminActionModalTitle">Learner Details</div>
+          <button class="small-btn admin-modal-close" type="button">Close</button>
+        </div>
+        <div class="report-output admin-modal-body" id="adminActionModalBody"></div>
+      </section>
+    `;
+    document.body.appendChild(modal);
+  }
+  return modal;
+}
+
 function showPanel(html) {
-  const output = document.getElementById("adminSelectedReport");
-  if (output) output.innerHTML = html;
+  openAdminModal("Learner Details", html);
 }
 
 function closeAdminPanel() {
-  showPanel("Select a learner to view their report.");
+  closeAdminModal();
 }
 
 function addCloseToCurrentPanel() {
-  const output = document.getElementById("adminSelectedReport");
-  if (!output || output.querySelector(".fixed-close-admin-panel")) return;
-  if (!output.innerHTML || output.textContent.includes("Select a learner")) return;
+  const modal = document.getElementById("adminActionModal");
+  if (!modal) return;
+  modal.classList.remove("hidden");
+  modal.setAttribute("aria-hidden", "false");
+}
 
-  const wrap = document.createElement("div");
-  wrap.style.display = "flex";
-  wrap.style.justifyContent = "flex-end";
-  wrap.style.marginBottom = "10px";
+function openAdminModal(title, html) {
+  const modal = ensureAdminModal();
+  const modalTitle = document.getElementById("adminActionModalTitle");
+  const modalBody = document.getElementById("adminActionModalBody");
+  if (!modal || !modalBody) return;
+  if (modalTitle) modalTitle.textContent = title || "Learner Details";
+  modalBody.innerHTML = html || "";
+  modal.classList.remove("hidden");
+  modal.setAttribute("aria-hidden", "false");
+}
 
-  const btn = document.createElement("button");
-  btn.className = "small-btn fixed-close-admin-panel";
-  btn.type = "button";
-  btn.textContent = "Close";
+function closeAdminModal() {
+  const modal = document.getElementById("adminActionModal");
+  const modalBody = document.getElementById("adminActionModalBody");
+  if (!modal) return;
+  modal.classList.add("hidden");
+  modal.setAttribute("aria-hidden", "true");
+  if (modalBody) modalBody.innerHTML = "";
+}
 
-  wrap.appendChild(btn);
-  output.prepend(wrap);
+async function resetLearnerScoresFromModal(userId) {
+  if (!userId || !confirm("Reset all scores for this learner?")) return;
+  const client = safeAdminClient();
+  const { error } = await client.from("attempts").delete().eq("user_id", userId);
+  if (error) {
+    openAdminModal("Learner Report", `<div class="report-section"><p>Could not reset scores. Check delete policy.</p></div>`);
+    return;
+  }
+  if (typeof loadAdminData === "function") await loadAdminData();
+  showLearnerReportModal(userId);
+}
+
+function showLearnerReportModal(userId) {
+  const profiles = window.adminProfiles || (typeof adminProfiles !== "undefined" ? adminProfiles : []);
+  const attempts = window.adminAttempts || (typeof adminAttempts !== "undefined" ? adminAttempts : []);
+  const profile = profiles.find(item => item.id === userId);
+  if (!profile) {
+    openAdminModal("Learner Report", `<div class="report-section"><p>Learner not found or login profile has not been created yet.</p></div>`);
+    return;
+  }
+  if (typeof renderRemoteLearnerReport === "function") {
+    openAdminModal("Learner Report", renderRemoteLearnerReport(profile, attempts.filter(attempt => attempt.user_id === userId)));
+  }
 }
 
 function showSavedLogin(username) {
@@ -215,6 +289,7 @@ function attachStableAdminButtons() {
 }
 
 window.addEventListener("load", () => {
+  ensureAdminModal();
   setInterval(attachStableAdminButtons, 1200);
 });
 
@@ -223,10 +298,7 @@ document.addEventListener("click", event => {
   if (view) {
     event.preventDefault();
     event.stopImmediatePropagation();
-    if (typeof showAdminLearnerReport === "function") {
-      showAdminLearnerReport(view.dataset.id);
-      setTimeout(addCloseToCurrentPanel, 50);
-    }
+    showLearnerReportModal(view.dataset.id);
     return;
   }
 
@@ -235,6 +307,22 @@ document.addEventListener("click", event => {
     event.preventDefault();
     event.stopImmediatePropagation();
     closeAdminPanel();
+    return;
+  }
+
+  const modalClose = event.target.closest(".admin-modal-close") || (event.target.classList?.contains("admin-modal-backdrop") ? event.target : null);
+  if (modalClose) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    closeAdminModal();
+    return;
+  }
+
+  const resetScores = event.target.closest(".admin-reset-scores");
+  if (resetScores) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    resetLearnerScoresFromModal(resetScores.dataset.id);
     return;
   }
 
