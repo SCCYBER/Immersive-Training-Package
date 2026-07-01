@@ -50,6 +50,10 @@
     });
   }
 
+  function hasActiveFilters() {
+    return !!state.search.trim() || state.billing !== "all" || state.premium !== "all";
+  }
+
   function option(value, label, selectedValue) {
     return `<option value="${escapeHtml(value)}" ${selectedValue === value ? "selected" : ""}>${escapeHtml(label)}</option>`;
   }
@@ -79,7 +83,7 @@
           </select>
         </div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;">
-          <div id="companyBrowserCount" class="auth-message" style="margin:0;">Showing ${filtered} of ${total} companies</div>
+          <div id="companyBrowserCount" class="auth-message" style="margin:0;">${filtered ? `Showing ${filtered} of ${total} companies` : `${total} companies available`}</div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             <button class="small-btn company-page-prev" type="button">Previous</button>
             <span id="companyBrowserPageLabel" style="color:#b9a8d5;"></span>
@@ -133,34 +137,41 @@
     const output = document.getElementById("adminOutput");
     if (!list || !output) return;
 
-    const rows = filteredRows();
+    const active = hasActiveFilters();
+    const rows = active ? filteredRows() : [];
     const totalPages = Math.max(1, Math.ceil(rows.length / state.pageSize));
     clampPage(totalPages);
 
     const start = (state.page - 1) * state.pageSize;
     const pageRows = rows.slice(start, start + state.pageSize);
-    list.innerHTML = pageRows.map(rowHtml).join("") || `<div class="auth-message">No companies match the current filters.</div>`;
+    if (!active) {
+      list.innerHTML = `<div class="auth-message">Search or choose a payment/premium filter to view matching companies.</div>`;
+    } else {
+      list.innerHTML = pageRows.map(rowHtml).join("") || `<div class="auth-message">No companies match the current filters.</div>`;
+    }
 
     const count = document.getElementById("companyBrowserCount");
-    if (count) count.textContent = `Showing ${rows.length} of ${state.rows.length} companies`;
+    if (count) {
+      count.textContent = active ? `Showing ${rows.length} of ${state.rows.length} companies` : `${state.rows.length} companies available`;
+    }
 
     const label = document.getElementById("companyBrowserPageLabel");
     if (label) {
       const from = rows.length ? start + 1 : 0;
       const to = Math.min(start + pageRows.length, rows.length);
-      label.textContent = `Page ${state.page} of ${totalPages} · ${from}-${to}`;
+      label.textContent = active ? `Page ${state.page} of ${totalPages} · ${from}-${to}` : "No company list shown";
     }
 
     const prev = output.querySelector(".company-page-prev");
     const next = output.querySelector(".company-page-next");
-    if (prev) prev.disabled = state.page <= 1;
-    if (next) next.disabled = state.page >= totalPages;
+    if (prev) prev.disabled = !active || state.page <= 1;
+    if (next) next.disabled = !active || state.page >= totalPages;
   }
 
   function renderBrowser() {
     const output = document.getElementById("adminOutput");
     if (!output) return;
-    const rows = filteredRows();
+    const rows = hasActiveFilters() ? filteredRows() : [];
     output.innerHTML = controlsHtml(state.rows.length, rows.length);
     renderRows();
   }
