@@ -2,7 +2,7 @@
   const state = {
     rows: [],
     search: "",
-    company: "all",
+    company: "",
     status: "all",
     page: 1,
     pageSize: 25
@@ -22,16 +22,19 @@
   }
 
   function profileFor(row) {
-    return (window.adminProfiles || adminProfiles || []).find(profile => profile.id === row.user_id) || {};
+    const profiles = window.adminProfiles || (typeof adminProfiles !== "undefined" ? adminProfiles : []);
+    return profiles.find(profile => profile.id === row.user_id) || {};
   }
 
   function orgFor(row) {
-    return (window.adminOrgs || adminOrgs || []).find(org => org.id === row.organisation_id) || null;
+    const orgs = window.adminOrgs || (typeof adminOrgs !== "undefined" ? adminOrgs : []);
+    return orgs.find(org => org.id === row.organisation_id) || null;
   }
 
   function attemptsFor(row) {
     if (!row.user_id) return [];
-    return (window.adminAttempts || adminAttempts || []).filter(attempt => attempt.user_id === row.user_id);
+    const attempts = window.adminAttempts || (typeof adminAttempts !== "undefined" ? adminAttempts : []);
+    return attempts.filter(attempt => attempt.user_id === row.user_id);
   }
 
   function completedCount(row) {
@@ -86,16 +89,17 @@
   }
 
   function filteredRows() {
+    if (!state.company) return [];
     const term = state.search.trim().toLowerCase();
     return state.rows.filter(row => {
-      if (state.company !== "all" && String(row.organisation_id || "") !== state.company) return false;
+      if (String(row.organisation_id || "") !== state.company) return false;
       if (term && !searchableText(row).includes(term)) return false;
       return matchesStatus(row);
     });
   }
 
   function companyOptions() {
-    const orgs = window.adminOrgs || adminOrgs || [];
+    const orgs = window.adminOrgs || (typeof adminOrgs !== "undefined" ? adminOrgs : []);
     return orgs
       .slice()
       .sort((a, b) => String(a.name || "").localeCompare(String(b.name || "")))
@@ -109,7 +113,7 @@
         <div class="login-row profile-grid" style="margin-top:0;">
           <input id="learnerBrowserSearch" type="text" maxlength="80" placeholder="Search learners, role, company or status" value="${escapeHtml(state.search)}">
           <select id="learnerBrowserCompany">
-            <option value="all">All companies</option>
+            <option value="" ${state.company ? "" : "selected"}>Select company</option>
             ${companyOptions()}
           </select>
           <select id="learnerBrowserStatus">
@@ -177,7 +181,11 @@
     const start = (state.page - 1) * state.pageSize;
     const pageRows = rows.slice(start, start + state.pageSize);
 
-    list.innerHTML = pageRows.map(rowHtml).join("") || `<div class="auth-message">No learners match the current filters.</div>`;
+    if (!state.company) {
+      list.innerHTML = `<div class="auth-message">Select a company to view learners and reports.</div>`;
+    } else {
+      list.innerHTML = pageRows.map(rowHtml).join("") || `<div class="auth-message">No learners match the current filters.</div>`;
+    }
     list.querySelectorAll(".report-line[data-admin-controls-v2='true']").forEach(row => {
       if (typeof sccyberBuildLearnerButtons === "function") {
         sccyberBuildLearnerButtons(row, row.dataset.username, row.dataset.userId, row.dataset.learnerId, row.dataset.orgId);
@@ -192,7 +200,7 @@
     }
 
     const count = document.getElementById("learnerBrowserCount");
-    if (count) count.textContent = `Showing ${rows.length} of ${state.rows.length} learners`;
+    if (count) count.textContent = state.company ? `Showing ${rows.length} of ${state.rows.length} learners` : `${state.rows.length} learners available`;
 
     const prev = output.querySelector(".learner-page-prev");
     const next = output.querySelector(".learner-page-next");
@@ -231,7 +239,7 @@
 
   document.addEventListener("change", event => {
     if (event.target.id === "learnerBrowserCompany") {
-      state.company = event.target.value || "all";
+      state.company = event.target.value || "";
       state.page = 1;
       renderRows();
     }
