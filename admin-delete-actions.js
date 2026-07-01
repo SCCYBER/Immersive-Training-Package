@@ -62,6 +62,7 @@
     if (!output) return;
 
     output.querySelectorAll("[data-org-row]").forEach(row => {
+      row.querySelectorAll(".admin-remove-org, .fixed-remove-company").forEach(button => button.remove());
       if (row.querySelector(".admin-delete-company")) return;
       const save = row.querySelector(".admin-update-org");
       if (!save?.dataset.id || !save.parentElement) return;
@@ -152,6 +153,12 @@
     patchLearnerDelete();
     patchCompanyRender();
     addCompanyDeleteButtons();
+    if (!document.getElementById("sccyberSupabaseDeleteButtonStyles")) {
+      const style = document.createElement("style");
+      style.id = "sccyberSupabaseDeleteButtonStyles";
+      style.textContent = ".admin-remove-org,.fixed-remove-company{display:none!important}";
+      document.head.appendChild(style);
+    }
   }
 
   document.addEventListener("click", event => {
@@ -160,6 +167,14 @@
     event.preventDefault();
     event.stopImmediatePropagation();
     deleteCompany(company);
+  }, true);
+
+  document.addEventListener("click", event => {
+    const oldCompany = event.target.closest(".admin-remove-org, .fixed-remove-company");
+    if (!oldCompany) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    oldCompany.remove();
   }, true);
 
   window.addEventListener("load", () => {
