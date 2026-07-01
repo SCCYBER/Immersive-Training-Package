@@ -63,6 +63,7 @@ function addButtons(){
  markReady();
 }
 function updateCounts(){
+ if(window.sccyberCompanyBrowserOwnsCounts)return;
  var rows=document.querySelectorAll('[data-org-row]');
  var companyCount=document.getElementById('adminCompanyCount');
  var licenceCount=document.getElementById('adminLicenceCount');
