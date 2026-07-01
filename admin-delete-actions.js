@@ -62,7 +62,6 @@
     if (!output) return;
 
     output.querySelectorAll("[data-org-row]").forEach(row => {
-      row.querySelectorAll(".admin-remove-org, .fixed-remove-company").forEach(button => button.remove());
       if (row.querySelector(".admin-delete-company")) return;
       const save = row.querySelector(".admin-update-org");
       if (!save?.dataset.id || !save.parentElement) return;
@@ -153,12 +152,17 @@
     patchLearnerDelete();
     patchCompanyRender();
     addCompanyDeleteButtons();
-    if (!document.getElementById("sccyberSupabaseDeleteButtonStyles")) {
-      const style = document.createElement("style");
+    ensureLegacyCompanyRemoveHidden();
+  }
+
+  function ensureLegacyCompanyRemoveHidden() {
+    let style = document.getElementById("sccyberSupabaseDeleteButtonStyles");
+    if (!style) {
+      style = document.createElement("style");
       style.id = "sccyberSupabaseDeleteButtonStyles";
-      style.textContent = ".admin-remove-org,.fixed-remove-company{display:none!important}";
-      document.head.appendChild(style);
     }
+    style.textContent = "#adminOutput .admin-remove-org,#adminOutput .fixed-remove-company{display:none!important;visibility:hidden!important;pointer-events:none!important;position:absolute!important;left:-9999px!important;width:0!important;height:0!important;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important}";
+    document.head.appendChild(style);
   }
 
   document.addEventListener("click", event => {
@@ -174,7 +178,6 @@
     if (!oldCompany) return;
     event.preventDefault();
     event.stopImmediatePropagation();
-    oldCompany.remove();
   }, true);
 
   window.addEventListener("load", () => {
