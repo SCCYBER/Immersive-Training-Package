@@ -27,6 +27,43 @@
     return state.learnerRows.filter(row => String(row.organisation_id || "") === String(orgId || "")).length;
   }
 
+  function isActiveCompany(org) {
+    return String(org?.billing_status || "").toLowerCase() !== "removed";
+  }
+
+  function activeCompanyIds() {
+    return new Set(state.rows.filter(isActiveCompany).map(org => String(org.id || "")));
+  }
+
+  function updateControlCentreCounts() {
+    const companyCount = document.getElementById("adminCompanyCount");
+    const licenceCount = document.getElementById("adminLicenceCount");
+    const learnerCountEl = document.getElementById("adminLearnerCount");
+    const activeOrgs = state.rows.filter(isActiveCompany);
+    const activeIds = activeCompanyIds();
+
+    if (companyCount) companyCount.textContent = activeOrgs.length;
+    if (licenceCount) {
+      licenceCount.textContent = activeOrgs.reduce((sum, org) => sum + Number(org.licence_count || 0), 0);
+    }
+    if (learnerCountEl) {
+      learnerCountEl.textContent = state.learnerRows.filter(row => activeIds.has(String(row.organisation_id || ""))).length;
+    }
+  }
+
+  function updateCompanyFromRow(target) {
+    const row = target.closest("[data-org-row]");
+    if (!row) return;
+    const org = state.rows.find(item => String(item.id || "") === String(row.dataset.orgRow || ""));
+    if (!org) return;
+    const licences = row.querySelector(".org-licences");
+    const premium = row.querySelector(".org-premium");
+    const billing = row.querySelector(".org-billing");
+    if (licences) org.licence_count = Number(licences.value || 0);
+    if (premium) org.premium_enabled = premium.value === "true";
+    if (billing) org.billing_status = billing.value || "trial";
+  }
+
   function searchableText(org) {
     return [
       org.name,
@@ -136,6 +173,7 @@
     const list = document.getElementById("companyBrowserRows");
     const output = document.getElementById("adminOutput");
     if (!list || !output) return;
+    updateControlCentreCounts();
 
     const active = hasActiveFilters();
     const rows = active ? filteredRows() : [];
@@ -171,6 +209,7 @@
   function renderBrowser() {
     const output = document.getElementById("adminOutput");
     if (!output) return;
+    updateControlCentreCounts();
     const rows = hasActiveFilters() ? filteredRows() : [];
     output.innerHTML = controlsHtml(state.rows.length, rows.length);
     renderRows();
@@ -180,6 +219,7 @@
     state.rows = Array.isArray(orgs) ? orgs.slice() : [];
     state.learnerRows = Array.isArray(learnerRows) ? learnerRows.slice() : [];
     state.page = 1;
+    updateControlCentreCounts();
     renderBrowser();
   }
 
@@ -195,10 +235,15 @@
   }
 
   document.addEventListener("input", event => {
-    if (event.target.id !== "companyBrowserSearch") return;
-    state.search = event.target.value || "";
-    state.page = 1;
-    renderRows();
+    if (event.target.id === "companyBrowserSearch") {
+      state.search = event.target.value || "";
+      state.page = 1;
+      renderRows();
+    }
+    if (event.target.classList.contains("org-licences")) {
+      updateCompanyFromRow(event.target);
+      updateControlCentreCounts();
+    }
   });
 
   document.addEventListener("change", event => {
@@ -217,6 +262,10 @@
       state.page = 1;
       renderRows();
     }
+    if (event.target.classList.contains("org-premium") || event.target.classList.contains("org-billing")) {
+      updateCompanyFromRow(event.target);
+      updateControlCentreCounts();
+    }
   });
 
   document.addEventListener("click", event => {
@@ -232,6 +281,10 @@
 
   function install() {
     patchRenderer();
+    updateControlCentreCounts();
+    if (!window.sccyberCompanyBrowserCountInterval) {
+      window.sccyberCompanyBrowserCountInterval = setInterval(updateControlCentreCounts, 1000);
+    }
   }
 
   install();
