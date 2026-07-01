@@ -97,9 +97,19 @@ function showSavedLogin(username) {
 
 async function callLoginService(action, username, secret, organisationId) {
   const client = safeAdminClient();
-  const body = { action: action, username: username, password: secret, organisation_id: organisationId || null };
+  const body = { username: username, password: secret, organisation_id: organisationId || null };
+  if (action && action !== "create") body.action = action;
   const { data, error } = await client.functions.invoke("create-learner-login", { body });
-  if (error || data?.error) throw new Error(data?.error || error?.message || "Action failed.");
+  if (error || data?.error) {
+    let detail = data?.error || error?.message || "Action failed.";
+    try {
+      if (error?.context && typeof error.context.json === "function") {
+        const body = await error.context.clone().json();
+        detail = body?.error || body?.message || detail;
+      }
+    } catch (e) {}
+    throw new Error(detail);
+  }
   return data;
 }
 
