@@ -52,11 +52,23 @@
     return latest ? new Date(latest).toLocaleDateString() : "";
   }
 
+  function loginDate(profile) {
+    const value = profile?.last_login_at || "";
+    return value ? new Date(value).toLocaleDateString() : "";
+  }
+
+  function inactiveForDays(profile, days) {
+    const value = profile?.last_login_at || "";
+    if (!value) return false;
+    return Date.now() - new Date(value).getTime() >= days * 24 * 60 * 60 * 1000;
+  }
+
   function rowStatus(row) {
     const profile = profileFor(row);
     const count = completedCount(row);
     const total = Array.isArray(window.games) ? window.games.length : 5;
     if (!row.user_id) return "No login";
+    if (!profile.last_login_at) return "Never logged in";
     if (count >= total) return "Completed";
     if (profile.premium_enabled) return "Premium";
     return count > 0 ? "In progress" : "Not started";
@@ -81,8 +93,10 @@
     const total = Array.isArray(window.games) ? window.games.length : 5;
     if (state.status === "login-active") return !!row.user_id;
     if (state.status === "no-login") return !row.user_id;
+    if (state.status === "never-logged-in") return !!row.user_id && !profile.last_login_at;
+    if (state.status === "inactive-30") return !!row.user_id && inactiveForDays(profile, 30);
     if (state.status === "premium") return !!profile.premium_enabled;
-    if (state.status === "not-started") return !!row.user_id && count === 0;
+    if (state.status === "not-started") return !!row.user_id && !!profile.last_login_at && count === 0;
     if (state.status === "in-progress") return !!row.user_id && count > 0 && count < total;
     if (state.status === "completed") return !!row.user_id && count >= total;
     return true;
@@ -120,6 +134,8 @@
             <option value="all" ${state.status === "all" ? "selected" : ""}>All statuses</option>
             <option value="login-active" ${state.status === "login-active" ? "selected" : ""}>Login active</option>
             <option value="no-login" ${state.status === "no-login" ? "selected" : ""}>No login</option>
+            <option value="never-logged-in" ${state.status === "never-logged-in" ? "selected" : ""}>Never logged in</option>
+            <option value="inactive-30" ${state.status === "inactive-30" ? "selected" : ""}>Inactive 30+ days</option>
             <option value="not-started" ${state.status === "not-started" ? "selected" : ""}>Not started</option>
             <option value="in-progress" ${state.status === "in-progress" ? "selected" : ""}>In progress</option>
             <option value="completed" ${state.status === "completed" ? "selected" : ""}>Completed</option>
@@ -154,13 +170,14 @@
     const name = [profile.first_name, profile.surname].filter(Boolean).join(" ") || row.username || "Learner";
     const role = profile.department_role || row.department_role || "No role";
     const progress = uid ? `${count} / ${total}` : "Login not created";
+    const lastLogin = uid ? loginDate(profile) || "Never logged in" : "No login";
     const latest = latestAttemptDate(row) || "No attempts";
 
     return `<div class="report-line" data-fixed-admin-buttons="true" data-admin-controls-v2="true" data-learner-id="${escapeHtml(row.id || "")}" data-username="${escapeHtml(row.username || "")}" data-user-id="${escapeHtml(uid)}" data-org-id="${escapeHtml(row.organisation_id || "")}">
       <strong>${escapeHtml(row.username || "No username")}</strong>
       <span>${escapeHtml(name)}<br>${escapeHtml(role)}</span>
       <span>${escapeHtml(org ? org.name : "No company")}<br>${escapeHtml(status)}</span>
-      <span>${escapeHtml(progress)}<br>${escapeHtml(latest)}</span>
+      <span>${escapeHtml(progress)}<br>Last login: ${escapeHtml(lastLogin)}<br>Latest game: ${escapeHtml(latest)}</span>
       <span></span>
     </div>`;
   }
