@@ -1,4 +1,6 @@
 (function () {
+  window.sccyberCompanyBrowserOwnsCounts = true;
+
   const state = {
     rows: [],
     learnerRows: [],
@@ -282,9 +284,6 @@
   function install() {
     patchRenderer();
     updateControlCentreCounts();
-    if (!window.sccyberCompanyBrowserCountInterval) {
-      window.sccyberCompanyBrowserCountInterval = setInterval(updateControlCentreCounts, 1000);
-    }
   }
 
   install();
