@@ -307,12 +307,12 @@
     if (active) render();
   }
 
-  function installShell() {
-    addStyles();
-    const admin = document.getElementById("adminView");
-    if (!admin) return;
-    const topbar = admin.firstElementChild;
-    if (!document.getElementById("adminCrmOpenBtn")) {
+  function normalizeCrmTopbarControls(topbar) {
+    const openButtons = Array.from(document.querySelectorAll("#adminCrmOpenBtn"));
+    const homeButtons = Array.from(document.querySelectorAll("#adminCrmHomeBtn"));
+    const hasControls = openButtons.length > 0 && homeButtons.length > 0;
+
+    if (!hasControls) {
       const controls = document.createElement("div");
       controls.style.cssText = "display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;";
       controls.innerHTML = `
@@ -320,7 +320,20 @@
         <button class="small-btn hidden" id="adminCrmHomeBtn" type="button">Admin Home</button>
       `;
       topbar.appendChild(controls);
+      return;
     }
+
+    openButtons.slice(1).forEach(button => button.remove());
+    homeButtons.slice(1).forEach(button => button.remove());
+  }
+
+  function installShell() {
+    addStyles();
+    const admin = document.getElementById("adminView");
+    if (!admin) return;
+    const topbar = admin.firstElementChild;
+    if (!topbar) return;
+    normalizeCrmTopbarControls(topbar);
 
     if (document.getElementById("adminCrmSearchView")) return;
     const view = document.createElement("section");
