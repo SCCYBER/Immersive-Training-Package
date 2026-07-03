@@ -188,6 +188,7 @@
       .crm-search-controls{display:grid;grid-template-columns:minmax(220px,1.5fr) repeat(5,minmax(130px,1fr));gap:10px;margin-top:12px}
       .crm-result-row{grid-template-columns:1fr 1.4fr 1.2fr 1.4fr auto}
       .crm-kind{font-family:'Press Start 2P',cursive;font-size:8px;color:#59ff9d;display:block;margin-bottom:6px}
+      #adminView .game-topbar > button[id="adminCrmOpenBtn"]{display:none!important}
       @media(max-width:1050px){.crm-search-controls{grid-template-columns:1fr 1fr}.crm-result-row{grid-template-columns:1fr}}
       @media(max-width:640px){.crm-search-controls{grid-template-columns:1fr}}
     `;
@@ -297,34 +298,56 @@
     if (!admin || !crm) return;
     state.active = active;
     admin.querySelectorAll(":scope > .report-terminal").forEach(section => {
-      if (section.id !== "adminCrmSearchView") section.classList.toggle("crm-hidden", active);
+      const belongsToCrm = section.id === "adminCrmSearchView" || section.classList.contains("crm-managed-terminal");
+      section.classList.toggle("crm-hidden", active && !belongsToCrm);
+      section.classList.toggle("hidden", !active && belongsToCrm);
     });
     crm.classList.toggle("hidden", !active);
     const open = document.getElementById("adminCrmOpenBtn");
-    const home = document.getElementById("adminCrmHomeBtn");
-    if (open) open.classList.toggle("hidden", active);
-    if (home) home.classList.toggle("hidden", !active);
+    if (open) open.textContent = active ? "Admin Home" : "CRM";
     if (active) render();
   }
 
   function normalizeCrmTopbarControls(topbar) {
     const openButtons = Array.from(document.querySelectorAll("#adminCrmOpenBtn"));
-    const homeButtons = Array.from(document.querySelectorAll("#adminCrmHomeBtn"));
-    const hasControls = openButtons.length > 0 && homeButtons.length > 0;
+    const topbarButton = openButtons.find(button => button.closest(".game-topbar") === topbar) || openButtons[0];
 
-    if (!hasControls) {
+    if (!topbarButton) {
       const controls = document.createElement("div");
       controls.style.cssText = "display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;";
       controls.innerHTML = `
-        <button class="small-btn" id="adminCrmOpenBtn" type="button">CRM Search</button>
-        <button class="small-btn hidden" id="adminCrmHomeBtn" type="button">Admin Home</button>
+        <button class="small-btn" id="adminCrmOpenBtn" type="button">CRM</button>
       `;
       topbar.appendChild(controls);
       return;
     }
 
-    openButtons.slice(1).forEach(button => button.remove());
-    homeButtons.slice(1).forEach(button => button.remove());
+    topbarButton.textContent = state.active ? "Admin Home" : "CRM";
+    openButtons.forEach(button => {
+      if (button !== topbarButton) button.remove();
+    });
+    document.querySelectorAll("#adminCrmHomeBtn").forEach(button => button.remove());
+  }
+
+  function moveManagementSection(outputId, afterNode) {
+    const output = document.getElementById(outputId);
+    const section = output?.closest(".report-terminal");
+    if (!section || !afterNode) return afterNode;
+    section.classList.add("crm-managed-terminal", "hidden");
+    afterNode.insertAdjacentElement("afterend", section);
+    return section;
+  }
+
+  function relocateManagementSections(admin, crm) {
+    const companySection = moveManagementSection("adminOutput", crm);
+    const learnerSection = moveManagementSection("adminLearnerOutput", companySection);
+    const selectedReport = document.getElementById("adminSelectedReport");
+    const selectedSection = selectedReport?.closest(".report-terminal");
+    if (selectedSection) selectedSection.remove();
+    if (state.active) {
+      companySection?.classList.remove("hidden");
+      learnerSection?.classList.remove("hidden");
+    }
   }
 
   function installShell() {
@@ -335,11 +358,17 @@
     if (!topbar) return;
     normalizeCrmTopbarControls(topbar);
 
-    if (document.getElementById("adminCrmSearchView")) return;
+    const existingView = document.getElementById("adminCrmSearchView");
+    if (existingView) {
+      relocateManagementSections(admin, existingView);
+      return;
+    }
+
     const view = document.createElement("section");
     view.id = "adminCrmSearchView";
     view.className = "report-terminal hidden";
     topbar.insertAdjacentElement("afterend", view);
+    relocateManagementSections(admin, view);
     render();
   }
 
@@ -356,8 +385,8 @@
   }
 
   document.addEventListener("click", event => {
-    if (event.target.closest("#adminCrmOpenBtn")) setCrmMode(true);
-    if (event.target.closest("#adminCrmHomeBtn")) setCrmMode(false);
+    const crmButton = event.target.closest("#adminCrmOpenBtn");
+    if (crmButton) setCrmMode(!state.active);
     if (event.target.closest(".crm-refresh")) {
       if (typeof loadAdminData === "function") loadAdminData();
       render();
