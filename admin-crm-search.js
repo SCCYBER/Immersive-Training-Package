@@ -437,14 +437,14 @@
     };
   }
 
-  document.addEventListener("click", event => {
+  document.addEventListener("click", async event => {
     const crmButton = event.target.closest("#adminCrmOpenBtn");
     if (crmButton) setCrmMode(!state.active);
     if (event.target.closest(".crm-refresh")) {
       if (!confirm("Refresh CRM data from the database?")) return;
       const count = document.getElementById("crmSearchCount");
       if (count) count.textContent = "Refreshing CRM data...";
-      if (typeof loadAdminData === "function") loadAdminData();
+      if (typeof loadAdminData === "function") await loadAdminData();
       render();
     }
     if (event.target.closest(".crm-prev")) {
