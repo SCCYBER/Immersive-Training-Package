@@ -9,7 +9,8 @@
     training: "all",
     page: 1,
     pageSize: 25,
-    active: false
+    active: false,
+    selectedOrgId: ""
   };
 
   function escapeHtml(value) {
@@ -48,6 +49,33 @@
   function learnerAttempts(learner) {
     if (!learner.user_id) return [];
     return getAttempts().filter(attempt => attempt.user_id === learner.user_id);
+  }
+
+  function accuracyFromAttempt(attempt) {
+    if (!attempt) return 0;
+    if (attempt.accuracy !== null && attempt.accuracy !== undefined && !Number.isNaN(Number(attempt.accuracy))) {
+      return Number(attempt.accuracy);
+    }
+    if (attempt.answered && attempt.correct_count !== null && attempt.correct_count !== undefined) {
+      return Math.round(Number(attempt.correct_count) / Number(attempt.answered) * 100);
+    }
+    if (attempt.answered && attempt.correct !== null && attempt.correct !== undefined) {
+      return Math.round(Number(attempt.correct) / Number(attempt.answered) * 100);
+    }
+    return 0;
+  }
+
+  function learnerAverage(learner) {
+    const attempts = learnerAttempts(learner);
+    if (!attempts.length) return null;
+    const byGame = new Map();
+    attempts.forEach(attempt => {
+      if (!attempt.game) return;
+      const current = byGame.get(attempt.game) || 0;
+      byGame.set(attempt.game, Math.max(current, accuracyFromAttempt(attempt)));
+    });
+    const bests = Array.from(byGame.values());
+    return bests.length ? Math.round(bests.reduce((sum, value) => sum + value, 0) / bests.length) : null;
   }
 
   function completedCount(learner) {
@@ -193,10 +221,23 @@
       .crm-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
       .crm-actions .small-btn{margin:0}
       .crm-kind{font-family:'Press Start 2P',cursive;font-size:8px;color:#59ff9d;display:block;margin-bottom:6px}
+      .crm-profile-panel{margin-top:16px;border:1px solid rgba(89,255,157,.28);background:rgba(7,5,18,.72);box-shadow:0 0 24px rgba(89,255,157,.08);padding:16px}
+      .crm-profile-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+      .crm-profile-head p{margin:8px 0 0;color:#b9a8d5}
+      .crm-profile-grid{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));gap:10px;margin-top:14px}
+      .crm-profile-card{border:1px solid rgba(185,168,213,.22);background:rgba(255,255,255,.04);padding:12px;border-radius:6px}
+      .crm-profile-card span{display:block;color:#b9a8d5;font-size:12px;margin-bottom:6px}
+      .crm-profile-card strong{color:#fff;font-size:20px}
+      .crm-flag-list{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+      .crm-flag{border:1px solid rgba(255,212,77,.45);background:rgba(255,212,77,.08);color:#ffd44d;border-radius:999px;padding:7px 10px;font-size:12px}
+      .crm-flag.good{border-color:rgba(89,255,157,.45);background:rgba(89,255,157,.08);color:#59ff9d}
+      .crm-profile-learners{margin-top:14px}
+      .crm-profile-empty{margin-top:12px;color:#b9a8d5}
       #adminView .game-topbar > button[id="adminCrmOpenBtn"]{display:none!important}
       #adminOutput,#adminLearnerOutput{display:none!important}
+      @media(max-width:1180px){.crm-profile-grid{grid-template-columns:1fr 1fr 1fr}}
       @media(max-width:1050px){.crm-search-controls{grid-template-columns:1fr 1fr}.crm-result-row{grid-template-columns:1fr}}
-      @media(max-width:640px){.crm-search-controls{grid-template-columns:1fr}}
+      @media(max-width:640px){.crm-search-controls,.crm-profile-grid{grid-template-columns:1fr}}
     `;
     document.head.appendChild(style);
   }
@@ -253,8 +294,100 @@
           <button class="small-btn crm-next" type="button">Next</button>
         </div>
       </div>
+      <div id="crmCompanyProfile"></div>
       <div id="crmSearchRows" style="margin-top:12px;"></div>
     `;
+  }
+
+  function companyLearners(orgId) {
+    return state.learners.filter(learner => String(learner.organisation_id || "") === String(orgId || ""));
+  }
+
+  function companyStats(org) {
+    const learners = companyLearners(org.id);
+    const withLogin = learners.filter(learner => learner.user_id);
+    const neverLogged = learners.filter(learner => learner.user_id && !profileFor(learner).last_login_at);
+    const completed = learners.filter(learner => trainingStatus(learner) === "Completed");
+    const averages = learners.map(learnerAverage).filter(value => value !== null);
+    return {
+      learners,
+      withLogin,
+      neverLogged,
+      completed,
+      average: averages.length ? Math.round(averages.reduce((sum, value) => sum + value, 0) / averages.length) : null
+    };
+  }
+
+  function flagHtml(flags) {
+    if (!flags.length) return `<span class="crm-flag good">No urgent CRM flags</span>`;
+    return flags.map(flag => `<span class="crm-flag">${escapeHtml(flag)}</span>`).join("");
+  }
+
+  function companyProfileHtml() {
+    const org = state.selectedOrgId ? orgForId(state.selectedOrgId) : null;
+    if (!org) return "";
+    const stats = companyStats(org);
+    const licences = Number(org.licence_count || 0);
+    const payment = paymentStatus(org);
+    const premium = premiumStatus(org, {});
+    const flags = [];
+    if (!stats.learners.length) flags.push("No learners added");
+    if (licences && stats.learners.length > licences) flags.push("Learners over licence count");
+    if (stats.neverLogged.length) flags.push(`${stats.neverLogged.length} never logged in`);
+    if (payment === "overdue" || payment === "pending") flags.push(`Payment ${payment}`);
+    if (premium === "Premium off") flags.push("Premium off");
+    const learnerRows = stats.learners.map(learner => {
+      const profile = profileFor(learner);
+      const record = buildLearnerRecords().find(item => String(item.id || "") === String(learner.id || ""));
+      const avg = learnerAverage(learner);
+      return `<div class="report-line crm-result-row" data-fixed-admin-buttons="true" data-admin-controls-v2="true" data-learner-id="${escapeHtml(learner.id || "")}" data-username="${escapeHtml(learner.username || "")}" data-user-id="${escapeHtml(learner.user_id || "")}" data-org-id="${escapeHtml(learner.organisation_id || "")}">
+        <strong><span class="crm-kind">LEARNER</span>${escapeHtml(learner.username || "No username")}</strong>
+        <span>${escapeHtml([profile.first_name || learner.first_name, profile.surname || learner.surname].filter(Boolean).join(" ") || "No name")} · ${escapeHtml(profile.department_role || learner.department_role || "No role")}</span>
+        <span>${escapeHtml(loginStatus(learner, profile))} · ${escapeHtml(trainingStatus(learner))}</span>
+        <span>${record ? escapeHtml(record.cells[3]) : ""}${avg === null ? "" : `<br>Average ${avg}%`}</span>
+        <span class="crm-actions"></span>
+      </div>`;
+    }).join("");
+    const billing = String(org.billing_status || payment || "trial").toLowerCase();
+    return `<div class="crm-profile-panel" data-org-row="${escapeHtml(org.id || "")}">
+      <div class="crm-profile-head">
+        <div>
+          <div class="section-title">${escapeHtml(org.name || "Company Profile")}</div>
+          <p>${escapeHtml(org.main_contact_name || "No main contact")} ${org.main_contact_email ? `· ${escapeHtml(org.main_contact_email)}` : ""}</p>
+        </div>
+        <div class="crm-actions">
+          <button class="small-btn crm-close-profile" type="button">Back</button>
+          <button class="small-btn admin-update-org" data-id="${escapeHtml(org.id || "")}" type="button">Save</button>
+          <button class="small-btn admin-delete-company" data-id="${escapeHtml(org.id || "")}" type="button">Remove</button>
+        </div>
+      </div>
+      <div class="crm-search-controls">
+        <input class="org-licences" type="number" min="0" value="${Number(org.licence_count || 0)}" aria-label="Licence count">
+        <select class="org-premium" aria-label="Premium access">
+          <option value="false" ${!org.premium_enabled ? "selected" : ""}>Premium off</option>
+          <option value="true" ${org.premium_enabled ? "selected" : ""}>Premium on</option>
+        </select>
+        <select class="org-billing" aria-label="Billing status">
+          <option value="trial" ${billing === "trial" ? "selected" : ""}>Trial</option>
+          <option value="pending" ${billing === "pending" ? "selected" : ""}>Pending</option>
+          <option value="paid" ${billing === "paid" ? "selected" : ""}>Paid</option>
+          <option value="overdue" ${billing === "overdue" ? "selected" : ""}>Overdue</option>
+          <option value="removed" ${billing === "removed" ? "selected" : ""}>Removed</option>
+        </select>
+      </div>
+      <div class="crm-profile-grid">
+        <div class="crm-profile-card"><span>Learners</span><strong>${stats.learners.length}</strong></div>
+        <div class="crm-profile-card"><span>Active logins</span><strong>${stats.withLogin.length}</strong></div>
+        <div class="crm-profile-card"><span>Never logged in</span><strong>${stats.neverLogged.length}</strong></div>
+        <div class="crm-profile-card"><span>Completed</span><strong>${stats.completed.length} / ${stats.learners.length || 0}</strong></div>
+        <div class="crm-profile-card"><span>Average</span><strong>${stats.average === null ? "--" : `${stats.average}%`}</strong></div>
+      </div>
+      <div class="crm-flag-list">${flagHtml(flags)}</div>
+      <div class="crm-profile-learners">
+        <div class="report-section-title">Learners</div>
+        ${learnerRows || `<div class="crm-profile-empty">No learners are attached to this company yet.</div>`}
+      </div>
+    </div>`;
   }
 
   function companyRowHtml(record) {
@@ -281,6 +414,7 @@
         </select>
       </span>
       <span class="crm-actions">
+        <button class="small-btn crm-open-company" data-id="${escapeHtml(id)}" type="button">Open</button>
         <button class="small-btn admin-update-org" data-id="${escapeHtml(id)}" type="button">Save</button>
         <button class="small-btn admin-delete-company" data-id="${escapeHtml(id)}" type="button">Remove</button>
       </span>
@@ -311,16 +445,37 @@
   }
 
   function attachCrmLearnerActions() {
-    const rowsEl = document.getElementById("crmSearchRows");
-    if (!rowsEl || typeof sccyberBuildLearnerButtons !== "function") return;
-    rowsEl.querySelectorAll(".report-line[data-admin-controls-v2='true']").forEach(row => {
+    const view = document.getElementById("adminCrmSearchView");
+    if (!view || typeof sccyberBuildLearnerButtons !== "function") return;
+    view.querySelectorAll(".report-line[data-admin-controls-v2='true']").forEach(row => {
       sccyberBuildLearnerButtons(row, row.dataset.username, row.dataset.userId, row.dataset.learnerId, row.dataset.orgId);
     });
+  }
+
+  function renderCompanyProfile() {
+    const profile = document.getElementById("crmCompanyProfile");
+    if (!profile) return;
+    profile.innerHTML = companyProfileHtml();
+    attachCrmLearnerActions();
   }
 
   function renderRows() {
     const rowsEl = document.getElementById("crmSearchRows");
     if (!rowsEl) return;
+    if (state.selectedOrgId) {
+      rowsEl.innerHTML = "";
+      renderCompanyProfile();
+      const count = document.getElementById("crmSearchCount");
+      if (count) count.textContent = "Company profile open";
+      const label = document.getElementById("crmPageLabel");
+      if (label) label.textContent = "Back to return to CRM results";
+      const view = document.getElementById("adminCrmSearchView");
+      const prev = view?.querySelector(".crm-prev");
+      const next = view?.querySelector(".crm-next");
+      if (prev) prev.disabled = true;
+      if (next) next.disabled = true;
+      return;
+    }
     const records = filteredRecords();
     const totalPages = Math.max(1, Math.ceil(records.length / state.pageSize));
     if (state.page > totalPages) state.page = totalPages;
@@ -329,6 +484,7 @@
     const pageRows = records.slice(start, start + state.pageSize);
     rowsEl.innerHTML = pageRows.map(rowHtml).join("") || `<div class="auth-message">No CRM records match the current filters.</div>`;
     attachCrmLearnerActions();
+    renderCompanyProfile();
 
     const count = document.getElementById("crmSearchCount");
     if (count) count.textContent = `${records.length} matching record${records.length === 1 ? "" : "s"}`;
@@ -356,6 +512,7 @@
     state.premium = "all";
     state.training = "all";
     state.page = 1;
+    state.selectedOrgId = "";
     render();
   }
 
@@ -461,6 +618,15 @@
     }
     if (event.target.closest(".crm-clear")) {
       clearSearch();
+    }
+    const openCompany = event.target.closest(".crm-open-company");
+    if (openCompany) {
+      state.selectedOrgId = openCompany.dataset.id || "";
+      render();
+    }
+    if (event.target.closest(".crm-close-profile")) {
+      state.selectedOrgId = "";
+      render();
     }
     if (event.target.closest(".crm-prev")) {
       state.page -= 1;
