@@ -93,6 +93,7 @@
         status: payment,
         payment,
         premium,
+        org,
         login: "company",
         training: "company",
         cells: [
@@ -132,6 +133,7 @@
         kind: "learner",
         id: learner.id || "",
         userId: learner.user_id || "",
+        learner,
         title: learner.username || name,
         status: login,
         payment,
@@ -187,8 +189,12 @@
       .crm-hidden{display:none!important}
       .crm-search-controls{display:grid;grid-template-columns:minmax(220px,1.5fr) repeat(5,minmax(130px,1fr));gap:10px;margin-top:12px}
       .crm-result-row{grid-template-columns:1fr 1.4fr 1.2fr 1.4fr auto}
+      .crm-company-row{grid-template-columns:1fr minmax(120px,.7fr) minmax(190px,1fr) auto}
+      .crm-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+      .crm-actions .small-btn{margin:0}
       .crm-kind{font-family:'Press Start 2P',cursive;font-size:8px;color:#59ff9d;display:block;margin-bottom:6px}
       #adminView .game-topbar > button[id="adminCrmOpenBtn"]{display:none!important}
+      #adminOutput,#adminLearnerOutput{display:none!important}
       @media(max-width:1050px){.crm-search-controls{grid-template-columns:1fr 1fr}.crm-result-row{grid-template-columns:1fr}}
       @media(max-width:640px){.crm-search-controls{grid-template-columns:1fr}}
     `;
@@ -250,17 +256,65 @@
     `;
   }
 
+  function companyRowHtml(record) {
+    const org = record.org || {};
+    const id = String(record.id || "");
+    const billing = String(org.billing_status || record.payment || "trial").toLowerCase();
+    return `<div class="report-line crm-result-row crm-company-row" data-org-row="${escapeHtml(id)}">
+      <strong><span class="crm-kind">COMPANY</span>${escapeHtml(record.cells[0])}</strong>
+      <span>
+        <input class="org-licences" type="number" min="0" value="${Number(org.licence_count || 0)}">
+        <br>${escapeHtml(record.cells[3])}
+      </span>
+      <span>
+        <select class="org-premium">
+          <option value="false" ${!org.premium_enabled ? "selected" : ""}>Premium off</option>
+          <option value="true" ${org.premium_enabled ? "selected" : ""}>Premium on</option>
+        </select>
+        <select class="org-billing">
+          <option value="trial" ${billing === "trial" ? "selected" : ""}>Trial</option>
+          <option value="pending" ${billing === "pending" ? "selected" : ""}>Pending</option>
+          <option value="paid" ${billing === "paid" ? "selected" : ""}>Paid</option>
+          <option value="overdue" ${billing === "overdue" ? "selected" : ""}>Overdue</option>
+          <option value="removed" ${billing === "removed" ? "selected" : ""}>Removed</option>
+        </select>
+      </span>
+      <span class="crm-actions">
+        <button class="small-btn admin-update-org" data-id="${escapeHtml(id)}" type="button">Save</button>
+        <button class="small-btn admin-delete-company" data-id="${escapeHtml(id)}" type="button">Remove</button>
+      </span>
+    </div>`;
+  }
+
+  function learnerRowHtml(record) {
+    const learner = record.learner || {};
+    return `<div class="report-line crm-result-row" data-fixed-admin-buttons="true" data-admin-controls-v2="true" data-learner-id="${escapeHtml(learner.id || record.id || "")}" data-username="${escapeHtml(learner.username || record.title || "")}" data-user-id="${escapeHtml(record.userId || "")}" data-org-id="${escapeHtml(learner.organisation_id || "")}">
+      <strong><span class="crm-kind">LEARNER</span>${escapeHtml(record.cells[0])}</strong>
+      <span>${escapeHtml(record.cells[1])}</span>
+      <span>${escapeHtml(record.cells[2])}</span>
+      <span>${escapeHtml(record.cells[3])}</span>
+      <span class="crm-actions"></span>
+    </div>`;
+  }
+
   function rowHtml(record) {
-    const action = record.kind === "learner" && record.userId
-      ? `<button class="small-btn crm-view-report" type="button" data-id="${escapeHtml(record.userId)}">View Report</button>`
-      : "";
+    if (record.kind === "company") return companyRowHtml(record);
+    if (record.kind === "learner") return learnerRowHtml(record);
     return `<div class="report-line crm-result-row">
       <strong><span class="crm-kind">${escapeHtml(record.kind.toUpperCase())}</span>${escapeHtml(record.cells[0])}</strong>
       <span>${escapeHtml(record.cells[1])}</span>
       <span>${escapeHtml(record.cells[2])}</span>
       <span>${escapeHtml(record.cells[3])}</span>
-      <span>${action}</span>
+      <span></span>
     </div>`;
+  }
+
+  function attachCrmLearnerActions() {
+    const rowsEl = document.getElementById("crmSearchRows");
+    if (!rowsEl || typeof sccyberBuildLearnerButtons !== "function") return;
+    rowsEl.querySelectorAll(".report-line[data-admin-controls-v2='true']").forEach(row => {
+      sccyberBuildLearnerButtons(row, row.dataset.username, row.dataset.userId, row.dataset.learnerId, row.dataset.orgId);
+    });
   }
 
   function renderRows() {
@@ -273,6 +327,7 @@
     const start = (state.page - 1) * state.pageSize;
     const pageRows = records.slice(start, start + state.pageSize);
     rowsEl.innerHTML = pageRows.map(rowHtml).join("") || `<div class="auth-message">No CRM records match the current filters.</div>`;
+    attachCrmLearnerActions();
 
     const count = document.getElementById("crmSearchCount");
     if (count) count.textContent = `${records.length} matching record${records.length === 1 ? "" : "s"}`;
@@ -298,9 +353,9 @@
     if (!admin || !crm) return;
     state.active = active;
     admin.querySelectorAll(":scope > .report-terminal").forEach(section => {
-      const belongsToCrm = section.id === "adminCrmSearchView" || section.classList.contains("crm-managed-terminal");
+      const belongsToCrm = section.id === "adminCrmSearchView";
       section.classList.toggle("crm-hidden", active && !belongsToCrm);
-      section.classList.toggle("hidden", !active && belongsToCrm);
+      section.classList.toggle("hidden", section.classList.contains("crm-managed-terminal") || (!active && belongsToCrm));
     });
     crm.classList.toggle("hidden", !active);
     const open = document.getElementById("adminCrmOpenBtn");
@@ -333,7 +388,7 @@
     const output = document.getElementById(outputId);
     const section = output?.closest(".report-terminal");
     if (!section || !afterNode) return afterNode;
-    section.classList.add("crm-managed-terminal", "hidden");
+    section.classList.add("crm-managed-terminal", "hidden", "crm-hidden");
     afterNode.insertAdjacentElement("afterend", section);
     return section;
   }
@@ -344,10 +399,8 @@
     const selectedReport = document.getElementById("adminSelectedReport");
     const selectedSection = selectedReport?.closest(".report-terminal");
     if (selectedSection) selectedSection.remove();
-    if (state.active) {
-      companySection?.classList.remove("hidden");
-      learnerSection?.classList.remove("hidden");
-    }
+    companySection?.classList.add("hidden", "crm-hidden");
+    learnerSection?.classList.add("hidden", "crm-hidden");
   }
 
   function installShell() {
@@ -398,12 +451,6 @@
     if (event.target.closest(".crm-next")) {
       state.page += 1;
       renderRows();
-    }
-    const report = event.target.closest(".crm-view-report");
-    if (report) {
-      const id = report.dataset.id;
-      if (typeof showLearnerReportModal === "function") showLearnerReportModal(id);
-      else if (typeof showAdminLearnerReport === "function") showAdminLearnerReport(id);
     }
   });
 
