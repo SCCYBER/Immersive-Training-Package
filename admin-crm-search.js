@@ -187,7 +187,7 @@
     style.id = "adminCrmSearchStyles";
     style.textContent = `
       .crm-hidden{display:none!important}
-      .crm-search-controls{display:grid;grid-template-columns:minmax(220px,1.5fr) repeat(5,minmax(130px,1fr));gap:10px;margin-top:12px}
+      .crm-search-controls{display:grid;grid-template-columns:minmax(220px,1.5fr) repeat(5,minmax(130px,1fr)) auto;gap:10px;margin-top:12px}
       .crm-result-row{grid-template-columns:1fr 1.4fr 1.2fr 1.4fr auto}
       .crm-company-row{grid-template-columns:1fr minmax(120px,.7fr) minmax(190px,1fr) auto}
       .crm-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
@@ -243,11 +243,11 @@
           <option value="in-progress" ${state.training === "in-progress" ? "selected" : ""}>In progress</option>
           <option value="completed" ${state.training === "completed" ? "selected" : ""}>Completed</option>
         </select>
+        <button class="small-btn crm-clear" type="button">Clear Search</button>
       </div>
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;">
         <div id="crmSearchCount" class="auth-message" style="margin:0;">${total} matching records</div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
-          <button class="small-btn crm-clear" type="button">Clear Search</button>
           <button class="small-btn crm-prev" type="button">Previous</button>
           <span id="crmPageLabel" style="color:#b9a8d5;"></span>
           <button class="small-btn crm-next" type="button">Next</button>
