@@ -247,6 +247,7 @@
       <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;">
         <div id="crmSearchCount" class="auth-message" style="margin:0;">${total} matching records</div>
         <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+          <button class="small-btn crm-clear" type="button">Clear Search</button>
           <button class="small-btn crm-prev" type="button">Previous</button>
           <span id="crmPageLabel" style="color:#b9a8d5;"></span>
           <button class="small-btn crm-next" type="button">Next</button>
@@ -345,6 +346,17 @@
     if (!view) return;
     view.innerHTML = controlsHtml(filteredRecords().length);
     renderRows();
+  }
+
+  function clearSearch() {
+    state.query = "";
+    state.type = "all";
+    state.payment = "all";
+    state.login = "all";
+    state.premium = "all";
+    state.training = "all";
+    state.page = 1;
+    render();
   }
 
   function setCrmMode(active) {
@@ -446,6 +458,9 @@
       if (count) count.textContent = "Refreshing CRM data...";
       if (typeof loadAdminData === "function") await loadAdminData();
       render();
+    }
+    if (event.target.closest(".crm-clear")) {
+      clearSearch();
     }
     if (event.target.closest(".crm-prev")) {
       state.page -= 1;
