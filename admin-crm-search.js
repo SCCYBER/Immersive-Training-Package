@@ -310,16 +310,19 @@
   function installShell() {
     addStyles();
     const admin = document.getElementById("adminView");
-    if (!admin || document.getElementById("adminCrmSearchView")) return;
+    if (!admin) return;
     const topbar = admin.firstElementChild;
-    const controls = document.createElement("div");
-    controls.style.cssText = "display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;";
-    controls.innerHTML = `
-      <button class="small-btn" id="adminCrmOpenBtn" type="button">CRM Search</button>
-      <button class="small-btn hidden" id="adminCrmHomeBtn" type="button">Admin Home</button>
-    `;
-    topbar.appendChild(controls);
+    if (!document.getElementById("adminCrmOpenBtn")) {
+      const controls = document.createElement("div");
+      controls.style.cssText = "display:flex;gap:8px;align-items:center;justify-content:flex-end;flex-wrap:wrap;";
+      controls.innerHTML = `
+        <button class="small-btn" id="adminCrmOpenBtn" type="button">CRM Search</button>
+        <button class="small-btn hidden" id="adminCrmHomeBtn" type="button">Admin Home</button>
+      `;
+      topbar.appendChild(controls);
+    }
 
+    if (document.getElementById("adminCrmSearchView")) return;
     const view = document.createElement("section");
     view.id = "adminCrmSearchView";
     view.className = "report-terminal hidden";
