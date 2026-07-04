@@ -1,6 +1,6 @@
-const TOTAL_CASES = 10;
-const PASS_MARK = 80;
 const GAME_KEY = "ai-risk-radar";
+const PASS_MARK = 80;
+const TOTAL_EVENTS = 10;
 
 const portalParams = new URLSearchParams(window.location.search);
 const allowedParentOrigins = ["https://sccyber.github.io", window.location.origin];
@@ -27,210 +27,183 @@ const launchedFromPortal = window.top !== window.self && portalParams.get("porta
 const adminPreview = portalParams.get("preview") === "admin" && !!(profile && profile.isAdmin === true);
 const canPlay = launchedFromPortal && adminPreview;
 
-const cases = [
+const events = [
   {
-    topic: "DATA SHARING",
-    severity: "HIGH",
-    title: "Customer complaint summary",
-    copy: "A support manager wants to paste 400 customer complaint emails into a free public AI tool to find common themes.",
-    policy: "Customer data, contact details and complaint content must stay inside approved company systems.",
-    answers: [
-      "Approve it because AI will save time",
-      "Use an approved company AI tool or anonymise the data first",
-      "Paste only the first 50 emails into the free tool",
-      "Send the emails to a personal account and try later"
-    ],
-    correct: 1,
-    risk: "Sensitive customer data in a public AI tool can create privacy, contractual and regulatory exposure.",
-    category: "Data sharing"
+    team: "FINANCE",
+    person: "Maya",
+    desk: "desk-finance",
+    title: "AI payment summary",
+    popup: "Maya is using AI to summarise a supplier email that includes new bank details and an urgent payment request.",
+    policy: "Payment changes and urgent supplier requests must be verified through trusted channels.",
+    context: ["Supplier domain is one letter different", "Bank details changed today", "The AI summary says the request looks urgent"],
+    risk: "high",
+    riskCost: 3,
+    why: "This is high risk because AI may make a fraudulent payment request look cleaner and more trustworthy.",
+    weakness: "Deepfake or payment fraud"
   },
   {
-    topic: "DEEPFAKE",
-    severity: "HIGH",
-    title: "Urgent voice note from the CEO",
-    copy: "Finance receives a realistic voice note that sounds like the CEO asking for an urgent supplier payment before 4pm.",
-    policy: "Unusual payment requests must be verified through trusted channels before action.",
-    answers: [
-      "Pay it because the voice sounds genuine",
-      "Reply to the voice note asking for confirmation",
-      "Verify through a known contact route and escalate if suspicious",
-      "Forward it to the whole company"
-    ],
-    correct: 2,
-    risk: "Deepfake audio can imitate trusted leaders. Payment changes need out-of-band verification.",
-    category: "Deepfake fraud"
+    team: "MARKETING",
+    person: "Leah",
+    desk: "desk-marketing",
+    title: "Poster wording polish",
+    popup: "Leah is using the approved company AI assistant to improve wording on a public cyber awareness poster.",
+    policy: "Approved AI can be used for non-sensitive public content when humans review the output.",
+    context: ["No customer data included", "Tool is on the approved list", "Final copy will be reviewed before publishing"],
+    risk: "no",
+    riskCost: 1,
+    why: "This is no risk/low risk because the content is public, the tool is approved and a human review remains in place.",
+    weakness: "Approved AI use"
   },
   {
-    topic: "APPROVED AI",
-    severity: "LOW",
-    title: "Policy wording improvement",
-    copy: "A team member wants to use the approved company AI assistant to improve wording in a public cyber awareness poster.",
-    policy: "Approved AI tools can be used for low-risk content when no confidential data is included.",
-    answers: [
-      "Reject all AI use",
-      "Approve the use and remind them to check the final output",
-      "Upload confidential training records for better context",
-      "Use a random free AI site instead"
-    ],
-    correct: 1,
-    risk: "Approved tools are useful for non-sensitive content, but humans still need to review accuracy and tone.",
-    category: "Approved use"
+    team: "SUPPORT",
+    person: "Omar",
+    desk: "desk-support",
+    title: "Complaint trend analysis",
+    popup: "Omar is about to upload 400 customer complaint emails into a free AI website to find common themes.",
+    policy: "Customer data must stay in approved systems or be properly anonymised before AI processing.",
+    context: ["Emails include names and contact details", "The AI site is public and unapproved", "Complaint text includes sensitive personal details"],
+    risk: "high",
+    riskCost: 3,
+    why: "This is high risk because sensitive customer data would leave approved company systems.",
+    weakness: "Data sharing"
   },
   {
-    topic: "SHADOW AI",
-    severity: "MEDIUM",
-    title: "Unapproved browser extension",
-    copy: "A colleague installs an AI note-taking browser extension because it summarises meetings automatically.",
-    policy: "Extensions and AI tools must be approved before they access work data, meetings or browsers.",
-    answers: [
-      "Allow it because it only takes notes",
-      "Ask IT or security to review before use",
-      "Share the extension with the team",
-      "Disable MFA so the extension works smoothly"
-    ],
-    correct: 1,
-    risk: "Shadow AI tools may collect meeting content, credentials, browser data or client information.",
-    category: "Shadow AI"
+    team: "OPERATIONS",
+    person: "Nina",
+    desk: "desk-ops",
+    title: "Meeting action list",
+    popup: "Nina is using an approved AI notes tool to produce actions from a routine internal planning meeting.",
+    policy: "Approved AI meeting tools can be used when attendees know and sensitive data is not included.",
+    context: ["Meeting contains no client data", "Attendees were told transcription is active", "The AI tool is approved by IT"],
+    risk: "no",
+    riskCost: 1,
+    why: "This is no risk/low risk because the tool, consent and data context are appropriate.",
+    weakness: "Meeting data"
   },
   {
-    topic: "SOURCE CHECK",
-    severity: "MEDIUM",
-    title: "AI generated legal answer",
-    copy: "An employee asks AI for legal wording and plans to send the answer directly to a client.",
-    policy: "AI output must be checked by a competent person before it is relied on or sent externally.",
-    answers: [
-      "Send it immediately because it sounds professional",
-      "Treat it as a draft and get appropriate review",
-      "Ask AI to add fake citations",
-      "Remove the client name and send it without review"
-    ],
-    correct: 1,
-    risk: "AI can hallucinate confident but incorrect answers. Human review is essential for legal or client-facing work.",
-    category: "Accuracy"
+    team: "DEVELOPMENT",
+    person: "Raj",
+    desk: "desk-dev",
+    title: "Debug chatbot",
+    popup: "Raj has pasted code into an external chatbot. The code includes live API keys and internal endpoints.",
+    policy: "Secrets, credentials and internal configuration must never be pasted into public AI tools.",
+    context: ["Token starts with a production prefix", "Chatbot account is personal", "Internal endpoint URLs are visible"],
+    risk: "high",
+    riskCost: 3,
+    why: "This is high risk because exposed secrets can create account takeover and incident response work.",
+    weakness: "Secrets"
   },
   {
-    topic: "PROMPT SAFETY",
-    severity: "HIGH",
-    title: "Debugging with an API key",
-    copy: "A developer pastes code containing live API keys into an external AI chatbot to debug an error.",
-    policy: "Secrets, keys, tokens and credentials must never be pasted into public or unapproved AI tools.",
-    answers: [
-      "Approve it because debugging is urgent",
-      "Remove secrets and use approved tools or internal review",
-      "Paste only one API key",
-      "Post the same code in a public forum"
-    ],
-    correct: 1,
-    risk: "Secrets exposed to AI tools can lead to account takeover, data access and incident response work.",
-    category: "Secrets"
+    team: "HR",
+    person: "Sofia",
+    desk: "desk-hr",
+    title: "CV screening site",
+    popup: "Sofia wants to upload candidate CVs to a new AI screening site and let it rank applicants.",
+    policy: "Recruitment AI needs approved tools, privacy review, fairness checks and human oversight.",
+    context: ["CVs include personal data", "The tool cannot explain rankings", "No privacy or fairness review has happened"],
+    risk: "high",
+    riskCost: 2,
+    why: "This is high risk because recruitment AI can create privacy, fairness and bias issues.",
+    weakness: "Personal data"
   },
   {
-    topic: "HR DATA",
-    severity: "HIGH",
-    title: "CV screening shortcut",
-    copy: "HR wants to upload candidate CVs into a new AI screening site to rank applicants faster.",
-    policy: "Personal data and recruitment decisions require approved tools, privacy review and fairness checks.",
-    answers: [
-      "Use the tool immediately",
-      "Use only approved HR systems and complete review first",
-      "Upload CVs with names removed but leave phone numbers",
-      "Ask the AI to reject weak candidates automatically"
-    ],
-    correct: 1,
-    risk: "AI recruitment tools can create privacy, bias and fairness risks if they are not approved and governed.",
-    category: "Personal data"
+    team: "LEGAL",
+    person: "Amira",
+    desk: "desk-legal",
+    title: "Clause rewrite draft",
+    popup: "Amira is using the approved AI assistant to simplify wording in a generic internal policy clause.",
+    policy: "AI output can support drafting, but legal or policy text needs competent human review.",
+    context: ["No client details included", "Tool is approved", "Amira is treating the output as a draft for review"],
+    risk: "no",
+    riskCost: 1,
+    why: "This is no risk/low risk because the tool is approved, data is non-sensitive and the output is only a draft.",
+    weakness: "Accuracy"
   },
   {
-    topic: "PHISHING",
-    severity: "HIGH",
-    title: "Polished AI-written email",
-    copy: "A supplier email is perfectly written and personalised, but asks staff to sign into a new invoice portal today.",
-    policy: "Polished writing is not proof of trust. Links, domains and payment changes must still be verified.",
-    answers: [
-      "Trust it because the wording is professional",
-      "Check the portal domain and verify through a known supplier contact",
-      "Forward it to personal email to open safely",
-      "Enter only username first"
-    ],
-    correct: 1,
-    risk: "AI can make phishing more convincing. The request and destination still decide the risk.",
-    category: "AI phishing"
+    team: "DESIGN",
+    person: "Theo",
+    desk: "desk-design",
+    title: "Client concept image",
+    popup: "Theo is uploading a confidential unreleased client product concept to a public AI image generator.",
+    policy: "Client confidential material and intellectual property must not be uploaded to unapproved public AI services.",
+    context: ["Concept is marked confidential", "Public AI image site is unapproved", "Client launch date is visible on the artwork"],
+    risk: "high",
+    riskCost: 2,
+    why: "This is high risk because client IP and confidential material would be exposed.",
+    weakness: "IP risk"
   },
   {
-    topic: "MEETING DATA",
-    severity: "MEDIUM",
-    title: "Automatic transcript upload",
-    copy: "A project lead wants an AI tool to transcribe a meeting that includes client strategy, pricing and staff performance discussion.",
-    policy: "Meeting recording and transcription need approved tools, consent and data classification checks.",
-    answers: [
-      "Record and upload without telling anyone",
-      "Use an approved tool and confirm consent and data handling first",
-      "Ask AI to remove names after upload",
-      "Use a personal phone recorder"
-    ],
-    correct: 1,
-    risk: "Meeting transcripts can contain personal, commercial and confidential information.",
-    category: "Meeting data"
+    team: "SALES",
+    person: "Ben",
+    desk: "desk-sales",
+    title: "Email tone helper",
+    popup: "Ben is using the approved AI assistant to make a generic follow-up email sound clearer. No client data is included.",
+    policy: "Approved AI can support general wording where confidential data is not included and the employee reviews the output.",
+    context: ["Message contains no pricing or personal data", "Approved company AI assistant is being used", "Ben will review before sending"],
+    risk: "no",
+    riskCost: 1,
+    why: "This is no risk/low risk because the tool is approved, the content is generic and a human remains responsible.",
+    weakness: "Approved AI use"
   },
   {
-    topic: "IP RISK",
-    severity: "MEDIUM",
-    title: "Client design concept",
-    copy: "A design team wants to upload a confidential client product concept to a public AI image generator for inspiration.",
-    policy: "Client confidential material and intellectual property must not be uploaded to unapproved public tools.",
-    answers: [
-      "Upload the concept because it is only an image",
-      "Use approved resources and avoid uploading confidential client material",
-      "Crop the logo and upload the rest",
-      "Ask the AI site not to save it"
-    ],
-    correct: 1,
-    risk: "Confidential client material can expose IP and contractual obligations when shared with public AI services.",
-    category: "IP risk"
+    team: "ADMIN",
+    person: "Ivy",
+    desk: "desk-admin",
+    title: "AI browser extension",
+    popup: "Ivy installs an AI browser extension that offers to read every page and summarise admin work automatically.",
+    policy: "Browser extensions and AI tools need approval before they can access work systems, pages or data.",
+    context: ["Extension requests access to all websites", "Tool is not on the approved software list", "Admin screens may include employee and company records"],
+    risk: "high",
+    riskCost: 3,
+    why: "This is high risk because the extension may read sensitive portal, browser and company data.",
+    weakness: "Shadow AI"
   }
 ];
 
-const startScreen = document.getElementById("startScreen");
-const accessLock = document.getElementById("accessLock");
-const playNowBtn = document.getElementById("playNowBtn");
-const gameShell = document.getElementById("gameShell");
-const scoreBox = document.getElementById("scoreBox");
-const accuracyBox = document.getElementById("accuracyBox");
-const caseBox = document.getElementById("caseBox");
-const riskBox = document.getElementById("riskBox");
-const riskFill = document.getElementById("riskFill");
-const radarWrap = document.getElementById("radarWrap");
-const signalBlip = document.getElementById("signalBlip");
-const tag = document.getElementById("tag");
-const difficultyTag = document.getElementById("difficultyTag");
-const caseTitle = document.getElementById("caseTitle");
-const caseCopy = document.getElementById("caseCopy");
-const policyNote = document.getElementById("policyNote");
-const answers = document.getElementById("answers");
-const feedback = document.getElementById("feedback");
-const nextBtn = document.getElementById("nextBtn");
-const resultCard = document.getElementById("resultCard");
-const resultTopline = document.getElementById("resultTopline");
-const resultTitle = document.getElementById("resultTitle");
-const resultScore = document.getElementById("resultScore");
-const resultCopy = document.getElementById("resultCopy");
-const resultBreakdown = document.getElementById("resultBreakdown");
-const riskFlash = document.getElementById("riskFlash");
+const el = id => document.getElementById(id);
+const startScreen = el("startScreen");
+const accessLock = el("accessLock");
+const playNowBtn = el("playNowBtn");
+const gameShell = el("gameShell");
+const scoreBox = el("scoreBox");
+const accuracyBox = el("accuracyBox");
+const caseBox = el("caseBox");
+const riskBox = el("riskBox");
+const caseTitle = el("caseTitle");
+const caseCopy = el("caseCopy");
+const policyNote = el("policyNote");
+const answers = el("answers");
+const feedback = el("feedback");
+const nextBtn = el("nextBtn");
+const resultCard = el("resultCard");
+const resultTopline = el("resultTopline");
+const resultTitle = el("resultTitle");
+const resultScore = el("resultScore");
+const resultCopy = el("resultCopy");
+const resultBreakdown = el("resultBreakdown");
+const riskFlash = el("riskFlash");
+const mapStops = el("mapStops");
+const sceneStage = el("sceneStage");
+const evidenceTray = el("evidenceTray");
+const operatorLog = el("operatorLog");
+const riskFill = el("riskFill");
+const stationTag = el("stationTag");
+const signalTag = el("signalTag");
+const avatar = el("avatar");
 
-let deck = [];
-let index = 0;
+let eventIndex = 0;
 let correct = 0;
 let wrong = 0;
 let score = 0;
-let streak = 0;
-let bestStreak = 0;
-let risk = 0;
+let floorRisk = 2;
 let answered = false;
 let completed = false;
 let startedAt = null;
 let finalPayload = null;
 let attemptSent = false;
+let contextOpened = new Set();
 let weakness = {};
+let activeEvents = [];
 
 if (!canPlay) {
   startScreen.classList.add("hidden");
@@ -238,31 +211,23 @@ if (!canPlay) {
   accessLock.classList.add("active");
 }
 
-function shuffle(items) {
-  const copy = [...items];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
-
-function severityCost(severity) {
-  if (severity === "HIGH") return 3;
-  if (severity === "MEDIUM") return 2;
-  return 1;
-}
-
 function accuracy() {
   const done = correct + wrong;
   return done ? Math.round((correct / done) * 100) : 0;
 }
 
-function rank(acc = accuracy(), points = score) {
-  if (acc === 100) return "AI GOVERNANCE PRO";
-  if (acc >= 90) return "AI RISK LEAD";
-  if (acc >= 80) return "AI DEFENDER";
-  if (acc >= 60) return "RISK SPOTTER";
+function riskLabel() {
+  if (floorRisk >= 9) return "CRITICAL";
+  if (floorRisk >= 6) return "HIGH";
+  if (floorRisk >= 3) return "ELEVATED";
+  return "CONTROLLED";
+}
+
+function rank(acc = accuracy()) {
+  if (acc >= 95) return "AI GOVERNANCE LEAD";
+  if (acc >= 85) return "AI RISK DEFENDER";
+  if (acc >= 80) return "AI CONTROL OPERATOR";
+  if (acc >= 65) return "RISK SPOTTER";
   return "AI TRAINEE";
 }
 
@@ -271,31 +236,115 @@ function biggestWeakness() {
   return entries.length ? entries[0][0] : "None identified";
 }
 
-function updateHud() {
-  const acc = accuracy();
-  scoreBox.textContent = score;
-  accuracyBox.textContent = `${acc}%`;
-  caseBox.textContent = `${Math.min(index + 1, TOTAL_CASES)} / ${TOTAL_CASES}`;
-  const riskLabel = risk >= 8 ? "CRITICAL" : risk >= 5 ? "HIGH" : risk >= 3 ? "ELEVATED" : "LOW";
-  riskBox.textContent = riskLabel;
-  riskFill.style.width = `${Math.min(100, risk * 10)}%`;
-  radarWrap.classList.toggle("risk", risk >= 5);
+function shuffle(items) {
+  const copy = [...items];
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const swap = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[swap]] = [copy[swap], copy[index]];
+  }
+  return copy;
 }
 
-function setBlip(item) {
-  signalBlip.className = "signal-blip";
-  if (item.severity === "LOW") signalBlip.classList.add("safe");
-  if (item.severity === "HIGH") signalBlip.classList.add("danger");
+function updateHud() {
+  scoreBox.textContent = score;
+  accuracyBox.textContent = `${accuracy()}%`;
+  caseBox.textContent = `${Math.min(eventIndex + 1, TOTAL_EVENTS)} / ${TOTAL_EVENTS}`;
+  riskBox.textContent = riskLabel();
+  riskFill.style.width = `${Math.min(100, floorRisk * 10)}%`;
+  gameShell.classList.toggle("danger-state", floorRisk >= 6);
+}
+
+function renderMap() {
+  mapStops.innerHTML = activeEvents.map((item, index) => {
+    const state = index < eventIndex ? "complete" : index === eventIndex ? "current" : "";
+    return `<div class="map-stop ${state}"><span>${index + 1}</span><strong>${item.team}</strong></div>`;
+  }).join("");
+}
+
+function renderOfficeFloor(activeEvent) {
+  const desks = activeEvents.map((item, index) => {
+    const current = index === eventIndex ? "active" : index < eventIndex ? "checked" : "";
+    const popup = index === eventIndex
+      ? `<div class="ai-popup"><span>AI USE</span><strong>${activeEvent.person}</strong></div>`
+      : "";
+    return `<div class="desk ${item.desk} ${current}">
+      <div class="desk-screen"></div>
+      <div class="desk-person">${item.person.slice(0, 1)}</div>
+      <div class="desk-label">${item.team}</div>
+      ${popup}
+    </div>`;
+  }).join("");
+
+  sceneStage.innerHTML = `
+    <div class="office-wall">
+      <div class="pixel-clock"></div>
+      <div class="office-door"></div>
+      <div class="bookcase bookcase-left"><i></i><i></i></div>
+      <div class="bookcase bookcase-right"><i></i><i></i></div>
+      <div class="water-cooler"><span></span></div>
+      <div class="notice-board">AI USE POLICY</div>
+      <div class="window-block"></div>
+      <div class="window-block second"></div>
+    </div>
+    <div class="printer furniture"><span></span><strong>PRINT</strong></div>
+    <div class="plant plant-left"><span></span></div>
+    <div class="plant plant-right"><span></span></div>
+    <div class="filing-cabinet"><span></span><span></span><span></span></div>
+    <div class="meeting-table"><i></i><i></i><i></i></div>
+    <div class="sofa"><span></span></div>
+    <div class="coffee-table"></div>
+    ${desks}
+    <div class="walkway"></div>
+    <div class="avatar" id="avatar">YOU</div>
+  `;
+  const nextAvatar = el("avatar");
   const positions = [
-    ["64%", "27%"],
-    ["31%", "68%"],
-    ["72%", "62%"],
-    ["39%", "23%"],
-    ["55%", "76%"]
+    ["9%", "64%"], ["34%", "64%"], ["60%", "64%"], ["83%", "64%"],
+    ["9%", "24%"], ["34%", "24%"], ["60%", "24%"], ["83%", "24%"],
+    ["20%", "44%"], ["72%", "44%"]
   ];
-  const pos = positions[index % positions.length];
-  signalBlip.style.left = pos[0];
-  signalBlip.style.top = pos[1];
+  nextAvatar.style.left = positions[eventIndex][0];
+  nextAvatar.style.top = positions[eventIndex][1];
+}
+
+function renderContext(item) {
+  evidenceTray.innerHTML = item.context.map((text, index) => {
+    const opened = contextOpened.has(index);
+    return `<button class="evidence-chip ${opened ? "found" : ""}" data-context="${index}" type="button">
+      <strong>Context ${index + 1}</strong><span>${opened ? text : "Inspect popup detail"}</span>
+    </button>`;
+  }).join("");
+}
+
+function renderDecision() {
+  answers.innerHTML = `
+    <button class="answer-btn high-risk" data-risk="high" type="button">HIGH RISK</button>
+    <button class="answer-btn no-risk" data-risk="no" type="button">NO RISK</button>
+  `;
+}
+
+function logLine(text) {
+  operatorLog.innerHTML = `<span>${text}</span>`;
+}
+
+function renderEvent() {
+  const item = activeEvents[eventIndex];
+  answered = false;
+  contextOpened = new Set();
+  stationTag.textContent = item.team;
+  signalTag.textContent = item.risk === "high" ? "AI POPUP: REVIEW" : "AI POPUP: LOW SIGNAL";
+  caseTitle.textContent = item.title;
+  caseCopy.textContent = item.popup;
+  policyNote.textContent = item.policy;
+  feedback.textContent = "";
+  feedback.className = "feedback";
+  nextBtn.style.display = "none";
+  renderMap();
+  renderOfficeFloor(item);
+  renderContext(item);
+  renderDecision();
+  logLine(`${item.person} is using AI in ${item.team}. Inspect the popup, then classify the risk.`);
+  updateHud();
 }
 
 function flash(kind) {
@@ -304,111 +353,93 @@ function flash(kind) {
   riskFlash.classList.add(kind === "good" ? "active-good" : "active-bad");
 }
 
+function inspectContext(index) {
+  if (answered) return;
+  const item = activeEvents[eventIndex];
+  contextOpened.add(index);
+  renderContext(item);
+  score += 5;
+  logLine(item.context[index]);
+  updateHud();
+}
+
+function chooseRisk(choice) {
+  if (answered || completed) return;
+  answered = true;
+  const item = activeEvents[eventIndex];
+  const isCorrect = choice === item.risk;
+  const contextBonus = contextOpened.size === item.context.length ? 30 : contextOpened.size * 8;
+
+  if (isCorrect) {
+    correct += 1;
+    score += (item.risk === "high" ? 170 : 130) + contextBonus;
+    floorRisk = Math.max(0, floorRisk - item.riskCost);
+    feedback.innerHTML = `Correct classification.<span class="why">${item.why}</span>`;
+    feedback.className = "feedback good";
+    flash("good");
+  } else {
+    wrong += 1;
+    score = Math.max(0, score - (item.risk === "high" ? 120 : 70));
+    floorRisk += item.riskCost;
+    weakness[item.weakness] = (weakness[item.weakness] || 0) + 1;
+    feedback.innerHTML = `Wrong classification.<span class="why">${item.why}</span>`;
+    feedback.className = "feedback bad";
+    flash("bad");
+  }
+
+  Array.from(answers.children).forEach(button => {
+    button.classList.add("disabled");
+    if (button.dataset.risk === item.risk) button.classList.add("correct");
+    else if (button.dataset.risk === choice) button.classList.add("wrong");
+  });
+
+  logLine(isCorrect ? "AI popup classified correctly. Move to the next desk." : "Misclassified popup. Floor exposure increased.");
+  updateHud();
+
+  if (eventIndex >= TOTAL_EVENTS - 1) {
+    setTimeout(finishGame, 1000);
+    return;
+  }
+
+  nextBtn.textContent = "WALK TO NEXT AI POPUP";
+  nextBtn.style.display = "block";
+}
+
 function startGame() {
   if (!canPlay) return;
-  deck = shuffle(cases).slice(0, TOTAL_CASES);
-  index = 0;
+  eventIndex = 0;
   correct = 0;
   wrong = 0;
   score = 0;
-  streak = 0;
-  bestStreak = 0;
-  risk = 0;
+  floorRisk = 2;
   answered = false;
   completed = false;
   finalPayload = null;
   attemptSent = false;
   weakness = {};
+  activeEvents = shuffle(events).slice(0, TOTAL_EVENTS);
   startedAt = Date.now();
-  startScreen.classList.add("hidden");
   resultCard.classList.remove("active", "fail");
-  renderCase();
-}
-
-function renderCase() {
-  const item = deck[index];
-  answered = false;
-  tag.textContent = item.topic;
-  difficultyTag.textContent = `${item.severity} RISK`;
-  caseTitle.textContent = item.title;
-  caseCopy.textContent = item.copy;
-  policyNote.textContent = item.policy;
-  feedback.textContent = "";
-  feedback.className = "feedback";
-  nextBtn.style.display = "none";
-  answers.innerHTML = "";
-  setBlip(item);
-
-  item.answers.forEach((answer, answerIndex) => {
-    const button = document.createElement("button");
-    button.className = "answer-btn";
-    button.textContent = answer;
-    button.addEventListener("click", () => choose(answerIndex));
-    answers.appendChild(button);
-  });
-
-  updateHud();
-}
-
-function choose(answerIndex) {
-  if (answered || completed) return;
-  answered = true;
-
-  const item = deck[index];
-  const isCorrect = answerIndex === item.correct;
-
-  if (isCorrect) {
-    correct += 1;
-    streak += 1;
-    bestStreak = Math.max(bestStreak, streak);
-    score += 150 + Math.min(75, streak * 25) + (item.severity === "HIGH" ? 50 : 0);
-    risk = Math.max(0, risk - (item.severity === "HIGH" ? 1 : 0));
-    feedback.innerHTML = `Correct. Risk contained.<span class="why">${item.risk}</span>`;
-    feedback.className = "feedback good";
-    flash("good");
-  } else {
-    wrong += 1;
-    streak = 0;
-    score = Math.max(0, score - (item.severity === "HIGH" ? 100 : 50));
-    risk += severityCost(item.severity);
-    weakness[item.category] = (weakness[item.category] || 0) + 1;
-    feedback.innerHTML = `Not safe. ${item.severity} risk increased.<span class="why">${item.risk}</span>`;
-    feedback.className = "feedback bad";
-    flash("bad");
-  }
-
-  Array.from(answers.children).forEach((button, buttonIndex) => {
-    button.classList.add("disabled");
-    if (buttonIndex === item.correct) button.classList.add("correct");
-    else if (buttonIndex === answerIndex) button.classList.add("wrong");
-  });
-
-  updateHud();
-
-  if (index >= TOTAL_CASES - 1) {
-    setTimeout(finishGame, 1000);
-    return;
-  }
-
-  nextBtn.style.display = "block";
+  startScreen.classList.add("hidden");
+  renderEvent();
 }
 
 function finishGame() {
   completed = true;
-  const acc = Math.round((correct / TOTAL_CASES) * 100);
-  const passed = correct >= 8;
+  const acc = Math.round((correct / TOTAL_EVENTS) * 100);
+  const passed = acc >= PASS_MARK;
   const durationSeconds = Math.max(1, Math.round((Date.now() - startedAt) / 1000));
-  const finalRank = rank(acc, score);
+  const finalRank = rank(acc);
   const weaknessText = biggestWeakness();
 
   finalPayload = {
     type: "SCCYBER_GAME_ATTEMPT",
     game: GAME_KEY,
     score,
-    totalQuestions: TOTAL_CASES,
+    totalQuestions: TOTAL_EVENTS,
     correct,
     wrong,
-    answered: TOTAL_CASES,
+    answered: TOTAL_EVENTS,
     accuracy: acc,
     durationSeconds,
     completed: true,
@@ -420,13 +451,13 @@ function finishGame() {
 
   resultCard.classList.add("active");
   resultCard.classList.toggle("fail", !passed);
-  resultTopline.textContent = passed ? "AI RISK CONTAINED" : "SHADOW AI EXPOSURE";
-  resultTitle.textContent = passed ? "MISSION PASSED" : "MODULE FAILED";
+  resultTopline.textContent = passed ? "AI RISK CONTAINED" : "AI RISK ESCALATED";
+  resultTitle.textContent = passed ? "MISSION PASSED" : "MISSION FAILED";
   resultScore.textContent = `${acc}% · ${score} POINTS · ${finalRank}`;
   resultCopy.textContent = passed
-    ? "Strong judgement. You handled AI requests with the right balance of productivity, privacy and escalation."
-    : "The organisation was left exposed. Review data sharing, approved tools and deepfake verification before going live.";
-  resultBreakdown.textContent = `Correct: ${correct} / ${TOTAL_CASES} · Risk level: ${riskBox.textContent} · Biggest weakness: ${weaknessText} · Preview attempts are not saved.`;
+    ? "You monitored the office floor, read the AI-use popups and kept risky AI behaviour under control."
+    : "Too many AI popups were misclassified. Revisit sensitive data, unapproved tools, payment fraud and client IP.";
+  resultBreakdown.textContent = `Correct classifications: ${correct} / ${TOTAL_EVENTS} · Final floor risk: ${riskLabel()} · Biggest weakness: ${weaknessText} · Admin preview attempts are not saved.`;
 }
 
 function sendAttempt() {
@@ -436,9 +467,21 @@ function sendAttempt() {
   window.parent.postMessage(finalPayload, parentOrigin);
 }
 
+evidenceTray.addEventListener("click", event => {
+  const button = event.target.closest("[data-context]");
+  if (!button) return;
+  inspectContext(Number(button.dataset.context));
+});
+
+answers.addEventListener("click", event => {
+  const button = event.target.closest("[data-risk]");
+  if (!button) return;
+  chooseRisk(button.dataset.risk);
+});
+
 nextBtn.addEventListener("click", () => {
-  index += 1;
-  renderCase();
+  eventIndex += 1;
+  renderEvent();
 });
 
 playNowBtn.addEventListener("click", startGame);
