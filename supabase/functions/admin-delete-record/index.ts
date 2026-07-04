@@ -87,7 +87,10 @@ async function deleteLearner(adminClient: any, caller: any, id: string) {
   const learner = learnerResult.data;
   const userIds = learner.user_id ? [learner.user_id] : [];
 
+  await adminClient.from("learners").update({ active: false }).eq("id", learner.id);
+
   if (learner.user_id) {
+    await adminClient.from("profiles").update({ premium_enabled: false }).eq("id", learner.user_id);
     await adminClient.from("attempts").delete().eq("user_id", learner.user_id);
     await adminClient.from("profiles").delete().eq("id", learner.user_id);
   }
@@ -140,7 +143,15 @@ async function deleteCompany(adminClient: any, caller: any, id: string) {
   const learners = learnerResult.data || [];
   const userIds = learners.map((learner: any) => learner.user_id).filter(Boolean);
 
+  await adminClient
+    .from("organisations")
+    .update({ premium_enabled: false, licence_count: 0, billing_status: "removed" })
+    .eq("id", id);
+
+  await adminClient.from("learners").update({ active: false }).eq("organisation_id", id);
+
   if (userIds.length > 0) {
+    await adminClient.from("profiles").update({ premium_enabled: false }).in("id", userIds);
     await adminClient.from("attempts").delete().in("user_id", userIds);
     await adminClient.from("profiles").delete().in("id", userIds);
   }
