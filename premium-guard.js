@@ -38,7 +38,15 @@ function loadPremiumSeatGuard() {
   if (document.getElementById("sccyberPremiumSeatGuardScript")) return;
   const script = document.createElement("script");
   script.id = "sccyberPremiumSeatGuardScript";
-  script.src = "premium-seat-guard.js?v=20260625a";
+  script.src = "premium-seat-guard.js?v=20260704a";
+  document.body.appendChild(script);
+}
+
+function loadAccessLockdown() {
+  if (document.getElementById("sccyberAccessLockdownScript")) return;
+  const script = document.createElement("script");
+  script.id = "sccyberAccessLockdownScript";
+  script.src = "access-lockdown.js?v=20260704a";
   document.body.appendChild(script);
 }
 
@@ -78,6 +86,7 @@ function fixGameLaunchUrls() {
 }
 
 function runPortalHelpers() {
+  loadAccessLockdown();
   loadPremiumSeatGuard();
   setTimeout(syncPremiumAccessFromDatabase, 1000);
   setInterval(syncPremiumAccessFromDatabase, 30000);
