@@ -211,7 +211,7 @@ body{
 
 .office-floor{
   position:relative;
-  min-height:430px;
+  min-height:520px;
   margin-top:14px;
   overflow:hidden;
   border:4px solid #3c2a42;
@@ -435,6 +435,7 @@ body{
 
 .desk{
   position:absolute;
+  z-index:3;
   width:18%;
   min-width:118px;
   height:112px;
@@ -446,20 +447,21 @@ body{
 
 .desk.checked{opacity:.52}
 .desk.active{
+  z-index:5;
   border-color:#ffd44d;
   box-shadow:0 0 0 4px rgba(255,212,77,.28),5px 5px 0 rgba(73,42,36,.28);
 }
 
-.desk-finance{left:4%;top:58%}
-.desk-marketing{left:29%;top:58%}
-.desk-support{left:54%;top:58%}
-.desk-ops{left:78%;top:58%}
+.desk-finance{left:4%;top:68%}
+.desk-marketing{left:29%;top:68%}
+.desk-support{left:54%;top:68%}
+.desk-ops{left:78%;top:68%}
 .desk-dev{left:4%;top:14%}
 .desk-hr{left:29%;top:14%}
 .desk-legal{left:54%;top:14%}
 .desk-design{left:78%;top:14%}
-.desk-sales{left:17%;top:38%}
-.desk-admin{left:67%;top:38%}
+.desk-sales{left:17%;top:41%}
+.desk-admin{left:67%;top:41%}
 
 .desk-screen{
   position:absolute;
@@ -579,7 +581,7 @@ body{
   border:4px solid #25324b;
   background:#d7dfed;
   box-shadow:4px 4px 0 rgba(0,0,0,.18);
-  z-index:2;
+  z-index:1;
 }
 
 .printer span{
@@ -605,7 +607,7 @@ body{
   position:absolute;
   width:54px;
   height:86px;
-  z-index:2;
+  z-index:1;
 }
 
 .plant-left{left:90%;top:65%}
@@ -647,7 +649,7 @@ body{
   border:4px solid #25324b;
   background:#59677f;
   box-shadow:4px 4px 0 rgba(0,0,0,.18);
-  z-index:2;
+  z-index:1;
 }
 
 .filing-cabinet span{
@@ -667,7 +669,7 @@ body{
   border:4px solid #6c3f32;
   background:#f1c27d;
   box-shadow:4px 4px 0 rgba(0,0,0,.18);
-  z-index:2;
+  z-index:1;
 }
 
 .meeting-table i{
@@ -692,7 +694,7 @@ body{
   border:4px solid #25324b;
   background:#46566f;
   box-shadow:4px 4px 0 rgba(0,0,0,.18);
-  z-index:2;
+  z-index:1;
 }
 
 .sofa span{
@@ -714,7 +716,7 @@ body{
   border:4px solid #6c3f32;
   background:#f1c27d;
   box-shadow:4px 4px 0 rgba(0,0,0,.18);
-  z-index:2;
+  z-index:1;
 }
 
 .map-stops{
@@ -862,18 +864,21 @@ body{
   .floor-topbar{grid-template-columns:1fr}
   .hud,.answers,.evidence-tray{grid-template-columns:1fr 1fr}
   .map-stops{grid-template-columns:repeat(4,1fr)}
-  .office-floor{min-height:620px}
-  .desk{width:38%}
-  .desk-finance{left:7%;top:66%}
-  .desk-marketing{left:55%;top:66%}
-  .desk-support{left:7%;top:50%}
-  .desk-ops{left:55%;top:50%}
+  .office-floor{min-height:760px}
+  .printer,.plant,.filing-cabinet,.meeting-table,.sofa,.coffee-table{opacity:.34;pointer-events:none}
+  .desk{width:39%;height:100px;min-width:0}
+  .desk-screen{width:50px;height:36px}
+  .desk-person{right:12px;top:17px}
+  .desk-finance{left:7%;top:70%}
+  .desk-marketing{left:54%;top:70%}
+  .desk-support{left:7%;top:56%}
+  .desk-ops{left:54%;top:56%}
   .desk-dev{left:7%;top:14%}
-  .desk-hr{left:55%;top:14%}
-  .desk-legal{left:7%;top:32%}
-  .desk-design{left:55%;top:32%}
-  .desk-sales{left:7%;top:82%}
-  .desk-admin{left:55%;top:82%}
+  .desk-hr{left:54%;top:14%}
+  .desk-legal{left:7%;top:28%}
+  .desk-design{left:54%;top:28%}
+  .desk-sales{left:7%;top:42%}
+  .desk-admin{left:54%;top:42%}
 }
 
 @media(max-width:640px){
@@ -882,19 +887,30 @@ body{
   .game-header{flex-direction:column;text-align:center}
   .hud,.answers,.evidence-tray{grid-template-columns:1fr}
   .map-stops{grid-template-columns:1fr 1fr}
-  .office-floor{min-height:1040px}
-  .desk{left:8%!important;width:84%;min-width:0;height:94px}
-  .desk-finance{top:77%}
-  .desk-marketing{top:66%}
-  .desk-support{top:55%}
-  .desk-ops{top:44%}
-  .desk-dev{top:5%}
-  .desk-hr{top:16%}
-  .desk-legal{top:27%}
-  .desk-design{top:38%}
-  .desk-sales{top:82%}
-  .desk-admin{top:91%}
-  .walkway{display:none}
+  .office-floor{min-height:1180px}
+  .office-wall{height:12%}
+  .office-floor:before{top:12%}
+  .office-floor:after{inset:calc(12% + 8px) 0 0}
+  .office-door,.bookcase,.water-cooler,.pixel-clock,.window-block{display:none}
+  .notice-board{left:50%;top:28px;transform:translateX(-50%)}
+  .printer,.plant,.filing-cabinet,.meeting-table,.sofa,.coffee-table,.walkway{display:none}
+  .desk{left:8%!important;width:84%;min-width:0;height:78px}
+  .desk-screen{left:12px;top:12px;width:48px;height:34px}
+  .desk-screen:after{font-size:7px}
+  .desk-person{right:12px;top:13px;width:32px;height:32px}
+  .desk-label{left:12px;bottom:8px;font-size:7px}
+  .ai-popup{top:-24px;min-width:102px;padding:6px}
+  .avatar{width:48px;height:30px;font-size:7px}
+  .desk-dev{top:15%}
+  .desk-hr{top:23.5%}
+  .desk-legal{top:32%}
+  .desk-design{top:40.5%}
+  .desk-sales{top:49%}
+  .desk-admin{top:57.5%}
+  .desk-support{top:66%}
+  .desk-ops{top:74.5%}
+  .desk-marketing{top:83%}
+  .desk-finance{top:91.5%}
   .answer-btn{min-height:70px}
   .logo{width:76px}
 }
