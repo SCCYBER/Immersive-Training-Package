@@ -298,13 +298,11 @@ function renderOfficeFloor(activeEvent) {
     <div class="avatar" id="avatar">YOU</div>
   `;
   const nextAvatar = el("avatar");
-  const positions = [
-    ["9%", "64%"], ["34%", "64%"], ["60%", "64%"], ["83%", "64%"],
-    ["9%", "24%"], ["34%", "24%"], ["60%", "24%"], ["83%", "24%"],
-    ["20%", "44%"], ["72%", "44%"]
-  ];
-  nextAvatar.style.left = positions[eventIndex][0];
-  nextAvatar.style.top = positions[eventIndex][1];
+  const activeDesk = sceneStage.querySelector(`.${activeEvent.desk}`);
+  if (activeDesk) {
+    nextAvatar.style.left = `${activeDesk.offsetLeft + activeDesk.offsetWidth / 2}px`;
+    nextAvatar.style.top = `${activeDesk.offsetTop + activeDesk.offsetHeight / 2}px`;
+  }
 }
 
 function renderContext(item) {
