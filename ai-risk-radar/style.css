@@ -218,7 +218,7 @@ body{
   border-radius:6px;
   background:
     linear-gradient(#b8c6d8 0 26%, transparent 26%),
-    linear-gradient(#d68b58 0 100%);
+    linear-gradient(#c67a46 0 100%);
   image-rendering:pixelated;
 }
 
@@ -239,10 +239,11 @@ body{
   inset:calc(26% + 8px) 0 0;
   opacity:.58;
   background:
-    linear-gradient(90deg,rgba(93,55,38,.34) 2px,transparent 2px),
-    linear-gradient(rgba(93,55,38,.32) 2px,transparent 2px),
-    linear-gradient(90deg,transparent 0 38px,rgba(255,238,181,.22) 39px 42px,transparent 43px 84px);
-  background-size:84px 32px,84px 32px,84px 32px;
+    linear-gradient(90deg,rgba(87,50,31,.42) 3px,transparent 3px),
+    linear-gradient(rgba(87,50,31,.36) 3px,transparent 3px),
+    linear-gradient(90deg,transparent 0 38px,rgba(255,222,142,.22) 39px 43px,transparent 44px 84px),
+    linear-gradient(rgba(255,222,142,.16) 0 4px,transparent 5px 32px);
+  background-size:84px 32px,84px 32px,84px 32px,84px 32px;
   pointer-events:none;
 }
 
@@ -438,18 +439,15 @@ body{
   z-index:3;
   width:18%;
   min-width:118px;
-  height:112px;
-  border:4px solid #6c3f32;
-  border-radius:2px;
-  background:#f1c27d;
-  box-shadow:5px 5px 0 rgba(73,42,36,.28);
+  height:132px;
+  background:transparent;
+  filter:drop-shadow(6px 8px 0 rgba(73,42,36,.28));
 }
 
 .desk.checked{opacity:.52}
 .desk.active{
   z-index:5;
-  border-color:#ffd44d;
-  box-shadow:0 0 0 4px rgba(255,212,77,.28),5px 5px 0 rgba(73,42,36,.28);
+  filter:drop-shadow(0 0 0 rgba(0,0,0,0)) drop-shadow(0 0 12px rgba(255,212,77,.52)) drop-shadow(6px 8px 0 rgba(73,42,36,.28));
 }
 
 .desk-finance{left:4%;top:68%}
@@ -463,15 +461,106 @@ body{
 .desk-sales{left:17%;top:41%}
 .desk-admin{left:67%;top:41%}
 
+.desk-top{
+  position:absolute;
+  left:0;
+  top:12px;
+  width:100%;
+  height:82px;
+  border:4px solid #5d332f;
+  border-radius:2px;
+  background:
+    linear-gradient(90deg,rgba(255,238,176,.42) 0 5px,transparent 5px calc(100% - 8px),rgba(122,70,47,.3) calc(100% - 8px)),
+    linear-gradient(#f6ca83 0 0);
+  box-shadow:
+    inset 0 -8px 0 #d99c5f,
+    inset 0 8px 0 rgba(255,238,176,.42);
+}
+
+.desk-top:before{
+  content:"";
+  position:absolute;
+  left:8px;
+  right:8px;
+  top:8px;
+  height:4px;
+  background:rgba(255,248,190,.42);
+  box-shadow:0 52px 0 rgba(122,70,47,.2);
+}
+
+.desk-front{
+  position:absolute;
+  left:7px;
+  right:7px;
+  top:90px;
+  height:34px;
+  border:4px solid #5d332f;
+  border-top:none;
+  background:
+    linear-gradient(90deg,transparent 0 18%,rgba(93,51,47,.32) 18% 20%,transparent 20% 50%,rgba(93,51,47,.32) 50% 52%,transparent 52%),
+    linear-gradient(#c87945,#a65b39);
+}
+
+.desk-front:before,.desk-front:after{
+  content:"";
+  position:absolute;
+  bottom:-22px;
+  width:12px;
+  height:22px;
+  border:3px solid #5d332f;
+  border-top:none;
+  background:#875033;
+}
+
+.desk-front:before{left:12px}
+.desk-front:after{right:12px}
+
+.desk-front span{
+  position:absolute;
+  right:12px;
+  top:8px;
+  width:30px;
+  height:14px;
+  border:3px solid #814a34;
+  background:#d99c5f;
+}
+
+.desk-chair{
+  position:absolute;
+  left:50%;
+  bottom:-3px;
+  width:46px;
+  height:48px;
+  transform:translateX(-50%);
+  border:4px solid #25324b;
+  border-radius:8px 8px 14px 14px;
+  background:
+    linear-gradient(#718099 0 28px,#53637d 28px);
+  box-shadow:4px 4px 0 rgba(0,0,0,.18);
+}
+
+.desk-chair:before{
+  content:"";
+  position:absolute;
+  left:7px;
+  right:7px;
+  top:-16px;
+  height:18px;
+  border:4px solid #25324b;
+  border-bottom:none;
+  border-radius:8px 8px 0 0;
+  background:#63708a;
+}
+
 .desk-screen{
   position:absolute;
-  left:15px;
-  top:12px;
+  left:14px;
+  top:10px;
   width:58px;
   height:42px;
   border:4px solid #25324b;
   background:#14182d;
-  box-shadow:3px 3px 0 rgba(0,0,0,.18);
+  box-shadow:4px 4px 0 #b78355;
 }
 
 .desk-screen:after{
@@ -497,32 +586,156 @@ body{
   box-shadow:14px 5px 0 #a94cff,26px 1px 0 #ff3b6b,8px 17px 0 #ffd44d,34px 16px 0 #59ff9d;
 }
 
-.desk-person{
+.desk-keyboard{
+  position:absolute;
+  left:16px;
+  top:58px;
+  width:54px;
+  height:16px;
+  border:3px solid #25324b;
+  background:
+    linear-gradient(90deg,#c9d4e6 0 8px,#8fa0b8 8px 11px,#c9d4e6 11px 19px,#8fa0b8 19px 22px,#c9d4e6 22px 32px,#8fa0b8 32px 35px,#c9d4e6 35px),
+    #c9d4e6;
+  box-shadow:3px 3px 0 rgba(0,0,0,.12);
+}
+
+.desk-mouse{
+  position:absolute;
+  left:82px;
+  top:60px;
+  width:16px;
+  height:19px;
+  border:3px solid #25324b;
+  border-radius:7px;
+  background:#c9d4e6;
+}
+
+.desk-mouse:before{
+  content:"";
+  position:absolute;
+  left:5px;
+  top:1px;
+  width:2px;
+  height:7px;
+  background:#25324b;
+}
+
+.desk-paper{
+  position:absolute;
+  right:14px;
+  top:14px;
+  width:28px;
+  height:32px;
+  border:3px solid #25324b;
+  background:#f3ecff;
+  box-shadow:3px 3px 0 rgba(0,0,0,.12);
+}
+
+.desk-paper:before{
+  content:"";
+  position:absolute;
+  left:5px;
+  top:7px;
+  width:15px;
+  height:3px;
+  background:#7c8ca8;
+  box-shadow:0 8px 0 #7c8ca8,0 16px 0 #7c8ca8;
+}
+
+.desk-mug{
   position:absolute;
   right:16px;
-  top:18px;
-  width:34px;
-  height:34px;
-  border-radius:4px 4px 10px 10px;
+  bottom:11px;
+  width:15px;
+  height:16px;
   border:3px solid #25324b;
-  background:#63708a;
+  background:#ff3b6b;
+}
+
+.desk-mug:after{
+  content:"";
+  position:absolute;
+  right:-9px;
+  top:3px;
+  width:6px;
+  height:7px;
+  border:3px solid #25324b;
+  border-left:none;
+}
+
+.desk-tower{
+  position:absolute;
+  right:8px;
+  top:54px;
+  width:22px;
+  height:46px;
+  border:4px solid #25324b;
+  background:#d5deeb;
+  box-shadow:4px 4px 0 rgba(0,0,0,.16);
+}
+
+.desk-tower:before{
+  content:"";
+  position:absolute;
+  left:6px;
+  top:7px;
+  width:7px;
+  height:7px;
+  background:#59ff9d;
+  box-shadow:0 14px 0 #ff3b6b;
+}
+
+.desk-tower i{
+  position:absolute;
+  left:4px;
+  right:4px;
+  bottom:7px;
+  height:3px;
+  background:#7c8ca8;
+}
+
+.desk-person{
+  position:absolute;
+  left:50%;
+  bottom:12px;
+  width:38px;
+  height:34px;
+  transform:translateX(-50%);
+  border-radius:12px 12px 8px 8px;
+  border:3px solid #25324b;
+  background:
+    linear-gradient(#f1b27a 0 12px,#4f5f79 12px);
   color:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
   font-family:'Press Start 2P',cursive;
-  font-size:10px;
+  font-size:8px;
   box-shadow:3px 3px 0 rgba(0,0,0,.18);
 }
 
+.desk-person:before,.desk-person:after{
+  content:"";
+  position:absolute;
+  top:12px;
+  width:7px;
+  height:18px;
+  background:#4f5f79;
+  border:2px solid #25324b;
+}
+
+.desk-person:before{left:-7px}
+.desk-person:after{right:-7px}
+
 .desk-label{
   position:absolute;
-  left:10px;
-  bottom:9px;
-  color:var(--muted);
+  left:11px;
+  bottom:37px;
+  color:#7e6ec4;
   font-family:'Press Start 2P',cursive;
   font-size:7px;
   line-height:1.4;
+  text-shadow:1px 1px 0 rgba(255,255,255,.22);
 }
 
 .ai-popup{
@@ -866,9 +1079,15 @@ body{
   .map-stops{grid-template-columns:repeat(4,1fr)}
   .office-floor{min-height:760px}
   .printer,.plant,.filing-cabinet,.meeting-table,.sofa,.coffee-table{opacity:.34;pointer-events:none}
-  .desk{width:39%;height:100px;min-width:0}
+  .desk{width:39%;height:122px;min-width:0}
+  .desk-top{height:78px}
+  .desk-front{top:86px;height:31px}
   .desk-screen{width:50px;height:36px}
-  .desk-person{right:12px;top:17px}
+  .desk-keyboard{width:48px}
+  .desk-mouse{left:74px}
+  .desk-paper{display:none}
+  .desk-person{bottom:10px}
+  .desk-label{bottom:35px}
   .desk-finance{left:7%;top:70%}
   .desk-marketing{left:54%;top:70%}
   .desk-support{left:7%;top:56%}
@@ -894,11 +1113,21 @@ body{
   .office-door,.bookcase,.water-cooler,.pixel-clock,.window-block{display:none}
   .notice-board{left:50%;top:28px;transform:translateX(-50%)}
   .printer,.plant,.filing-cabinet,.meeting-table,.sofa,.coffee-table,.walkway{display:none}
-  .desk{left:8%!important;width:84%;min-width:0;height:78px}
-  .desk-screen{left:12px;top:12px;width:48px;height:34px}
+  .desk{left:8%!important;width:84%;min-width:0;height:92px}
+  .desk-top{top:8px;height:62px}
+  .desk-front{top:67px;height:24px}
+  .desk-front:before,.desk-front:after{display:none}
+  .desk-front span{display:none}
+  .desk-chair{display:none}
+  .desk-screen{left:12px;top:10px;width:48px;height:34px}
   .desk-screen:after{font-size:7px}
-  .desk-person{right:12px;top:13px;width:32px;height:32px}
-  .desk-label{left:12px;bottom:8px;font-size:7px}
+  .desk-keyboard{left:14px;top:48px;width:45px;height:13px}
+  .desk-mouse{left:68px;top:47px;width:14px;height:16px}
+  .desk-paper,.desk-mug{display:none}
+  .desk-tower{right:9px;top:30px;width:20px;height:38px}
+  .desk-person{right:auto;left:50%;bottom:6px;width:32px;height:28px;font-size:7px}
+  .desk-person:before,.desk-person:after{display:none}
+  .desk-label{left:12px;bottom:26px;font-size:7px}
   .ai-popup{top:-24px;min-width:102px;padding:6px}
   .avatar{width:48px;height:30px;font-size:7px}
   .desk-dev{top:15%}
