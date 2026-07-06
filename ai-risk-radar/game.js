@@ -268,7 +268,16 @@ function renderOfficeFloor(activeEvent) {
       ? `<div class="ai-popup"><span>AI USE</span><strong>${activeEvent.person}</strong></div>`
       : "";
     return `<div class="desk ${item.desk} ${current}">
-      <div class="desk-screen"></div>
+      <div class="desk-chair"></div>
+      <div class="desk-top">
+        <div class="desk-screen"></div>
+        <div class="desk-keyboard"></div>
+        <div class="desk-mouse"></div>
+        <div class="desk-paper"></div>
+        <div class="desk-mug"></div>
+      </div>
+      <div class="desk-front"><span></span></div>
+      <div class="desk-tower"><i></i></div>
       <div class="desk-person">${item.person.slice(0, 1)}</div>
       <div class="desk-label">${item.team}</div>
       ${popup}
