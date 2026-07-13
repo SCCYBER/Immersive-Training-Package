@@ -40,7 +40,22 @@
     const updateBtn = document.getElementById('updateBtn');
     const newKey = document.getElementById('newKey');
     const confirmKey = document.getElementById('confirmKey');
-    const client = window.supabase.createClient(window.SCCYBER_SUPABASE_URL, window.SCCYBER_SUPABASE_ANON_KEY);
+
+    // Keep reset-link authentication separate from the live learner portal session.
+    // Sharing Supabase's default browser storage key caused reset-page activity to
+    // replace or revoke the learner session used by the main portal.
+    const client = window.supabase.createClient(
+      window.SCCYBER_SUPABASE_URL,
+      window.SCCYBER_SUPABASE_ANON_KEY,
+      {
+        auth: {
+          storageKey: 'sccyber-admin-reset-auth',
+          persistSession: true,
+          autoRefreshToken: false,
+          detectSessionInUrl: true
+        }
+      }
+    );
 
     function show(text) {
       message.textContent = text;
@@ -81,7 +96,8 @@
       }
 
       show('Login updated. Returning to portal...');
-      await client.auth.signOut();
+      await client.auth.signOut({ scope: 'local' });
+      localStorage.removeItem('sccyber-admin-reset-auth');
       setTimeout(() => {
         window.location.href = './';
       }, 1500);
