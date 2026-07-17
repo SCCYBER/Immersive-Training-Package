@@ -6,11 +6,11 @@
 .pixel-clock{top:58px}
 .window-block{top:32px}
 .window-block.second{right:11%}
-.office-door{left:51%;top:12px}
+.office-door{left:51%;top:auto;bottom:0}
 .bookcase{top:24px}
 .bookcase-left{left:7%}
 .bookcase-right{left:61%}
-.water-cooler{right:2%;top:50px}
+.water-cooler{right:2%;top:auto;bottom:0}
 .walkway{left:5%;right:5%;top:52%;height:54px}
 .desk-dev{left:4%;top:28%}
 .desk-hr{left:28%;top:28%}
@@ -30,6 +30,14 @@
   border:none;
   background:transparent;
   box-shadow:none;
+}
+.desk-chair{z-index:1}
+.desk-chair:before{
+  top:-24px;
+  left:4px;
+  right:4px;
+  height:28px;
+  background:#6f7f9a;
 }
 .desk-person:before,.desk-person:after{
   top:27px;
@@ -135,24 +143,28 @@
 .person-ivy .person-hair{left:8px;width:28px;height:20px;border-radius:5px 13px 5px 9px}
 
 .desk-label{
-  left:9px;
-  bottom:42px;
-  max-width:calc(100% - 18px);
+  left:12px;
+  top:52px;
+  bottom:auto;
+  width:78px;
+  max-width:78px;
   color:#fff;
-  font-size:7.5px;
+  font-size:6px;
   text-shadow:2px 2px 0 #25324b;
 }
 .desk-label span{
   display:inline-block;
-  padding:4px 6px;
+  max-width:100%;
+  padding:3px 4px;
   border:2px solid #25324b;
   border-radius:2px;
   background:#5f6f94;
   box-shadow:2px 2px 0 rgba(0,0,0,.16);
+  overflow-wrap:anywhere;
 }
-.printer{right:3%;top:51%;left:auto}
+.printer{right:2%;top:61%;left:auto;z-index:2}
 .plant-right{left:2%;top:83%}
-.filing-cabinet{top:51%}
+.filing-cabinet{display:none}
 .meeting-table{top:50%}
 .sofa{right:3%;top:35%;left:auto}
 .coffee-table{right:5%;top:45%;left:auto}
@@ -163,7 +175,7 @@
   .pixel-clock:before,.pixel-clock:after{left:12px;top:6px;height:8px}
   .window-block{right:18%;top:30px;width:50px;height:38px;border-width:3px}
   .window-block.second{right:8%}
-  .office-door{left:48%;top:15px;width:54px;height:82px;border-width:4px}
+  .office-door{left:48%;top:auto;bottom:0;width:54px;height:82px;border-width:4px}
   .office-door:before{left:12px;top:22px;width:26px;height:34px;border-width:3px}
   .office-door:after{right:8px;top:48px;width:5px;height:5px;border-width:2px}
   .bookcase{top:27px;width:52px;height:70px;border-width:4px}
@@ -173,7 +185,7 @@
   .bookcase:after{top:50px}
   .bookcase i{left:9px;top:10px;width:6px;height:16px;box-shadow:8px 0 0 #ff3b6b,16px 0 0 #38b764,24px 0 0 #a94cff,32px 0 0 #25324b}
   .bookcase i:nth-child(2){top:36px;box-shadow:8px 0 0 #25324b,16px 0 0 #ffd44d,24px 0 0 #a94cff,32px 0 0 #38b764}
-  .water-cooler{right:1.5%;top:52px;width:34px;height:52px;border-width:3px}
+  .water-cooler{right:1.5%;top:auto;bottom:0;width:34px;height:52px;border-width:3px}
   .water-cooler:before{left:4px;top:-25px;width:22px;height:25px;border-width:3px}
   .water-cooler span{left:8px;top:15px;box-shadow:12px 0 0 #59ff9d}
   .desk-dev{left:7%;top:24%}
@@ -186,6 +198,8 @@
   .desk-ops{left:54%;top:69%}
   .desk-finance{left:7%;top:84%}
   .desk-marketing{left:54%;top:84%}
+  .desk-label{top:52px;bottom:auto;width:70px;max-width:70px;font-size:5.5px}
+  .printer{right:2%;top:61%}
 }
 
 @media(max-width:640px){
