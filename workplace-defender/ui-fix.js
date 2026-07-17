@@ -11,7 +11,12 @@
   document.head.appendChild(css);
 
   function addEffects() {
-    if (document.getElementById("wdFxLayer")) return;
+    if (!document.body) {
+      window.addEventListener("DOMContentLoaded", addEffects, { once: true });
+      return false;
+    }
+
+    if (document.getElementById("wdFxLayer")) return true;
 
     const fx = document.createElement("div");
     fx.id = "wdFxLayer";
@@ -22,13 +27,15 @@
     overlay.id = "wdResultOverlay";
     overlay.innerHTML = '<div class="wd-result-card"><img src="' + logoUrl + '" alt="SCCYBER logo"><div id="wdResultTopline"></div><div id="wdResultTitle"></div><div id="wdResultScore"></div><div id="wdResultCopy"></div></div>';
     document.body.appendChild(overlay);
+    return true;
   }
 
   window.sccyberWorkplaceDefenderFlash = function (kind) {
-    addEffects();
+    if (!addEffects()) return;
     const layer = document.getElementById("wdFxLayer");
     const icon = document.getElementById("wdFxIcon");
     const text = document.getElementById("wdFxText");
+    if (!layer || !icon || !text) return;
 
     layer.className = "";
     void layer.offsetWidth;
@@ -49,12 +56,13 @@
   };
 
   window.sccyberWorkplaceDefenderResultScreen = function (passed, accuracy, score, rank) {
-    addEffects();
+    if (!addEffects()) return;
     const overlay = document.getElementById("wdResultOverlay");
     const topline = document.getElementById("wdResultTopline");
     const title = document.getElementById("wdResultTitle");
     const scoreLine = document.getElementById("wdResultScore");
     const copy = document.getElementById("wdResultCopy");
+    if (!overlay || !topline || !title || !scoreLine || !copy) return;
 
     overlay.className = passed ? "pass active" : "fail active";
     topline.textContent = passed ? "WORKPLACE DEFENCE ACTIVE" : "WORKPLACE RISK EXPOSED";
@@ -276,6 +284,10 @@
       @keyframes wdOverlayIn{0%{opacity:0;transform:scale(1.02);}100%{opacity:1;transform:scale(1);}}
     `;
     document.head.appendChild(style);
-    addEffects();
+    if (document.body) {
+      addEffects();
+    } else {
+      window.addEventListener("DOMContentLoaded", addEffects, { once: true });
+    }
   });
 })();
