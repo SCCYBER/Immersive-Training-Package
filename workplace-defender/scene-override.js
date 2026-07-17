@@ -6,62 +6,26 @@
     return `
       <div class="pik-visual-only" aria-hidden="true">
         <div class="pik-css pik-${pikMood}">
-          <div class="pik-ear pik-ear-left"></div>
-          <div class="pik-ear pik-ear-right"></div>
           <div class="pik-head">
             <div class="pik-eye pik-eye-left"></div>
             <div class="pik-eye pik-eye-right"></div>
             <div class="pik-mouth"></div>
-            <div class="pik-face-shadow"></div>
           </div>
           <div class="pik-body">
             <div class="pik-chest"></div>
+            <div class="pik-leg pik-leg-left"></div>
+            <div class="pik-leg pik-leg-right"></div>
           </div>
-          <div class="pik-arm pik-arm-left"></div>
-          <div class="pik-arm pik-arm-right"></div>
-          <div class="pik-leg pik-leg-left"></div>
-          <div class="pik-leg pik-leg-right"></div>
         </div>
       </div>`;
   }
 
-  function sceneDetails(scene) {
-    const scenes = {
-      office: { title: "DESK LEFT UNLOCKED", left: "OPEN DATA", right: "LOCK SCREEN" },
-      printer: { title: "PRINTER RISK", left: "PAYROLL", right: "SECURE HANDOFF" },
-      door: { title: "TAILGATE CHECK", left: "VISITOR", right: "SIGN IN" },
-      wifi: { title: "REMOTE WIFI", left: "PUBLIC WIFI", right: "VPN" },
-      train: { title: "PUBLIC CALL", left: "CLIENT CHAT", right: "PRIVATE SPACE" },
-      router: { title: "HOME ROUTER", left: "DEFAULT PASS", right: "STRONG WIFI" },
-      update: { title: "PATCH READY", left: "UPDATE ALERT", right: "INSTALL" },
-      laptop: { title: "WORK DEVICE", left: "FAMILY USE", right: "WORK ONLY" },
-      phone: { title: "LOST PHONE", left: "MISSING", right: "REPORT" },
-      cloud: { title: "UPLOAD CHECK", left: "FREE TOOL", right: "APPROVED" },
-      extension: { title: "EXTENSION PROMPT", left: "UNKNOWN ADDON", right: "CHECK IT" },
-      login: { title: "SHARED LOGIN", left: "PASSWORD", right: "OWN ACCESS" },
-      cabinet: { title: "OPEN CABINET", left: "NETWORK", right: "REPORT" },
-      usb: { title: "UNKNOWN USB", left: "USB DEVICE", right: "SAFE TRANSFER" },
-      incident: { title: "WRONG RECIPIENT", left: "SENT FILE", right: "INCIDENT" }
-    };
-    return scenes[scene] || scenes.office;
-  }
-
   function renderPikScene(scene) {
     currentScene = scene || "office";
-    const detail = sceneDetails(currentScene);
     return `
       <div class="pik-stage pik-scene-${currentScene}" aria-hidden="true">
         <div class="pik-scene-grid"></div>
-        <div class="pik-scene-title">${detail.title}</div>
-        <div class="pik-object pik-object-left">
-          <div class="pik-object-screen"></div>
-          <span>${detail.left}</span>
-        </div>
         ${renderPikOnly()}
-        <div class="pik-object pik-object-right">
-          <div class="pik-object-safe"></div>
-          <span>${detail.right}</span>
-        </div>
         <div class="pik-floor-line"></div>
       </div>`;
   }
@@ -118,11 +82,10 @@
     .pik-stage{
       width:100%;
       min-height:230px;
-      display:grid;
-      grid-template-columns:minmax(132px, 1fr) minmax(128px, 180px) minmax(132px, 1fr);
-      align-items:end;
-      gap:16px;
-      padding:34px 28px 24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:18px 28px 26px;
       position:relative;
       z-index:2;
       image-rendering:pixelated;
@@ -138,77 +101,10 @@
       pointer-events:none;
     }
 
-    .pik-scene-title{
-      position:absolute;
-      top:12px;
-      left:50%;
-      transform:translateX(-50%);
-      color:#ffd44d;
-      font-family:'Press Start 2P', cursive;
-      font-size:10px;
-      line-height:1.4;
-      text-align:center;
-      text-shadow:0 0 9px rgba(255,212,77,.55);
-      z-index:4;
-      white-space:nowrap;
-    }
-
-    .pik-object{
-      min-height:116px;
-      border:5px solid #050508;
-      background:#12143a;
-      box-shadow:8px 8px 0 rgba(0,0,0,.32), 0 0 18px rgba(169,76,255,.3);
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      gap:9px;
-      position:relative;
-      z-index:3;
-    }
-
-    .pik-object span{
-      color:#fff;
-      font-family:'Press Start 2P', cursive;
-      font-size:8px;
-      line-height:1.4;
-      text-align:center;
-      padding:0 8px;
-    }
-
-    .pik-object-left{justify-self:end;width:min(100%, 190px);}
-    .pik-object-right{justify-self:start;width:min(100%, 190px);border-color:#59ff9d;}
-
-    .pik-object-screen,
-    .pik-object-safe{
-      width:78px;
-      height:46px;
-      border:5px solid #050508;
-      background:#07142e;
-      position:relative;
-      box-shadow:5px 5px 0 rgba(255,255,255,.14);
-    }
-
-    .pik-object-screen:before,
-    .pik-object-screen:after,
-    .pik-object-safe:before,
-    .pik-object-safe:after{
-      content:"";
-      position:absolute;
-      left:10px;
-      height:6px;
-      background:#59ff9d;
-    }
-
-    .pik-object-screen:before{top:11px;width:38px;background:#ff3b6b;}
-    .pik-object-screen:after{top:25px;width:54px;background:#a94cff;}
-    .pik-object-safe:before{top:11px;width:48px;}
-    .pik-object-safe:after{top:25px;width:28px;background:#ffd44d;}
-
     .pik-floor-line{
       position:absolute;
-      left:28px;
-      right:28px;
+      left:34%;
+      right:34%;
       bottom:18px;
       height:6px;
       background:#a94cff;
@@ -225,14 +121,14 @@
       justify-content:center;
       position:relative;
       z-index:4;
-      transform:scale(1.18);
-      transform-origin:bottom center;
+      transform:scale(1.55);
+      transform-origin:center center;
     }
 
     .pik-css{
       position:relative;
-      width:112px;
-      height:136px;
+      width:58px;
+      height:70px;
       image-rendering:pixelated;
       filter:drop-shadow(0 0 14px rgba(169,76,255,.65));
     }
@@ -243,6 +139,7 @@
       image-rendering:pixelated;
     }
 
+    .pik-happy .pik-css,
     .pik-happy{
       animation:pikCelebrate .35s steps(2,end) 2;
       filter:drop-shadow(0 0 16px rgba(89,255,157,.85));
@@ -259,153 +156,131 @@
     }
 
     .pik-head{
-      left:20px;
-      top:8px;
-      width:56px;
-      height:48px;
+      left:10px;
+      top:0;
+      width:40px;
+      height:34px;
       background:#fff;
-      border:7px solid #050508;
+      box-shadow:0 0 0 5px #000,0 0 12px rgba(255,255,255,.35);
     }
 
-    .pik-ear{
-      top:22px;
-      width:15px;
-      height:28px;
-      background:#fff;
-      border:7px solid #050508;
+    .pik-head:before,
+    .pik-head:after{
+      content:"";
+      position:absolute;
+      top:12px;
+      width:8px;
+      height:18px;
+      background:#000;
     }
 
-    .pik-ear-left{left:7px;}
-    .pik-ear-right{right:7px;}
+    .pik-head:before{left:-13px;}
+    .pik-head:after{right:-13px;}
 
     .pik-eye{
-      top:23px;
-      width:10px;
-      height:10px;
-      background:#050508 !important;
+      top:13px;
+      width:3px;
+      height:3px;
+      background:#a94cff !important;
       border:0 !important;
       border-radius:0 !important;
       z-index:20 !important;
+      box-shadow:0 0 8px rgba(169,76,255,.8) !important;
     }
 
-    .pik-eye-left{left:15px;}
-    .pik-eye-right{right:15px;}
+    .pik-eye-left{left:11px;}
+    .pik-eye-right{right:11px;}
 
     .pik-happy .pik-eye{
-      top:22px;
-      width:13px;
-      height:8px;
+      top:12px;
+      width:8px;
+      height:6px;
       background:transparent !important;
       border:0 !important;
-      border-bottom:4px solid #050508 !important;
+      border-bottom:3px solid #a94cff !important;
       border-radius:0 0 12px 12px !important;
       z-index:20 !important;
     }
 
-    .pik-happy .pik-eye-left{left:14px;transform:rotate(-8deg);}
-    .pik-happy .pik-eye-right{right:14px;transform:rotate(8deg);}
+    .pik-happy .pik-eye-left{left:10px;transform:rotate(-8deg);}
+    .pik-happy .pik-eye-right{right:10px;transform:rotate(8deg);}
 
     .pik-sad .pik-eye{
-      top:24px;
-      width:13px;
-      height:8px;
+      top:13px;
+      width:8px;
+      height:6px;
       background:transparent !important;
       border:0 !important;
-      border-top:4px solid #050508 !important;
+      border-top:3px solid #a94cff !important;
       border-radius:12px 12px 0 0 !important;
       z-index:20 !important;
     }
 
-    .pik-sad .pik-eye-left{left:14px;transform:rotate(14deg);}
-    .pik-sad .pik-eye-right{right:14px;transform:rotate(-14deg);}
+    .pik-sad .pik-eye-left{left:10px;transform:rotate(14deg);}
+    .pik-sad .pik-eye-right{right:10px;transform:rotate(-14deg);}
 
     .pik-mouth{
-      left:24px;
-      top:36px;
-      width:9px;
-      height:4px;
-      background:#050508;
-      display:none;
+      left:15px;
+      top:22px;
+      width:10px;
+      height:8px;
+      background:#a94cff;
+      box-shadow:0 0 8px rgba(169,76,255,.8);
       z-index:20;
     }
 
     .pik-sad .pik-mouth{
       display:block;
-      transform:rotate(180deg);
-      border-radius:8px 8px 0 0;
-    }
-
-    .pik-face-shadow{
-      left:0;
-      bottom:0;
-      width:22px;
-      height:14px;
-      background:#d9d9d9;
-      z-index:1;
+      transform:translateY(1px);
+      height:4px;
     }
 
     .pik-body{
-      left:30px;
-      top:56px;
-      width:36px;
-      height:38px;
-      background:#fff;
-      border:7px solid #050508;
+      left:16px;
+      top:39px;
+      width:28px;
+      height:24px;
+      background:#050505;
+      border-radius:0;
+      box-shadow:0 0 0 4px #000;
     }
 
+    .pik-body:before,
+    .pik-body:after{
+      content:"";
+      position:absolute;
+      top:2px;
+      width:6px;
+      height:18px;
+      background:#fff;
+      box-shadow:none;
+    }
+
+    .pik-body:before{left:-2px;}
+    .pik-body:after{right:-2px;}
+
     .pik-chest{
-      left:7px;
+      left:10px;
       top:8px;
-      width:9px;
-      height:9px;
+      width:8px;
+      height:8px;
       background:#a94cff;
     }
 
     .pik-arm{
-      top:62px;
-      width:18px;
-      height:30px;
-      background:#fff;
-      border:7px solid #050508;
-    }
-
-    .pik-arm-left{left:16px;}
-    .pik-arm-right{right:16px;}
-
-    .pik-happy .pik-arm-left{
-      left:14px;
-      top:36px;
-      transform:rotate(-38deg);
-    }
-
-    .pik-happy .pik-arm-right{
-      right:14px;
-      top:36px;
-      transform:rotate(38deg);
-    }
-
-    .pik-sad .pik-arm-left{
-      top:80px;
-      left:17px;
-      transform:rotate(20deg);
-    }
-
-    .pik-sad .pik-arm-right{
-      top:80px;
-      right:17px;
-      transform:rotate(-20deg);
+      display:none !important;
     }
 
     .pik-leg{
-      top:88px;
-      width:18px;
-      height:24px;
+      bottom:-11px;
+      width:6px;
+      height:10px;
       background:#fff;
-      border:7px solid #050508;
+      box-shadow:none;
     }
 
-    .pik-leg-left{left:32px;}
-    .pik-leg-right{right:32px;}
+    .pik-leg-left{left:6px;}
+    .pik-leg-right{right:6px;}
 
     .single-pixel-label,
     .pixel-scene,
@@ -441,17 +316,13 @@
 
     @media (max-width:640px){
       .scenario-art{min-height:170px !important;}
-      .pik-stage{min-height:170px;grid-template-columns:1fr 92px 1fr;gap:8px;padding:28px 10px 16px;}
-      .pik-scene-title{font-size:8px;white-space:normal;width:92%;}
-      .pik-object{min-height:86px;border-width:4px;}
-      .pik-object span{font-size:6px;}
-      .pik-object-screen,.pik-object-safe{width:54px;height:34px;border-width:4px;}
+      .pik-stage{min-height:170px;padding:14px 10px 22px;}
       .pik-visual-only{min-height:120px;}
-      .pik-visual-only{transform:scale(1);}
-      .pik-css{width:64px;height:78px;transform:scale(.72);}
-      .pik-sad{transform:scale(.72) translateY(8px);}
+      .pik-visual-only{transform:scale(1.18);}
+      .pik-css{width:58px;height:70px;transform:none;}
+      .pik-sad{transform:translateY(8px);}
       .pik-happy{animation:pikCelebrateMobile .35s steps(2,end) 2;}
-      @keyframes pikCelebrateMobile{0%,100%{transform:scale(.72) translateY(0)}50%{transform:scale(.72) translateY(-10px)}}
+      @keyframes pikCelebrateMobile{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
       #question{font-size:12px !important;line-height:1.18 !important;}
       .answer-btn{font-size:10.5px !important;line-height:1.15 !important;padding:6px 7px !important;}
       .question-card{padding:9px !important;}
