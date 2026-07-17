@@ -1,0 +1,194 @@
+.office-floor{min-height:650px}
+.office-floor:before{top:24%}
+.office-floor:after{inset:calc(24% + 8px) 0 0}
+.office-wall{height:24%}
+.notice-board{left:36%;top:20px;width:132px}
+.pixel-clock{top:58px}
+.window-block{top:32px}
+.window-block.second{right:11%}
+.office-door{left:51%;top:12px}
+.bookcase{top:24px}
+.bookcase-left{left:7%}
+.bookcase-right{left:61%}
+.water-cooler{right:2%;top:50px}
+.walkway{left:5%;right:5%;top:52%;height:54px}
+.desk-dev{left:4%;top:28%}
+.desk-hr{left:28%;top:28%}
+.desk-legal{left:52%;top:28%}
+.desk-design{left:76%;top:28%}
+.desk-sales{left:16%;top:50%}
+.desk-admin{left:64%;top:50%}
+.desk-finance{left:4%;top:71%}
+.desk-marketing{left:28%;top:71%}
+.desk-support{left:52%;top:71%}
+.desk-ops{left:76%;top:71%}
+
+.desk-person{
+  bottom:9px;
+  width:42px;
+  height:50px;
+  border:none;
+  background:transparent;
+  box-shadow:none;
+}
+.desk-person:before,.desk-person:after{
+  top:27px;
+  width:8px;
+  height:17px;
+  background:var(--shirt,#4f5f79);
+  z-index:1;
+}
+.desk-person:before{left:2px}
+.desk-person:after{right:2px}
+.person-face{
+  position:absolute;
+  left:10px;
+  top:9px;
+  width:22px;
+  height:22px;
+  border:3px solid #25324b;
+  background:var(--skin,#f1b27a);
+  border-radius:7px 7px 8px 8px;
+  z-index:3;
+  box-shadow:2px 2px 0 rgba(0,0,0,.16);
+}
+.person-face:before{
+  content:"";
+  position:absolute;
+  left:5px;
+  top:8px;
+  width:3px;
+  height:3px;
+  background:#14182d;
+  box-shadow:9px 0 0 #14182d;
+}
+.person-face:after{
+  content:"";
+  position:absolute;
+  left:8px;
+  top:15px;
+  width:7px;
+  height:2px;
+  background:#7c2f2d;
+}
+.person-face i{
+  position:absolute;
+  left:9px;
+  top:3px;
+  width:3px;
+  height:4px;
+  background:rgba(255,255,255,.62);
+}
+.person-hair{
+  position:absolute;
+  left:7px;
+  top:3px;
+  width:28px;
+  height:18px;
+  border:3px solid #25324b;
+  border-bottom:none;
+  border-radius:10px 10px 4px 4px;
+  background:var(--hair,#2a1c24);
+  z-index:4;
+}
+.person-body{
+  position:absolute;
+  left:8px;
+  bottom:0;
+  width:26px;
+  height:24px;
+  border:3px solid #25324b;
+  border-radius:8px 8px 5px 5px;
+  background:var(--shirt,#4f5f79);
+  z-index:2;
+  box-shadow:2px 2px 0 rgba(0,0,0,.18);
+}
+.person-body:before{
+  content:"";
+  position:absolute;
+  left:10px;
+  top:0;
+  border-left:4px solid transparent;
+  border-right:4px solid transparent;
+  border-top:8px solid rgba(255,255,255,.72);
+}
+.person-maya{--hair:#18131f;--skin:#b96f4d;--shirt:#255d8f}
+.person-maya .person-hair{height:24px;border-radius:8px 8px 10px 10px}
+.person-leah{--hair:#c9343a;--skin:#f0ad7a;--shirt:#8c4dbf}
+.person-leah .person-hair:after{content:"";position:absolute;right:-9px;top:4px;width:9px;height:16px;border:3px solid #25324b;background:#c9343a}
+.person-omar{--hair:#16131a;--skin:#9b5e42;--shirt:#3f6c5e}
+.person-omar .person-face:after{left:5px;top:14px;width:12px;height:5px;background:#281a1a}
+.person-nina{--hair:#d96d2f;--skin:#d18a5f;--shirt:#8b5b43}
+.person-nina .person-hair{border-radius:50% 50% 6px 6px}
+.person-nina .person-hair:before{content:"";position:absolute;left:-7px;top:-6px;width:14px;height:14px;border:3px solid #25324b;border-radius:50%;background:#d96d2f}
+.person-raj{--hair:#10131d;--skin:#8f563b;--shirt:#304d8a}
+.person-raj .person-hair{clip-path:polygon(0 38%,18% 0,36% 35%,55% 0,73% 35%,100% 12%,100% 100%,0 100%)}
+.person-sofia{--hair:#4b251f;--skin:#e1a06e;--shirt:#b14a78}
+.person-sofia .person-hair{height:27px;border-radius:11px 11px 10px 10px}
+.person-amira{--hair:#242234;--skin:#c88758;--shirt:#5c4e92}
+.person-amira .person-hair{left:5px;top:1px;width:32px;height:32px;border-radius:14px 14px 10px 10px}
+.person-theo{--hair:#d8b244;--skin:#efb77d;--shirt:#3b7396}
+.person-theo .person-hair{height:15px;clip-path:polygon(0 35%,20% 0,40% 30%,62% 0,82% 35%,100% 15%,100% 100%,0 100%)}
+.person-ben{--hair:#6b3d2a;--skin:#d29565;--shirt:#7d5d3a}
+.person-ben .person-hair{height:16px;border-radius:7px 7px 4px 4px}
+.person-ivy{--hair:#1c2338;--skin:#c7775b;--shirt:#6b4ca0}
+.person-ivy .person-hair{left:8px;width:28px;height:20px;border-radius:5px 13px 5px 9px}
+
+.desk-label{
+  left:9px;
+  bottom:42px;
+  max-width:calc(100% - 18px);
+  color:#fff;
+  font-size:7.5px;
+  text-shadow:2px 2px 0 #25324b;
+}
+.desk-label span{
+  display:inline-block;
+  padding:4px 6px;
+  border:2px solid #25324b;
+  border-radius:2px;
+  background:#5f6f94;
+  box-shadow:2px 2px 0 rgba(0,0,0,.16);
+}
+.printer{right:3%;top:51%;left:auto}
+.plant-right{left:2%;top:83%}
+.filing-cabinet{top:51%}
+.meeting-table{top:50%}
+.sofa{right:3%;top:35%;left:auto}
+.coffee-table{right:5%;top:45%;left:auto}
+
+@media(max-width:900px){
+  .notice-board{left:27%;top:20px;width:96px;height:42px;padding:8px 6px;font-size:5px}
+  .pixel-clock{left:21%;top:52px;width:28px;height:28px;border-width:3px}
+  .pixel-clock:before,.pixel-clock:after{left:12px;top:6px;height:8px}
+  .window-block{right:18%;top:30px;width:50px;height:38px;border-width:3px}
+  .window-block.second{right:8%}
+  .office-door{left:48%;top:15px;width:54px;height:82px;border-width:4px}
+  .office-door:before{left:12px;top:22px;width:26px;height:34px;border-width:3px}
+  .office-door:after{right:8px;top:48px;width:5px;height:5px;border-width:2px}
+  .bookcase{top:27px;width:52px;height:70px;border-width:4px}
+  .bookcase-left{left:5%}
+  .bookcase-right{left:60%}
+  .bookcase:before{top:28px}
+  .bookcase:after{top:50px}
+  .bookcase i{left:9px;top:10px;width:6px;height:16px;box-shadow:8px 0 0 #ff3b6b,16px 0 0 #38b764,24px 0 0 #a94cff,32px 0 0 #25324b}
+  .bookcase i:nth-child(2){top:36px;box-shadow:8px 0 0 #25324b,16px 0 0 #ffd44d,24px 0 0 #a94cff,32px 0 0 #38b764}
+  .water-cooler{right:1.5%;top:52px;width:34px;height:52px;border-width:3px}
+  .water-cooler:before{left:4px;top:-25px;width:22px;height:25px;border-width:3px}
+  .water-cooler span{left:8px;top:15px;box-shadow:12px 0 0 #59ff9d}
+  .desk-dev{left:7%;top:24%}
+  .desk-hr{left:54%;top:24%}
+  .desk-legal{left:7%;top:39%}
+  .desk-design{left:54%;top:39%}
+  .desk-sales{left:7%;top:54%}
+  .desk-admin{left:54%;top:54%}
+  .desk-support{left:7%;top:69%}
+  .desk-ops{left:54%;top:69%}
+  .desk-finance{left:7%;top:84%}
+  .desk-marketing{left:54%;top:84%}
+}
+
+@media(max-width:640px){
+  .desk-person{right:auto;left:50%;bottom:6px;width:32px;height:28px;font-size:7px}
+  .desk-person:before,.desk-person:after{display:none}
+}

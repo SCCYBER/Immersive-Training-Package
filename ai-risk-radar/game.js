@@ -32,6 +32,7 @@ const events = [
     team: "FINANCE",
     person: "Maya",
     desk: "desk-finance",
+    avatar: "maya",
     title: "AI payment summary",
     popup: "Maya is using AI to summarise a supplier email that includes new bank details and an urgent payment request.",
     policy: "Payment changes and urgent supplier requests must be verified through trusted channels.",
@@ -45,6 +46,7 @@ const events = [
     team: "MARKETING",
     person: "Leah",
     desk: "desk-marketing",
+    avatar: "leah",
     title: "Poster wording polish",
     popup: "Leah is using the approved company AI assistant to improve wording on a public cyber awareness poster.",
     policy: "Approved AI can be used for non-sensitive public content when humans review the output.",
@@ -58,6 +60,7 @@ const events = [
     team: "SUPPORT",
     person: "Omar",
     desk: "desk-support",
+    avatar: "omar",
     title: "Complaint trend analysis",
     popup: "Omar is about to upload 400 customer complaint emails into a free AI website to find common themes.",
     policy: "Customer data must stay in approved systems or be properly anonymised before AI processing.",
@@ -71,6 +74,7 @@ const events = [
     team: "OPERATIONS",
     person: "Nina",
     desk: "desk-ops",
+    avatar: "nina",
     title: "Meeting action list",
     popup: "Nina is using an approved AI notes tool to produce actions from a routine internal planning meeting.",
     policy: "Approved AI meeting tools can be used when attendees know and sensitive data is not included.",
@@ -84,6 +88,7 @@ const events = [
     team: "DEVELOPMENT",
     person: "Raj",
     desk: "desk-dev",
+    avatar: "raj",
     title: "Debug chatbot",
     popup: "Raj has pasted code into an external chatbot. The code includes live API keys and internal endpoints.",
     policy: "Secrets, credentials and internal configuration must never be pasted into public AI tools.",
@@ -97,6 +102,7 @@ const events = [
     team: "HR",
     person: "Sofia",
     desk: "desk-hr",
+    avatar: "sofia",
     title: "CV screening site",
     popup: "Sofia wants to upload candidate CVs to a new AI screening site and let it rank applicants.",
     policy: "Recruitment AI needs approved tools, privacy review, fairness checks and human oversight.",
@@ -110,6 +116,7 @@ const events = [
     team: "LEGAL",
     person: "Amira",
     desk: "desk-legal",
+    avatar: "amira",
     title: "Clause rewrite draft",
     popup: "Amira is using the approved AI assistant to simplify wording in a generic internal policy clause.",
     policy: "AI output can support drafting, but legal or policy text needs competent human review.",
@@ -123,6 +130,7 @@ const events = [
     team: "DESIGN",
     person: "Theo",
     desk: "desk-design",
+    avatar: "theo",
     title: "Client concept image",
     popup: "Theo is uploading a confidential unreleased client product concept to a public AI image generator.",
     policy: "Client confidential material and intellectual property must not be uploaded to unapproved public AI services.",
@@ -136,6 +144,7 @@ const events = [
     team: "SALES",
     person: "Ben",
     desk: "desk-sales",
+    avatar: "ben",
     title: "Email tone helper",
     popup: "Ben is using the approved AI assistant to make a generic follow-up email sound clearer. No client data is included.",
     policy: "Approved AI can support general wording where confidential data is not included and the employee reviews the output.",
@@ -149,6 +158,7 @@ const events = [
     team: "ADMIN",
     person: "Ivy",
     desk: "desk-admin",
+    avatar: "ivy",
     title: "AI browser extension",
     popup: "Ivy installs an AI browser extension that offers to read every page and summarise admin work automatically.",
     policy: "Browser extensions and AI tools need approval before they can access work systems, pages or data.",
@@ -278,8 +288,12 @@ function renderOfficeFloor(activeEvent) {
       </div>
       <div class="desk-front"><span></span></div>
       <div class="desk-tower"><i></i></div>
-      <div class="desk-person">${item.person.slice(0, 1)}</div>
-      <div class="desk-label">${item.team}</div>
+      <div class="desk-person person-${item.avatar}" aria-label="${item.person}">
+        <span class="person-hair"></span>
+        <span class="person-face"><i></i></span>
+        <span class="person-body"></span>
+      </div>
+      <div class="desk-label"><span>${item.team}</span></div>
       ${popup}
     </div>`;
   }).join("");
