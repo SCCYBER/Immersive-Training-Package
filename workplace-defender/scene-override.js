@@ -1,5 +1,6 @@
 (function () {
   let pikMood = "neutral";
+  let currentScene = "office";
 
   function renderPikOnly() {
     return `
@@ -24,12 +25,50 @@
       </div>`;
   }
 
+  function sceneDetails(scene) {
+    const scenes = {
+      office: { title: "DESK LEFT UNLOCKED", left: "OPEN DATA", right: "LOCK SCREEN" },
+      printer: { title: "PRINTER RISK", left: "PAYROLL", right: "SECURE HANDOFF" },
+      door: { title: "TAILGATE CHECK", left: "VISITOR", right: "SIGN IN" },
+      wifi: { title: "REMOTE WIFI", left: "PUBLIC WIFI", right: "VPN" },
+      train: { title: "PUBLIC CALL", left: "CLIENT CHAT", right: "PRIVATE SPACE" },
+      router: { title: "HOME ROUTER", left: "DEFAULT PASS", right: "STRONG WIFI" },
+      update: { title: "PATCH READY", left: "UPDATE ALERT", right: "INSTALL" },
+      laptop: { title: "WORK DEVICE", left: "FAMILY USE", right: "WORK ONLY" },
+      phone: { title: "LOST PHONE", left: "MISSING", right: "REPORT" },
+      cloud: { title: "UPLOAD CHECK", left: "FREE TOOL", right: "APPROVED" },
+      extension: { title: "EXTENSION PROMPT", left: "UNKNOWN ADDON", right: "CHECK IT" },
+      login: { title: "SHARED LOGIN", left: "PASSWORD", right: "OWN ACCESS" },
+      cabinet: { title: "OPEN CABINET", left: "NETWORK", right: "REPORT" },
+      usb: { title: "UNKNOWN USB", left: "USB DEVICE", right: "SAFE TRANSFER" },
+      incident: { title: "WRONG RECIPIENT", left: "SENT FILE", right: "INCIDENT" }
+    };
+    return scenes[scene] || scenes.office;
+  }
+
+  function renderPikScene(scene) {
+    currentScene = scene || "office";
+    const detail = sceneDetails(currentScene);
+    return `
+      <div class="pik-stage pik-scene-${currentScene}" aria-hidden="true">
+        <div class="pik-scene-grid"></div>
+        <div class="pik-scene-title">${detail.title}</div>
+        <div class="pik-object pik-object-left">
+          <div class="pik-object-screen"></div>
+          <span>${detail.left}</span>
+        </div>
+        ${renderPikOnly()}
+        <div class="pik-object pik-object-right">
+          <div class="pik-object-safe"></div>
+          <span>${detail.right}</span>
+        </div>
+        <div class="pik-floor-line"></div>
+      </div>`;
+  }
+
   window.sceneHtml = function (scene) {
     pikMood = "neutral";
-    if (typeof window.renderWorkplaceDefenderScene === "function") {
-      return window.renderWorkplaceDefenderScene(scene);
-    }
-    return renderPikOnly();
+    return renderPikScene(scene);
   };
 
   try { sceneHtml = window.sceneHtml; } catch (e) {}
@@ -37,8 +76,7 @@
   function forcePikIntoVisualBox() {
     const box = document.getElementById("scenarioArt");
     if (!box) return;
-    if (box.querySelector(".sceneSvg")) return;
-    box.innerHTML = renderPikOnly();
+    box.innerHTML = renderPikScene(currentScene);
   }
 
   function setPikMood(mood) {
@@ -77,6 +115,107 @@
       pointer-events:none;
     }
 
+    .pik-stage{
+      width:100%;
+      min-height:230px;
+      display:grid;
+      grid-template-columns:minmax(132px, 1fr) minmax(128px, 180px) minmax(132px, 1fr);
+      align-items:end;
+      gap:16px;
+      padding:34px 28px 24px;
+      position:relative;
+      z-index:2;
+      image-rendering:pixelated;
+    }
+
+    .pik-scene-grid{
+      position:absolute;
+      inset:0;
+      background:
+        repeating-linear-gradient(90deg, rgba(89,255,157,.08) 0 2px, transparent 2px 34px),
+        repeating-linear-gradient(0deg, rgba(169,76,255,.08) 0 2px, transparent 2px 28px);
+      opacity:.56;
+      pointer-events:none;
+    }
+
+    .pik-scene-title{
+      position:absolute;
+      top:12px;
+      left:50%;
+      transform:translateX(-50%);
+      color:#ffd44d;
+      font-family:'Press Start 2P', cursive;
+      font-size:10px;
+      line-height:1.4;
+      text-align:center;
+      text-shadow:0 0 9px rgba(255,212,77,.55);
+      z-index:4;
+      white-space:nowrap;
+    }
+
+    .pik-object{
+      min-height:116px;
+      border:5px solid #050508;
+      background:#12143a;
+      box-shadow:8px 8px 0 rgba(0,0,0,.32), 0 0 18px rgba(169,76,255,.3);
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      align-items:center;
+      gap:9px;
+      position:relative;
+      z-index:3;
+    }
+
+    .pik-object span{
+      color:#fff;
+      font-family:'Press Start 2P', cursive;
+      font-size:8px;
+      line-height:1.4;
+      text-align:center;
+      padding:0 8px;
+    }
+
+    .pik-object-left{justify-self:end;width:min(100%, 190px);}
+    .pik-object-right{justify-self:start;width:min(100%, 190px);border-color:#59ff9d;}
+
+    .pik-object-screen,
+    .pik-object-safe{
+      width:78px;
+      height:46px;
+      border:5px solid #050508;
+      background:#07142e;
+      position:relative;
+      box-shadow:5px 5px 0 rgba(255,255,255,.14);
+    }
+
+    .pik-object-screen:before,
+    .pik-object-screen:after,
+    .pik-object-safe:before,
+    .pik-object-safe:after{
+      content:"";
+      position:absolute;
+      left:10px;
+      height:6px;
+      background:#59ff9d;
+    }
+
+    .pik-object-screen:before{top:11px;width:38px;background:#ff3b6b;}
+    .pik-object-screen:after{top:25px;width:54px;background:#a94cff;}
+    .pik-object-safe:before{top:11px;width:48px;}
+    .pik-object-safe:after{top:25px;width:28px;background:#ffd44d;}
+
+    .pik-floor-line{
+      position:absolute;
+      left:28px;
+      right:28px;
+      bottom:18px;
+      height:6px;
+      background:#a94cff;
+      box-shadow:0 0 12px rgba(169,76,255,.65);
+      z-index:1;
+    }
+
     .pik-visual-only{
       width:100%;
       height:100%;
@@ -85,13 +224,15 @@
       align-items:center;
       justify-content:center;
       position:relative;
-      z-index:2;
+      z-index:4;
+      transform:scale(1.18);
+      transform-origin:bottom center;
     }
 
     .pik-css{
       position:relative;
-      width:96px;
-      height:116px;
+      width:112px;
+      height:136px;
       image-rendering:pixelated;
       filter:drop-shadow(0 0 14px rgba(169,76,255,.65));
     }
@@ -300,7 +441,13 @@
 
     @media (max-width:640px){
       .scenario-art{min-height:170px !important;}
-      .pik-visual-only{min-height:170px;}
+      .pik-stage{min-height:170px;grid-template-columns:1fr 92px 1fr;gap:8px;padding:28px 10px 16px;}
+      .pik-scene-title{font-size:8px;white-space:normal;width:92%;}
+      .pik-object{min-height:86px;border-width:4px;}
+      .pik-object span{font-size:6px;}
+      .pik-object-screen,.pik-object-safe{width:54px;height:34px;border-width:4px;}
+      .pik-visual-only{min-height:120px;}
+      .pik-visual-only{transform:scale(1);}
       .pik-css{width:64px;height:78px;transform:scale(.72);}
       .pik-sad{transform:scale(.72) translateY(8px);}
       .pik-happy{animation:pikCelebrateMobile .35s steps(2,end) 2;}
@@ -314,8 +461,6 @@
   `;
   document.head.appendChild(style);
 
-  if (typeof window.renderWorkplaceDefenderScene !== "function") {
-    forcePikIntoVisualBox();
-    window.addEventListener("load", forcePikIntoVisualBox);
-  }
+  forcePikIntoVisualBox();
+  window.addEventListener("load", forcePikIntoVisualBox);
 })();
