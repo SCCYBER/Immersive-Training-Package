@@ -57,7 +57,7 @@
   background:
     linear-gradient(90deg,rgba(93,51,47,.3) 0 4px,transparent 4px 50%,rgba(93,51,47,.3) 50% calc(50% + 4px),transparent calc(50% + 4px)),
     linear-gradient(#c87945,#9e5437);
-  z-index:4;
+  z-index:7;
 }
 .desk-front:before,.desk-front:after{
   bottom:-18px;
@@ -70,26 +70,27 @@
   display:none;
 }
 .desk-chair{
-  left:30px;
-  bottom:5px;
-  width:42px;
-  height:38px;
+  left:22px;
+  bottom:4px;
+  width:46px;
+  height:34px;
   transform:none;
   border-width:4px;
   border-radius:5px 5px 10px 10px;
   background:linear-gradient(#72839d 0 18px,#53637d 18px);
-  z-index:1;
+  z-index:3;
 }
 .desk-chair:before{
-  top:-38px;
-  left:2px;
+  top:-42px;
+  left:0;
   right:auto;
-  width:28px;
-  height:42px;
+  width:31px;
+  height:46px;
   border-width:4px;
   border-bottom:4px solid #25324b;
   border-radius:8px 8px 5px 5px;
   background:#6f7f9a;
+  z-index:-1;
 }
 .desk-chair:after{
   content:"";
@@ -107,7 +108,7 @@
   width:52px;
   height:38px;
   border-width:4px;
-  z-index:6;
+  z-index:9;
 }
 .desk-screen:before{
   left:7px;
@@ -126,7 +127,7 @@
   height:14px;
   border-width:3px;
   transform:skewX(-8deg);
-  z-index:7;
+  z-index:10;
 }
 .desk-mouse{
   left:130px;
@@ -134,7 +135,7 @@
   width:15px;
   height:17px;
   border-width:3px;
-  z-index:7;
+  z-index:10;
 }
 .desk-paper{
   right:14px;
@@ -142,7 +143,7 @@
   width:24px;
   height:27px;
   border-width:3px;
-  z-index:7;
+  z-index:10;
 }
 .desk-mug{
   right:47px;
@@ -150,7 +151,7 @@
   width:14px;
   height:15px;
   border-width:3px;
-  z-index:7;
+  z-index:10;
 }
 .desk-tower{
   right:0;
@@ -161,8 +162,8 @@
   z-index:3;
 }
 .desk-person{
-  left:18px;
-  bottom:54px;
+  left:12px;
+  bottom:5px;
   width:48px;
   height:62px;
   transform:none;
@@ -172,37 +173,39 @@
   z-index:5;
 }
 .desk-person:before,.desk-person:after{
-  top:39px;
+  top:43px;
   width:8px;
-  height:18px;
+  height:15px;
   background:var(--shirt,#4f5f79);
   border:3px solid #25324b;
   z-index:1;
 }
 .desk-person:before{
   left:18px;
-  transform:rotate(12deg);
+  transform:rotate(68deg);
+  transform-origin:top center;
 }
 .desk-person:after{
-  left:32px;
-  transform:rotate(-10deg);
+  left:33px;
+  transform:rotate(78deg);
+  transform-origin:top center;
 }
 .person-face{
   position:absolute;
-  left:19px;
-  top:8px;
+  left:22px;
+  top:1px;
   width:25px;
   height:25px;
   border:3px solid #25324b;
   background:var(--skin,#f1b27a);
   border-radius:7px 10px 10px 7px;
-  z-index:5;
+  z-index:8;
   box-shadow:2px 2px 0 rgba(0,0,0,.16);
 }
 .person-face:before{
   content:"";
   position:absolute;
-  left:13px;
+  left:14px;
   top:8px;
   width:3px;
   height:3px;
@@ -212,7 +215,7 @@
 .person-face:after{
   content:"";
   position:absolute;
-  left:14px;
+  left:15px;
   top:16px;
   width:7px;
   height:2px;
@@ -230,26 +233,26 @@
 }
 .person-hair{
   position:absolute;
-  left:12px;
-  top:1px;
+  left:15px;
+  top:-6px;
   width:27px;
   height:22px;
   border:3px solid #25324b;
   border-bottom:none;
   border-radius:13px 10px 4px 9px;
   background:var(--hair,#2a1c24);
-  z-index:6;
+  z-index:9;
 }
 .person-body{
   position:absolute;
-  left:12px;
-  bottom:0;
+  left:14px;
+  bottom:8px;
   width:31px;
-  height:32px;
+  height:30px;
   border:3px solid #25324b;
   border-radius:8px 8px 5px 5px;
   background:var(--shirt,#4f5f79);
-  z-index:3;
+  z-index:6;
   box-shadow:2px 2px 0 rgba(0,0,0,.18);
 }
 .person-body:before{
@@ -293,7 +296,7 @@
   color:#fff;
   font-size:6.4px;
   text-shadow:2px 2px 0 #25324b;
-  z-index:8;
+  z-index:11;
   text-align:center;
 }
 .desk-label span{
@@ -345,12 +348,13 @@
   .desk-mouse{left:118px;top:17px}
   .desk-paper,.desk-mug{display:none}
   .desk-tower{right:0;top:49px;width:22px;height:45px}
-  .desk-chair{left:25px;bottom:5px;width:39px;height:36px}
-  .desk-chair:before{top:-35px;width:26px;height:39px}
-  .desk-person{left:12px;bottom:52px;width:45px;height:58px}
-  .person-face{left:18px;top:8px;width:24px;height:24px}
-  .person-hair{left:11px;width:26px}
-  .person-body{left:11px;width:29px;height:30px}
+  .desk-chair{left:20px;bottom:5px;width:42px;height:34px}
+  .desk-chair:before{top:-38px;width:28px;height:42px}
+  .desk-person{left:8px;bottom:6px;width:45px;height:58px}
+  .desk-person:before,.desk-person:after{top:40px;height:14px}
+  .person-face{left:20px;top:1px;width:24px;height:24px}
+  .person-hair{left:13px;top:-5px;width:26px}
+  .person-body{left:12px;bottom:7px;width:29px;height:29px}
   .desk-dev{left:7%;top:24%}
   .desk-hr{left:54%;top:24%}
   .desk-legal{left:7%;top:39%}
@@ -370,17 +374,17 @@
   .desk-top{left:50px;top:28px;width:calc(100% - 58px);height:28px}
   .desk-front{left:56px;right:14px;top:53px;height:31px}
   .desk-front:before,.desk-front:after{display:block;bottom:-15px;height:15px}
-  .desk-chair{display:block;left:28px;bottom:5px;width:38px;height:34px}
-  .desk-chair:before{top:-31px;width:25px;height:35px}
+  .desk-chair{display:block;left:24px;bottom:5px;width:38px;height:34px}
+  .desk-chair:before{top:-35px;width:25px;height:39px}
   .desk-chair:after{display:block}
   .desk-screen{left:70px;top:-6px;width:46px;height:34px}
   .desk-keyboard{left:70px;top:16px;width:43px;height:12px}
   .desk-mouse{left:121px;top:16px;width:14px;height:16px}
   .desk-tower{right:2px;top:44px;width:21px;height:42px}
-  .desk-person{right:auto;left:16px;bottom:50px;width:44px;height:55px;font-size:7px}
-  .desk-person:before,.desk-person:after{display:block;top:36px;height:16px}
-  .person-face{left:17px;top:7px;width:23px;height:23px}
-  .person-hair{left:10px;top:0;width:25px;height:20px}
-  .person-body{left:10px;width:28px;height:29px}
+  .desk-person{right:auto;left:12px;bottom:6px;width:44px;height:55px;font-size:7px}
+  .desk-person:before,.desk-person:after{display:block;top:38px;height:14px}
+  .person-face{left:19px;top:1px;width:23px;height:23px}
+  .person-hair{left:12px;top:-5px;width:25px;height:20px}
+  .person-body{left:11px;bottom:7px;width:28px;height:28px}
   .desk-label{left:71px;right:42px;top:60px;bottom:auto;width:auto;max-width:none;font-size:5.4px}
 }
