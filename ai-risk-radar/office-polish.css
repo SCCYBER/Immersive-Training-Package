@@ -29,33 +29,32 @@
   height:118px;
 }
 .desk-top{
-  left:44px;
-  top:36px;
-  width:calc(100% - 48px);
-  height:30px;
+  left:58px;
+  top:42px;
+  width:calc(100% - 66px);
+  height:22px;
   border-width:4px;
   border-radius:2px;
-  background:
-    linear-gradient(90deg,rgba(255,238,176,.5) 0 8px,transparent 8px calc(100% - 10px),rgba(122,70,47,.28) calc(100% - 10px)),
-    linear-gradient(#f7cb82 0 0);
-  box-shadow:inset 0 -6px 0 #d49358,4px 6px 0 rgba(73,42,36,.2);
+  background:linear-gradient(#f7cb82 0 58%,#d99c5f 58%);
+  box-shadow:4px 6px 0 rgba(73,42,36,.2);
 }
 .desk-top:before{
-  left:10px;
-  right:10px;
-  top:7px;
-  height:4px;
+  left:8px;
+  right:8px;
+  top:5px;
+  height:3px;
+  background:rgba(255,248,190,.42);
   box-shadow:none;
 }
 .desk-front{
-  left:54px;
-  right:14px;
+  left:64px;
+  right:18px;
   top:62px;
-  height:34px;
+  height:37px;
   border-width:4px;
   border-top:none;
   background:
-    linear-gradient(90deg,rgba(93,51,47,.3) 0 4px,transparent 4px 50%,rgba(93,51,47,.3) 50% calc(50% + 4px),transparent calc(50% + 4px)),
+    linear-gradient(90deg,rgba(93,51,47,.32) 0 5px,transparent 5px calc(100% - 5px),rgba(93,51,47,.32) calc(100% - 5px)),
     linear-gradient(#c87945,#9e5437);
   z-index:7;
 }
@@ -64,8 +63,8 @@
   width:12px;
   height:18px;
 }
-.desk-front:before{left:10px}
-.desk-front:after{right:12px}
+.desk-front:before{left:9px}
+.desk-front:after{right:9px}
 .desk-front span{
   display:none;
 }
@@ -103,64 +102,24 @@
   box-shadow:18px 0 0 #25324b;
 }
 .desk-screen{
-  left:74px;
-  top:-4px;
-  width:52px;
-  height:38px;
+  left:82px;
+  top:2px;
+  width:46px;
+  height:34px;
   border-width:4px;
   z-index:9;
 }
 .desk-screen:before{
-  left:7px;
-  top:7px;
-  width:6px;
+  left:6px;
+  top:6px;
+  width:5px;
   height:4px;
-  box-shadow:13px 5px 0 #a94cff,25px 1px 0 #ff3b6b,7px 15px 0 #ffd44d,31px 14px 0 #59ff9d;
+  box-shadow:12px 5px 0 #a94cff,23px 1px 0 #ff3b6b,7px 14px 0 #ffd44d,28px 13px 0 #59ff9d;
 }
 .desk-screen:after{
   font-size:7px;
 }
-.desk-keyboard{
-  left:72px;
-  top:18px;
-  width:50px;
-  height:14px;
-  border-width:3px;
-  transform:skewX(-8deg);
-  z-index:10;
-}
-.desk-mouse{
-  left:130px;
-  top:18px;
-  width:15px;
-  height:17px;
-  border-width:3px;
-  z-index:10;
-}
-.desk-paper{
-  right:14px;
-  top:3px;
-  width:24px;
-  height:27px;
-  border-width:3px;
-  z-index:10;
-}
-.desk-mug{
-  right:47px;
-  bottom:4px;
-  width:14px;
-  height:15px;
-  border-width:3px;
-  z-index:10;
-}
-.desk-tower{
-  right:0;
-  top:51px;
-  width:24px;
-  height:48px;
-  border-width:4px;
-  z-index:3;
-}
+.desk-keyboard,.desk-mouse,.desk-paper,.desk-mug,.desk-tower{display:none}
 .desk-person{
   left:12px;
   bottom:5px;
@@ -288,13 +247,13 @@
 
 .desk-label{
   left:70px;
-  right:44px;
+  right:18px;
   top:70px;
   bottom:auto;
   width:auto;
   max-width:none;
   color:#fff;
-  font-size:6.4px;
+  font-size:5.4px;
   text-shadow:2px 2px 0 #25324b;
   z-index:11;
   text-align:center;
@@ -302,8 +261,8 @@
 .desk-label span{
   display:inline-block;
   max-width:100%;
-  min-width:62px;
-  padding:4px 5px;
+  min-width:82px;
+  padding:4px 6px;
   border:2px solid #25324b;
   border-radius:2px;
   background:#5f6f94;
@@ -341,13 +300,10 @@
     min-width:0;
     height:112px;
   }
-  .desk-top{left:40px;top:34px;width:calc(100% - 44px);height:29px}
-  .desk-front{left:50px;right:12px;top:59px;height:33px}
-  .desk-screen{left:65px;top:-5px;width:48px;height:36px}
-  .desk-keyboard{left:64px;top:17px;width:46px;height:13px}
-  .desk-mouse{left:118px;top:17px}
-  .desk-paper,.desk-mug{display:none}
-  .desk-tower{right:0;top:49px;width:22px;height:45px}
+  .desk-top{left:52px;top:40px;width:calc(100% - 60px);height:21px}
+  .desk-front{left:58px;right:15px;top:60px;height:34px}
+  .desk-screen{left:72px;top:3px;width:42px;height:31px}
+  .desk-keyboard,.desk-mouse,.desk-paper,.desk-mug,.desk-tower{display:none}
   .desk-chair{left:20px;bottom:5px;width:42px;height:34px}
   .desk-chair:before{top:-38px;width:28px;height:42px}
   .desk-person{left:8px;bottom:6px;width:45px;height:58px}
@@ -365,26 +321,26 @@
   .desk-ops{left:54%;top:69%}
   .desk-finance{left:7%;top:84%}
   .desk-marketing{left:54%;top:84%}
-  .desk-label{left:63px;right:36px;top:67px;width:auto;max-width:none;font-size:5.5px}
+  .desk-label{left:62px;right:16px;top:66px;width:auto;max-width:none;font-size:5px}
+  .desk-label span{min-width:78px}
   .printer{right:2%;top:61%}
 }
 
 @media(max-width:640px){
   .desk{height:102px}
-  .desk-top{left:50px;top:28px;width:calc(100% - 58px);height:28px}
-  .desk-front{left:56px;right:14px;top:53px;height:31px}
+  .desk-top{left:58px;top:31px;width:calc(100% - 66px);height:20px}
+  .desk-front{left:63px;right:14px;top:50px;height:32px}
   .desk-front:before,.desk-front:after{display:block;bottom:-15px;height:15px}
   .desk-chair{display:block;left:24px;bottom:5px;width:38px;height:34px}
   .desk-chair:before{top:-35px;width:25px;height:39px}
   .desk-chair:after{display:block}
-  .desk-screen{left:70px;top:-6px;width:46px;height:34px}
-  .desk-keyboard{left:70px;top:16px;width:43px;height:12px}
-  .desk-mouse{left:121px;top:16px;width:14px;height:16px}
-  .desk-tower{right:2px;top:44px;width:21px;height:42px}
+  .desk-screen{left:77px;top:-1px;width:40px;height:30px}
+  .desk-keyboard,.desk-mouse,.desk-paper,.desk-mug,.desk-tower{display:none}
   .desk-person{right:auto;left:12px;bottom:6px;width:44px;height:55px;font-size:7px}
   .desk-person:before,.desk-person:after{display:block;top:38px;height:14px}
   .person-face{left:19px;top:1px;width:23px;height:23px}
   .person-hair{left:12px;top:-5px;width:25px;height:20px}
   .person-body{left:11px;bottom:7px;width:28px;height:28px}
-  .desk-label{left:71px;right:42px;top:60px;bottom:auto;width:auto;max-width:none;font-size:5.4px}
+  .desk-label{left:69px;right:20px;top:56px;bottom:auto;width:auto;max-width:none;font-size:4.9px}
+  .desk-label span{min-width:74px}
 }
